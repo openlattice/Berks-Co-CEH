@@ -1,0 +1,297 @@
+entityDefinitions: 
+  client: 
+    fqn: "general.person"
+    entitySetName: "BerksCEHClients"
+    propertyDefinitions:
+      nc.SubjectIdentification:
+        type: "nc.SubjectIdentification"
+        column: "PersonalID"
+    name: "client"
+
+  location: #Last Permanent Address
+    fqn: "ol.location"
+    entitySetName: "BerksCEHLocations"
+    propertyDefinitions:
+      location.street:
+        type: "location.street"
+        column: "LastPermanentStreet"
+      location.city:
+        type: "location.city"
+        column: "LastPermanentCity"
+      location.zip: 
+        type: "location.zip"
+        column: "LastPermanentZIP"
+    name: "location"
+
+  housing_history: 
+    fqn: "ol.housinghistory"
+    entitySetName: "BerksCEHHousingHistories"
+    propertyDefinitions: 
+      ol.id: #not sure what this prop type will be. 
+        type: "ol.id"
+        column: "EnrollmentID"
+      ol.type: # need to add a property type for this, perhaps?
+        type: "ol.type"
+        column: "LivingSituation"
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "12", "13", "14", "15", "16", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "99" ]
+          goal: ["Emergency shelter, including hotel or motel paid for with emergency shelter voucher", "Transitional housing for homeless persons", "Permanent housing (other than RRH) for formerly homeless persons", "Psychiatric hospital or other psychiatric facility", "Substance abuse treatment facility or detox center", "Hospital or other residential non-psychiatric medical facility", "Jail, prison or juvenile detention facility", "Client doesn't know", "Client refused", "Staying or living in a family member’s room, apartment or house", "Staying or living in a friend’s room, apartment or house", "Hotel or motel paid for without emergency shelter voucher", "Foster care home or foster care group home", "Place not meant for habitation", "Safe Haven", "Rental by client, with VASH subsidy", "Rental by client, with other housing subsidy (including RRH)", "Owned by client, with ongoing housing subsidy", "Rental by client, no ongoing housing subsidy", "Owned by client, no ongoing housing subsidy", "Long-term care facility or nursing home", "Rental by client, with GPD TIP subsidy", "Residential project or halfway house with no homeless criteria", "Interim housing", "Data not collected"]
+      # ol.type: 
+      #   type: "ol.type"
+      #   column: "LivingSituation"
+      #   transforms:
+      #   - !<transforms.ReplaceTransform>
+      #     target: ["16", "1", "18", "27"]
+      #     goal: ["Homeless Situation"]
+      #   - !<transforms.ReplaceTransform>
+      #     target: ["15", "6", "7", "24", "4", "5"]
+      #     goal: ["Institional Situation"]
+      #   - !<transforms.ReplaceTransform>
+      #     target: ["14", "23", "21", "3", "22", "19", "25", "20", "26", "12", "13", "2", "8", "9", "99"]
+      #     goal: ["Transitional and Permanent Housing Situation"]
+      ol.lengthofstay:
+        type: "ol.lengthofstay"
+        column: "LengthofStay"
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["2", "3", "4", "5", "8", "9", "10", "11", "99"] 
+          goal: ["One week or more, but less than one month", "One month or more, but less than 90 days", "90 days or more but less than one year", "One year or longer", "Client doesn't know", "Client refused", "One night or less", "Two to six nights", "Data not collected"]
+      ol.previousmoveindate:  
+        type: "ol.previousmoveindate"
+        column: "MoveInDate"
+        transforms:
+        - !<transforms.DateTransform>
+          pattern: ["MM/dd/yy","M/dd/yy","MM/d/yy","M/d/yy"]
+      # housing.timeintransitionalorpermanentlessthan7nights:
+      #   type: "housing.timeintransitionalorpermanentlessthan7nights"
+      #   transforms:
+      #   - !<transforms.BooleanRegexTransform>
+      #     column: "LivingSituation"
+      #     pattern: "(?i)(\\b14\\b|\\b23\\b|\\b21\\b|\\b3\\b|\\b22\\b|\\b19\\b|\\b25\\b|\\b20\\b|\\b26\\b|\\b12\\b|\\b13\\b|\\b2\\b|\\b8\\|\\b9\\|\\b99\\b)"
+      #     transformsifTrue:
+      #     - !<transforms.ColumnTransform>
+      #       column: "LengthofStay"
+      #       transforms:
+      #       - !<transforms.BooleanRegexTransform>
+      #         column: "LengthofStay"
+      #         pattern: "(?i)(\\b10\\b|\\b11\\b|\\b2\\b|\\b3\\b|)"
+      #         transformsifTrue:
+      #         - !<transforms.ColumnTransform>
+      #           column: "LOSUnderThreshold"
+      #           transforms:
+      #           - !<transforms.ReplaceTransform>
+      #             target: ["0", "1"]
+      #             goal: ["no", "yes"]
+      # housing.timelessthan90days:
+      #   type: "housing.timelessthan90days"
+      #   transforms:
+      #   - !<transforms.BooleanRegexTransform>
+      #     column: "LivingSituation"
+      #     pattern: "(?i)(\\b15\\b|\\b6\\b|\\b7\\b|\\b24\\b|\\b4\\b|\\b5\\b)"
+      #     transformsifTrue:
+      #     - !<transforms.ColumnTransform>
+      #       column: "LengthofStay"
+      #       transforms:
+      #       - !<transforms.BooleanRegexTransform>
+      #         column: "LengthofStay"
+      #         pattern: "(?i)(\\b10\\b|\\b11\\b|\\b2\\b|\\b3\\b|)"
+      #         transformsifTrue:
+      #         - !<transforms.ColumnTransform>
+      #           column: "LOSUnderThreshold" # this signifies that client is below threshold.
+      #           transforms:
+      #           - !<transforms.ReplaceTransform>
+      #             target: ["0", "1"]
+      #             goal: ["no", "yes"]
+      housing.nightbeforeinstreetorshelter:
+        type: "housing.nightbeforeinstreetorshelter"
+        column: "PreviousStreetESSH"
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "99"]
+          goal: ["no", "yes", "Data not collected"]
+    # conditions:
+    # # - !<conditions.ConditionalOr> {}
+    # - !<conditions.BooleanRegexCondition>
+    #   column: "ProjectType"
+    #   pattern: "(?i)(\\b2\\b|\\b3\\b|\\b6\\b|\\b7\\b|\\b9\\b|\\b10\\b|\\b12\\b|\\b13\\b|\\b14\\b)" # transitional, all PH, services, day, prevention, CE, other, services
+    #   reverse: true
+    conditions:
+    - !<conditions.ConditionalOr> {}
+    - !<conditions.BooleanIsNullCondition>
+      column: "LivingSituation"
+      reverse: true
+    - !<conditions.BooleanIsNullCondition>
+      column: "LengthofStay"
+      reverse: true
+    - !<conditions.BooleanIsNullCondition>
+      column: "MoveInDate"
+      reverse: true
+    - !<conditions.BooleanIsNullCondition>
+      column: "LOSUnderThreshold"
+      reverse: true
+    - !<conditions.BooleanIsNullCondition>
+      column: "PreviousStreetESSH"
+      reverse: true
+    name: "housing_history"
+
+
+  evictionhistory:
+    fqn: "ol.evictionhistory"
+    entitySetName: "BerksCEHEvictionHistory"
+    propertyDefinitions:
+      ol.id: 
+        type: "ol.id"
+        column: "EnrollmentID"
+      ol.minimumvalue: 
+        type: "ol.minimumvalue"
+        column: "EvictionHistory"
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "2", "3", "99" ]
+          goal: ["", 2, "", "", ""]
+      ol.maximumvalue: 
+        type: "ol.maximumvalue"
+        column: "EvictionHistory"
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "2", "3", "99" ]
+          goal: ["", 3, "", "", ""]
+      ol.value:
+        type: "ol.value"
+        column: "EvictionHistory"
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "2", "3", "99" ]
+          goal: [4, "", 1, 0, ""]
+      ol.qualifier: 
+        type: "ol.qualifier"
+        column: "EvictionHistory"
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "2", "3", "99" ]
+          goal: [">", "", "", "", ""]
+      ol.category: 
+        type: "ol.category"
+        column: "EvictionHistory"
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "2", "3", "99" ]
+          goal: ["4 or more prior rental evictions", "2-3 prior rental evictions", "1 prior rental eviction", "No prior rental evictions", "Data not collected"]
+    conditions: 
+    - !<conditions.BooleanIsNullCondition>
+      column: "EvictionHistory"
+      reverse: true
+    name: "evictionhistory"
+
+  timetohousingloss: 
+    fqn: "ol.timetohousingloss"
+    entitySetName: "BerksCEHTimeToHousingLoss"
+    propertyDefinitions:
+      ol.id: 
+        type: "ol.id"
+        column: "EnrollmentID"
+      ol.minimumvalue: 
+        type: "ol.minimumvalue"
+        column: "TimeToHousingLoss"
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "2", "3", "99" ]
+          goal: [0, 7, 14, 22, ""]
+      ol.maximumvalue: 
+        type: "ol.maximumvalue"
+        column: "TimeToHousingLoss"
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "2", "3", "99" ]
+          goal: [6, 13, 21, "", ""]
+      ol.value:
+        type: "ol.value"
+        column: "TimeToHousingLoss"
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "2", "3", "99" ]
+          goal: ["", "", "", 22, ""]
+      ol.qualifier:
+        type: "ol.qualifier"
+        column: "TimeToHousingLoss"
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "2", "3", "99" ]
+          goal: ["", "", "", ">", ""]
+      ol.category: 
+        type: "ol.category"
+        column: "TimeToHousingLoss"
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "2", "3", "99" ]
+          goal: ["0-6 days", "7-13 days", "14-21 days", "More than 21 days", "Data not collected"]
+    conditions:
+    - !<conditions.BooleanIsNullCondition>
+      column: "TimeToHousingLoss"
+      reverse: true
+    name: "timetohousingloss"
+
+associationDefinitions:
+  locatedat: 
+    fqn: "locatedat"
+    entitySetName: "BerksCEHLocatedAt"
+    src: "client"
+    dst: "location"
+    propertyDefinitions:
+      general.id:
+        type: "general.id"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["PersonalID", "EnrollmentID"]
+          separator: "_"
+      date.completeddatetime: 
+        type: "date.completeddatetime"
+        column: "EntryDate"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss"]
+    name: "locatedat"
+
+  reported1:
+    fqn: "ol.has"
+    entitySetName: "BerksCEHHas"
+    src: "client"
+    dst: "housing_history"
+    propertyDefinitions:
+      general.id:
+        type: "general.id"
+        transforms: 
+        - !<transforms.ConcatTransform>
+          columns: ["PersonalID", "EnrollmentID"]
+          separator: "_"
+    name: "reported1"
+
+  reported2: 
+    fqn: "ol.has"
+    entitySetName: "BerksCEHHas"
+    src: "client"
+    dst: "evictionhistory"
+    propertyDefinitions: 
+      general.id: 
+        type: "general.id"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["PersonalID", "EnrollmentID"]
+          separator: "_"
+    name: "reported2"
+
+  reported3: 
+    fqn: "ol.has"
+    entitySetName: "BerksCEHHas"
+    src: "client"
+    dst: "timetohousingloss"
+    propertyDefinitions: 
+      general.id: 
+        type: "general.id"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["PersonalID", "EnrollmentID"]
+          separator: "_"
+    name: "reported3"
+

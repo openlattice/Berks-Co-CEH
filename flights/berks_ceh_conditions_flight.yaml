@@ -1,0 +1,211 @@
+#select e.*, d."InformationDate" as "InformationDate", h."InformationDate" as "InformationDate_HDV", e."EntryDate", ex."ExitDate", e."DisablingCondition" from enrollment as e left join disabilities as d on e."EnrollmentID"=d."EnrollmentID" left join health_and_dv as h on d."EnrollmentID"=h."EnrollmentID" limit 5000; 
+
+entityDefinitions:
+  client: 
+    fqn: "general.person"
+    entitySetName: "BerksCEHClients"
+    propertyDefinitions:
+      nc.SubjectIdentification:
+        type: "nc.SubjectIdentification"
+        column: "PersonalID"
+    name: "client"
+
+  enrollment:
+    fqn: "ol.episodeofcare"
+    entitySetName: "BerksCEHEnrollments"
+    propertyDefinitions:
+      ol.id:
+        type: "ol.id"
+        column: "EnrollmentID"
+      ol.admissiondate: 
+        type: "ol.admissiondate"
+        column: "EntryDate"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss"]
+      ol.dischargedate: 
+        type: "ol.dischargedate"
+        column: "ExitDate"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss"]
+    name: "enrollment"
+
+  disabilities:
+    fqn: "ol.healthcondition" 
+    entitySetName: "BerksCEHDisabilities"
+    propertyDefinitions:
+      ol.id:
+        type: "ol.id"
+        column: "DisabilitiesID"
+      ol.recordeddate: 
+        type: "ol.recordeddate"
+        column: "InformationDate"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss"]
+      ol.clinicalstatus: 
+        type: "ol.clinicalstatus"
+        column: "DisablingCondition" #from enrollment
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "8", "9", "99"]
+          goal: ["no", "yes", "Client doesn't know", "Client refused", "Data not collected"]
+      health.mentalissue: 
+        type: "health.mentalissue"
+        transforms:
+        - !<transforms.BooleanContainsTransform>
+          column: "DisabilityType"
+          string: "9"
+          transformsIfTrue:
+          - !<transforms.ValueTransform>
+            value: "true"
+          transformsIfFalse:
+          - !<transforms.ValueTransform>
+            value: "false"
+      ol.substanceuse:
+        type: "ol.substanceuse"
+        transforms:
+        - !<transforms.BooleanContainsTransform>
+          column: "DisabilityType"
+          string: "10"
+          transformsIfTrue:
+          - !<transforms.ValueTransform>
+            value: "true"
+          transformsIfFalse:
+          - !<transforms.ValueTransform>
+            value: "false"
+      ol.name: 
+        type: "ol.name"
+        column: "DisabilityType"
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["5", "6", "7", "8", "9", "10"]
+          goal: ["Physical disability", "Developmental disability", "Chronic health condition", "HIV/AIDS", "Mental health problem", "Substance abuse"]
+      ol.name2:
+        type: "ol.name"
+        transforms: 
+        - !<transforms.BooleanContainsTransform>
+          column: "DisabilityType"
+          string: "10"
+          transformsIfTrue:
+          - !<transforms.ColumnTransform>
+            column: "DisabilityResponse"
+            transforms:
+            - !<transforms.ReplaceTransform>
+              target: ["0", "1", "2", "3", "8", "9", "99"]
+              goal: ["No", "Alcohol abuse", "Drug abuse", "Both alcohol and drug abuse", "Client doesn't know", "Client refused", "Data not collected"]
+      ol.clinicalstatus2:
+        type: "ol.description"
+        transforms:
+        - !<transforms.BooleanRegexTransform>
+          column: "DisabilityType"
+          pattern: "(?i)(\\b5\\b|\\b6\\b|\\b7\\b|\\b8\\b|\\b9\\b)"
+          transformsIfTrue:
+          - !<transforms.ColumnTransform>
+            column: "DisabilityResponse"
+            transforms:
+            - !<transforms.ReplaceTransform>
+              target: ["0", "1", "8", "9", "99"]
+              goal: ["No", "Yes", "Client doesn't know", "Client refused", "Data not collected"]
+    name: "disabilities"
+
+  pregnancy:
+    fqn: "ol.healthcondition"
+    entitySetName: "BerksCEHPregnancy"
+    propertyDefinitions:
+      ol.id: 
+        type: "ol.id"
+        column: "HealthAndDVID"
+      ol.name: 
+        type: "ol.name"
+        transforms:
+        - !<transforms.ValueTransform>
+          value: "Pregnancy Status"
+      ol.recordeddate:  
+        type: "ol.recordeddate"
+        column: "InformationDate_HDV"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss"]
+      ol.clinicalstatus:
+        type: "ol.clinicalstatus"
+        column: "PregnancyStatus"
+        transforms: 
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "8", "9", "99"] 
+          goal: ["no", "yes", "Client doesn't know", "Client refused", "Data not collected"]
+      ol.enddate:
+        type: "ol.enddate"
+        column: "DueDate"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss"]
+    conditions: 
+    - !<conditions.BooleanIsNullCondition>
+      column: "PregnancyStatus"
+      reverse: true
+    name: "pregnancy"
+
+associationDefinitions: 
+  observedin1:
+    fqn: "ol.associatedwith"
+    entitySetName: "BerksCEHObservedIn"
+    src: "disabilities"
+    dst: "client"
+    propertyDefinitions:
+      ol.id:
+        type: "ol.id"
+        transforms: 
+        - !<transforms.ConcatTransform>
+          columns: ["DisabilitiesID", "PersonalID"]
+      date.completeddatetime: 
+        type: "date.completeddatetime"
+        column: "InformationDate"
+        transforms: 
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss"]
+    name: "observedin1"
+
+  observedin2:
+    fqn: "ol.associatedwith"
+    entitySetName: "BerksCEHObservedIn"
+    src: "pregnancy"
+    dst: "client"
+    propertyDefinitions:
+      ol.id:
+        type: "ol.id"
+        transforms: 
+        - !<transforms.ConcatTransform>
+          columns: ["HealthAndDVID", "PersonalID"]
+      date.completeddatetime: 
+        type: "date.completeddatetime"
+        column: "InformationDate_HDV"
+        transforms: 
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss"]      
+    name: "observedin2"
+
+  partof1:
+    fqn: "ol.exhibits"
+    entitySetName: "BerksCEHHas"
+    src: "disabilities"
+    dst: "enrollment"
+    propertyDefinitions:
+      ol.id:
+        type: "ol.id"
+        column: "EnrollmentID"
+    name: "partof1"
+
+
+  partof2:
+    fqn: "ol.exhibits"
+    entitySetName: "BerksCEHHas"
+    src: "pregnancy"
+    dst: "enrollment"
+    propertyDefinitions:
+      ol.id:
+        type: "ol.id"
+        column: "EnrollmentID"
+    name: "partof2"
+

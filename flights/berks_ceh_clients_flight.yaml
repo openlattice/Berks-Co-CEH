@@ -1,0 +1,267 @@
+# select c.*, e."LastGradeCompleted", e."EmploymentType", e."SchoolStatus", e."Employed", e."EmploymentEducationID", en."EnrollmentID", en."FormerWardJuvenileJustice", en."SexualOrientation" from client as c left join employmenteducation as e on c."PersonalID"=e."PersonalID" left join enrollment as en on e."EnrollmentID"=en."EnrollmentID" AND c."PersonalID"=en."PersonalID" limit 5000;
+
+
+entityDefinitions:
+  client:
+    fqn: "general.person"
+    entitySetName: "BerksCEHClients"
+    propertyDefinitions: 
+      nc.SubjectIdentification:
+        type: "nc.SubjectIdentification"
+        column: "PersonalID"
+      nc.PersonGivenName:
+        type: "nc.PersonGivenName"
+        column: "FirstName"
+      nc.PersonMiddleName:
+        type: "nc.PersonMiddleName"
+        column: "MiddleName"
+      nc.PersonSurName:
+        type: "nc.PersonSurName"
+        column: "LastName"
+      nc.SSN:
+        type: "nc.SSN"
+        column: "SSN"
+      nc.PersonSuffix:
+        type: "nc.PersonSuffix"
+        column: "NameSuffix"
+      nc.SSN:
+        type: "nc.SSN"
+        column: "SSN"
+      nc.PersonSex:
+        type: "nc.PersonSex"
+        column: "Gender" 
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "2", "3"]
+          goal: ["Female", "Male", "Female", "Male"]
+      nc.PersonBirthDate:
+        type: "nc.PersonBirthDate"
+        column: "DOB"
+        transforms:
+        - !<transforms.DateTransform>
+          pattern: ["MM/dd/yy","M/dd/yy","MM/d/yy","M/d/yy"]
+      nc.PersonRace:
+        type: "nc.PersonRace"
+        column: "AmIndAKNative"
+        transforms: 
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["", "AmIndianAKNative"]
+          partial: true
+      nc.PersonRace:
+        type: "nc.PersonRace"
+        column: "Asian"
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["", "Asian"]
+          partial: true
+      nc.PersonRace:
+        type: "nc.PersonRace"
+        column: "BlackAfAmerican"
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["", "BlackAfAmerican"]
+          partial: true
+      nc.PersonRace:
+        type: "nc.PersonRace"
+        column: "NativeHIOtherPacific"
+        transforms: 
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["", "NativeHIOtherPacific"]
+          partial: true
+      nc.PersonRace:
+        type: "nc.PersonRace"
+        column: "White"
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["", "White"]
+          partial: true
+      nc.PersonRace:
+        type: "nc.PersonRace"
+        column: "RaceNone"
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["", ""]
+          partial: true 
+      nc.PersonEthnicity:
+        type: "nc.PersonEthnicity"
+        column: "Ethnicity"
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "8", "9", "99"]
+          goal: ["Nonhispanic", "Hispanic", "Client doesn't know", "Client refused", "Data not collected"]
+          partial: true
+      ol.datasource:
+        type: "ol.datasource"
+        transforms:
+        - !<transforms.ValueTransform>
+          value: "Berks County CEH"
+    name: "client"
+
+    
+  clientdetails:
+    fqn: "ol.persondetails"
+    entitySetName: "BerksCEHClientDetails"
+    propertyDefinitions:
+      general.id:
+        type: "general.id"
+        column: "PersonalID"
+      person.gender:
+        type: "person.gender"
+        column: "Gender"
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "2", "3"]
+          goal: ["Female", "Male", "Trans Female (MTF or Male to Female)", "Trans Male (FTM or Female to Male)"]
+      person.veteranstatus:
+        type: "person.veteranstatus"
+        column: "VeteranStatus"
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "99"]
+          goal: ["No", "Yes", "Data not collected"]
+      person.juvenile: 
+        type: "person.juvenile"
+        column: "FormerWardJuvenileJustice" #from enrollment, currently empty. maybe they can give this to us in future? 
+      person.sexualorientation:
+        type: "person.sexualorientation"
+        column: "SexualOrientation" #from enrollment, currently empty. maybe they can give this to us in future? 
+    name: "clientdetails"
+
+  education: 
+    fqn: "ol.education" #NEW education entity type - TBD actual name. 
+    entitySetName: "BerksCEHEducations"
+    propertyDefinitions:
+      ol.id:
+        type: "ol.id"
+        column: "EmploymentEducationID"
+      person.highesteducation: #moved from persondetails to new education entity type
+        type: "person.highesteducation"
+        column: "LastGradeCompleted" # from employmenteducation
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "99"]
+          goal: ["Less than grade 5", "Grades 5-6", "Grades 7-8", "Grades 9-11", "Grade 12", "School program does not have grade levels", "GED", "Client doesn't know", "Client refused", "Some college", "Associate's degree", "Bachelor's degree", "Graduate degree", "Vocational certification", "Data not collected"]      
+      ol.status:  
+          type: "ol.status" 
+          column: "SchoolStatus" # from employmenteducation 
+          transforms:
+          - !<transforms.ReplaceTransform>
+            target: ["1", "2", "3", "4", "5", "8", "9", "99"]
+            goal: ["Attending school regularly", "Attending school irregularly", "Graduated from high school", "Obtained ged", "Dropped out", "Client doesn't know", "Client refused", "Data not collected" ]
+
+  employment:
+    fqn: "ol.employment"
+    entitySetName: "BerksCEHEmployments"
+    propertyDefinitions:
+      ol.id: 
+        type: "ol.id"
+        column: "EmploymentEducationID"
+      ol.status:
+        type: "ol.status"
+        column: "Employed"
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "8", "9", "99"]
+          goal: ["No", "Yes", "Client doesn't know", "Client refused", "Data not collected" ]
+      ol.category:
+        type: "ol.category"
+        column: "EmploymentType"
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["1", "2", "3", "99"]
+          goal: ["Full-time", "Part-time", "Seasonal / sporadic (including day labor)", "Data not collected"]
+    name: "employment"
+
+  domesticviolenceinfo:
+    fqn: "ol.domesticviolence"
+    entitySetName: "BerksCEHDomesticViolenceInfo"
+    propertyDefinitions:
+      ol.id:  
+        type: "ol.id"
+        column: "EnrollmentID"
+      ol.domesticviolenceflag: 
+        type: "ol.domesticviolenceflag"
+        column: "DomesticViolenceVictim"
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "8", "9", "99"] 
+          goal: ["No", "Yes", "Client doesn't know", "Client refused", "Data not collected"]
+      health.domesticviolenceoccurrence: 
+        type: "health.domesticviolenceoccurrence"
+        column: "WhenOccurred"
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["1", "2", "3", "4", "8", "9", "99"]
+          goal: ["within the past three months", "three to six months ago (excluding six months exactly)", "six months to one year ago (excluding one year exactly)", "one year or more", "Client doesn't know", "Client refused", "Data not collected"]
+      health.fleeingdomesticviolence:
+        type: "health.fleeingdomesticviolence"
+        column: "CurrentlyFleeing"
+        transforms:
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "8", "9", "99"] 
+          goal: ["No", "Yes", "Client doesn't know", "Client refused", "Data not collected"]
+    conditions:
+    - !<conditions.BooleanIsNullCondition>
+      column: "DomesticViolenceVictim"
+      reverse: true
+    name: "domesticviolenceinfo"
+
+associationDefinitions:
+  has1:
+    fqn: "ol.has"
+    entitySetName: "BerksCEHHas"
+    src: "client"
+    dst: "clientdetails" #or should it be called disability? 
+    propertyDefinitions:
+      ol.id:
+        type: "ol.id"
+        column: "PersonalID"  
+    name: "has1"
+
+  has2:
+    fqn: "ol.has"
+    entitySetName: "BerksCEHHas"
+    src: "client"
+    dst: "employment"
+    propertyDefinitions:
+      ol.id:
+        type: "ol.id"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["PersonalID", "EmploymentEducationID"]
+          separator: "_"
+    name: "has2"
+
+  has3: 
+    fqn: "ol.has"
+    entitySetName: "BerksCEHHas"
+    src: "client"
+    dst: "education"
+    propertyDefinitions: 
+      ol.id: 
+        type: "ol.id"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["PersonalID", "EmploymentEducationID"]
+          separator: "_"
+    has: "has3"
+
+  has4:
+    fqn: "ol.has"
+    entitySetName: "BerksCEHHas"
+    src: "client"
+    dst: "domesticviolenceinfo"
+    propertyDefinitions:
+      ol.id:
+        type: "ol.id"
+        transforms: 
+        - !<transforms.ConcatTransform>
+          columns: ["PersonalID", "EnrollmentID"]
+          separator: "_"
+    name: "has4"

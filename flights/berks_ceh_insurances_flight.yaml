@@ -1,0 +1,543 @@
+# select * from incomebenefits; 
+
+entityDefinitions:
+  client:
+    fqn: "general.person"
+    entitySetName: "BerksCEHClients"
+    propertyDefinitions:
+      nc.SubjectIdentification:
+        type: "nc.SubjectIdentification"
+        column: "PersonalID"
+    name: "client"
+
+
+  medicaid: 
+    fqn: "ol.insurance"
+    entitySetName: "BerksCEHMedicaid"
+    propertyDefinitions: 
+      general.id: 
+        type: "general.id"
+        column: "IncomeBenefitsID"
+      ol.organizationname:
+        type: "ol.organizationname"
+        transforms:
+        - !<transforms.BooleanContainsTransform>
+          column: "Medicaid"
+          string: "1" 
+          ignoreCase: true
+          transformsIfTrue:
+          - !<transforms.ValueTransform> 
+            value: "Medicaid"
+          transformsIfFalse:
+          - !<transforms.ValueTransform>
+            value: ""
+      ol.notes: 
+        type: "ol.notes"
+        column: "NoMedicaidReason"
+        transforms:
+        - !<transforms.RegexTransform>
+          target: ["1", "2", "3", "4", "8", "9", "99"]
+          goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
+    conditions:
+    - !<conditions.ConditionalOr> {} 
+    - !<conditions.BooleanIsNullCondition>
+      column: "Medicaid"
+      reverse: true
+    - !<conditions.BooleanIsNullCondition>
+      column: "NoMedicaidReason"
+      reverse: true
+    name: "medicaid"
+
+  medicare: 
+    fqn: "ol.insurance"
+    entitySetName: "BerksCEHMedicare"
+    propertyDefinitions: 
+      general.id: 
+        type: "general.id"
+        column: "IncomeBenefitsID"
+      ol.organizationname:
+        type: "ol.organizationname"
+        transforms:
+        - !<transforms.BooleanContainsTransform>
+          column: "Medicare"
+          string: "1" 
+          ignoreCase: true
+          transformsIfTrue:
+          - !<transforms.ValueTransform> 
+            value: "Medicare"
+          transformsIfFalse:
+          - !<transforms.ValueTransform>
+            value: ""
+      ol.notes: 
+        type: "ol.notes"
+        column: "NoMedicareReason"
+        transforms:
+        - !<transforms.RegexTransform>
+          target: ["1", "2", "3", "4", "8", "9", "99"]
+          goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
+    conditions:
+    - !<conditions.ConditionalOr> {} 
+    - !<conditions.BooleanIsNullCondition>
+      column: "Medicare"
+      reverse: true
+    - !<conditions.BooleanIsNullCondition>
+      column: "NoMedicareReason"
+      reverse: true        
+    name: "medicare"
+
+  schip: 
+    fqn: "ol.insurance"
+    entitySetName: "BerksCEHSCHIP"
+    propertyDefinitions: 
+      general.id: 
+        type: "general.id"
+        column: "IncomeBenefitsID"
+      ol.organizationname:
+        type: "ol.organizationname"
+        transforms:
+        - !<transforms.BooleanContainsTransform>
+          column: "SCHIP"
+          string: "1" 
+          ignoreCase: true
+          transformsIfTrue:
+          - !<transforms.ValueTransform> 
+            value: "Healthy Kids (CHI) (State Children's HIP)"
+          transformsIfFalse:
+          - !<transforms.ValueTransform>
+            value: ""
+      ol.notes: 
+        type: "ol.notes"
+        column: "NoSCHIPReason"
+        transforms:
+        - !<transforms.RegexTransform>
+          target: ["1", "2", "3", "4", "8", "9", "99"]
+          goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
+    conditions:
+    - !<conditions.ConditionalOr> {} 
+    - !<conditions.BooleanIsNullCondition>
+      column: "SCHIP"
+      reverse: true
+    - !<conditions.BooleanIsNullCondition>
+      column: "NoSCHIPReason"
+      reverse: true
+    name: "SCHIP"
+
+  vamedicalservices: 
+    fqn: "ol.insurance"
+    entitySetName: "BerksCEHVAMedicalServices"
+    propertyDefinitions: 
+      general.id: 
+        type: "general.id"
+        column: "IncomeBenefitsID"
+      ol.organizationname:
+        type: "ol.organizationname"
+        transforms:
+        - !<transforms.BooleanContainsTransform>
+          column: "VAMedicalServices"
+          string: "1" 
+          ignoreCase: true
+          transformsIfTrue:
+          - !<transforms.ValueTransform> 
+            value: "VA Medical Services"
+          transformsIfFalse:
+          - !<transforms.ValueTransform>
+            value: ""
+    name: "vamedicalservices"
+
+  employerprovided: 
+    fqn: "ol.insurance"
+    entitySetName: "BerksCEHEmployerProvided"
+    propertyDefinitions: 
+      general.id: 
+        type: "general.id"
+        column: "IncomeBenefitsID"
+      ol.organizationname:
+        type: "ol.organizationname"
+        transforms:
+        - !<transforms.BooleanContainsTransform>
+          column: "EmployerProvided"
+          string: "1" 
+          ignoreCase: true
+          transformsIfTrue:
+          - !<transforms.ValueTransform> 
+            value: "Employer Provided"
+          transformsIfFalse:
+          - !<transforms.ValueTransform>
+            value: ""
+      ol.notes: 
+        type: "ol.notes"
+        column: "NoEmployerProvidedReason"
+        transforms:
+        - !<transforms.RegexTransform>
+          target: ["1", "2", "3", "4", "8", "9", "99"]
+          goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
+    conditions:
+    - !<conditions.ConditionalOr> {} 
+    - !<conditions.BooleanIsNullCondition>
+      column: "EmployerProvided"
+      reverse: true
+    - !<conditions.BooleanIsNullCondition>
+      column: "NoEmployerProvidedReason"
+      reverse: true
+    name: "employerprovided"
+
+  cobra: 
+    fqn: "ol.insurance"
+    entitySetName: "BerksCEHCOBRA"
+    propertyDefinitions: 
+      general.id: 
+        type: "general.id"
+        column: "IncomeBenefitsID"
+      ol.organizationname:
+        type: "ol.organizationname"
+        transforms:
+        - !<transforms.BooleanContainsTransform>
+          column: "COBRA"
+          string: "1" #the field is a double - make sure can do this. 
+          ignoreCase: true
+          transformsIfTrue:
+          - !<transforms.ValueTransform> 
+            value: "COBRA"
+          transformsIfFalse:
+          - !<transforms.ValueTransform>
+            value: ""
+      ol.notes: 
+        type: "ol.notes"
+        column: "NoCOBRAReason"
+        transforms:
+        - !<transforms.RegexTransform>
+          target: ["1", "2", "3", "4", "8", "9", "99"]
+          goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
+    conditions:
+    - !<conditions.ConditionalOr> {} 
+    - !<conditions.BooleanIsNullCondition>
+      column: "COBRA"
+      reverse: true
+    - !<conditions.BooleanIsNullCondition>
+      column: "NoCOBRAReason"
+      reverse: true
+    name: "cobra"
+
+  privatepay: 
+    fqn: "ol.insurance"
+    entitySetName: "BerksCEHPrivatePay"
+    propertyDefinitions: 
+      general.id: 
+        type: "general.id"
+        column: "IncomeBenefitsID"
+      ol.organizationname:
+        type: "ol.organizationname"
+        transforms:
+        - !<transforms.BooleanContainsTransform>
+          column: "PrivatePay"
+          string: "1" 
+          ignoreCase: true
+          transformsIfTrue:
+          - !<transforms.ValueTransform> 
+            value: "Private Pay Insurance"
+          transformsIfFalse:
+          - !<transforms.ValueTransform>
+            value: ""
+      ol.notes: 
+        type: "ol.notes"
+        column: "NoPrivatePayReason"
+        transforms:
+        - !<transforms.RegexTransform>
+          target: ["1", "2", "3", "4", "8", "9", "99"]
+          goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
+    conditions:
+    - !<conditions.ConditionalOr> {} 
+    - !<conditions.BooleanIsNullCondition>
+      column: "PrivatePay"
+      reverse: true
+    - !<conditions.BooleanIsNullCondition>
+      column: "NoPrivatePayReason"
+      reverse: true
+    name: "privatepay"
+
+  statehealthins: 
+    fqn: "ol.insurance"
+    entitySetName: "BerksCEHStateHealthIns"
+    propertyDefinitions: 
+      general.id: 
+        type: "general.id"
+        column: "IncomeBenefitsID"
+      ol.organizationname:
+        type: "ol.organizationname"
+        transforms:
+        - !<transforms.BooleanContainsTransform>
+          column: "StateHealthIns"
+          string: "1" 
+          ignoreCase: true
+          transformsIfTrue:
+          - !<transforms.ValueTransform> 
+            value: "State Health Insurance"
+          transformsIfFalse:
+          - !<transforms.ValueTransform>
+            value: ""
+      ol.notes: 
+        type: "ol.notes"
+        column: "NoStateHealthInsReason"
+        transforms:
+        - !<transforms.RegexTransform>
+          target: ["1", "2", "3", "4", "8", "9", "99"]
+          goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
+    conditions:
+    - !<conditions.ConditionalOr> {} 
+    - !<conditions.BooleanIsNullCondition>
+      column: "StateHealthIns"
+      reverse: true
+    - !<conditions.BooleanIsNullCondition>
+      column: "NoStateHealthInsReason"
+      reverse: true
+    name: "statehealthins"
+
+  indianhealthservices: 
+    fqn: "ol.insurance"
+    entitySetName: "BerksCEHIndianHealthServices"
+    propertyDefinitions: 
+      general.id: 
+        type: "general.id"
+        column: "IncomeBenefitsID"
+      ol.organizationname:
+        type: "ol.organizationname"
+        transforms:
+        - !<transforms.BooleanContainsTransform>
+          column: "IndianHealthServices"
+          string: "1" 
+          ignoreCase: true
+          transformsIfTrue:
+          - !<transforms.ValueTransform> 
+            value: "Indian Health Services"
+          transformsIfFalse:
+          - !<transforms.ValueTransform>
+            value: ""
+      ol.notes: 
+        type: "ol.notes"
+        column: "NoStateHealthInsReason"
+        transforms:
+        - !<transforms.RegexTransform>
+          target: ["1", "2", "3", "4", "8", "9", "99"]
+          goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
+    conditions:
+    - !<conditions.ConditionalOr> {} 
+    - !<conditions.BooleanIsNullCondition>
+      column: "IndianHealthServices"
+      reverse: true
+    - !<conditions.BooleanIsNullCondition>
+      column: "NoStateHealthInsReason"
+      reverse: true
+    name: "indianhealthservices"
+
+  otherinsurance: 
+    fqn: "ol.insurance"
+    entitySetName: "BerksCEHOtherInsurances"
+    propertyDefinitions: 
+      general.id: 
+        type: "general.id"
+        column: "IncomeBenefitsID"
+      ol.organizationname:
+        type: "ol.organizationname"
+        transforms:
+        - !<transforms.BooleanContainsTransform>
+          column: "OtherInsurance"
+          string: "1" 
+          ignoreCase: true
+          transformsIfTrue:
+          - !<transforms.ColumnTransform>
+            column: "OtherInsuranceIdentify"
+    conditions:
+    - !<conditions.ConditionalOr> {}
+    - !<conditions.BooleanIsNullCondition>
+      column: "OtherInsurance"
+      reverse: true
+    - !<conditions.BooleanIsNullCondition>
+      column: "OtherInsuranceIdentify"
+      reverse: true
+    name: "otherinsurance"
+      
+  connectionwithsoar: #not sure what this is? 
+    fqn: "ol.insurance"
+    entitySetName: "BerksCEHConnectionWithSOAR"
+    propertyDefinitions: 
+      general.id: 
+        type: "general.id"
+        column: "IncomeBenefitsID"
+      ol.organizationname:
+        type: "ol.organizationname"
+        transforms:
+        - !<transforms.BooleanContainsTransform>
+          column: "ConnectionWithSOAR"
+          string: "1" #the field is a double - make sure can do this. 
+          ignoreCase: true
+          transformsIfTrue:
+          - !<transforms.ValueTransform> 
+            value: "Connection With SOAR"
+          transformsIfFalse:
+          - !<transforms.ValueTransform>
+            value: ""
+      conditions:
+      - !<conditions.ConditionalOr> {}
+      - !<conditions.BooleanIsNullCondition>
+        column: "OtherInsurance"
+        reverse: true
+      - !<conditions.BooleanIsNullCondition>
+        column: "OtherInsuranceIdentify"
+        reverse: true
+    name: "connectionwithsoar"
+
+
+associationDefinitions: 
+  insuredby1: 
+    fqn: "health.insuredby"
+    entitySetName: "BerksCEHInsuredBy"
+    src: "client"
+    dst: "medicare"
+    propertyDefinitions: 
+      date.completeddatetime: 
+        type: "date.completeddatetime"
+        column: "InformationDate"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss"]
+    name: "insuredby1"
+
+  insuredby2: 
+    fqn: "health.insuredby"
+    entitySetName: "BerksCEHinsuredby"
+    src: "client"
+    dst: "medicaid"
+    propertyDefinitions: 
+      date.completeddatetime: 
+        type: "date.completeddatetime"
+        column: "InformationDate"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss"]
+    name: "insuredby2"
+
+  insuredby3: 
+    fqn: "health.insuredby"
+    entitySetName: "BerksCEHinsuredby"
+    src: "client"
+    dst: "schip"
+    propertyDefinitions: 
+      date.completeddatetime: 
+        type: "date.completeddatetime"
+        column: "InformationDate"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss"]
+    name: "insuredby3"
+
+  insuredby4: 
+    fqn: "health.insuredby"
+    entitySetName: "BerksCEHinsuredby"
+    src: "client"
+    dst: "vamedicalservices"
+    propertyDefinitions: 
+      date.completeddatetime: 
+        type: "date.completeddatetime"
+        column: "InformationDate"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss"]
+    name: "insuredby4"
+
+  insuredby5: 
+    fqn: "health.insuredby"
+    entitySetName: "BerksCEHinsuredby"
+    src: "client"
+    dst: "employerprovided"
+    propertyDefinitions: 
+      date.completeddatetime: 
+        type: "date.completeddatetime"
+        column: "InformationDate"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss"]
+    name: "insuredby5"
+
+  insuredby6: 
+    fqn: "health.insuredby"
+    entitySetName: "BerksCEHinsuredby"
+    src: "client"
+    dst: "cobra"
+    propertyDefinitions: 
+      date.completeddatetime: 
+        type: "date.completeddatetime"
+        column: "InformationDate"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss"]
+    name: "insuredby6"
+
+  insuredby7: 
+    fqn: "health.insuredby"
+    entitySetName: "BerksCEHinsuredby"
+    src: "client"
+    dst: "privatepay"
+    propertyDefinitions: 
+      date.completeddatetime: 
+        type: "date.completeddatetime"
+        column: "InformationDate"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss"]
+    name: "insuredby7"
+
+  insuredby8: 
+    fqn: "health.insuredby"
+    entitySetName: "BerksCEHinsuredby"
+    src: "client"
+    dst: "statehealthins"
+    propertyDefinitions: 
+      date.completeddatetime: 
+        type: "date.completeddatetime"
+        column: "InformationDate"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss"]
+    name: "insuredby8"
+
+  insuredby9: 
+    fqn: "health.insuredby"
+    entitySetName: "BerksCEHinsuredby"
+    src: "client"
+    dst: "indianhealthservices"
+    propertyDefinitions: 
+      date.completeddatetime: 
+        type: "date.completeddatetime"
+        column: "InformationDate"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss"]
+    name: "insuredby9"
+
+  insuredby10: 
+    fqn: "health.insuredby"
+    entitySetName: "BerksCEHinsuredby"
+    src: "client"
+    dst: "otherinsurance"
+    propertyDefinitions: 
+      date.completeddatetime: 
+        type: "date.completeddatetime"
+        column: "InformationDate"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss"]
+    name: "insuredby10"
+
+  insuredby11: 
+    fqn: "health.insuredby"
+    entitySetName: "BerksCEHinsuredby"
+    src: "client"
+    dst: "connectionwithsoar"
+    propertyDefinitions: 
+      date.completeddatetime: 
+        type: "date.completeddatetime"
+        column: "InformationDate"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss"]
+    name: "insuredby11"
