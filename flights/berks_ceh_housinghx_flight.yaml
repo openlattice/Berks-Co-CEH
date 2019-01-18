@@ -1,7 +1,9 @@
+# select e."*" from enrollment limit 5000; 
+
 entityDefinitions: 
   client: 
     fqn: "general.person"
-    entitySetName: "BerksCEHClients"
+    entitySetName: "BerksClients"
     propertyDefinitions:
       nc.SubjectIdentification:
         type: "nc.SubjectIdentification"
@@ -10,7 +12,7 @@ entityDefinitions:
 
   location: #Last Permanent Address
     fqn: "ol.location"
-    entitySetName: "BerksCEHLocations"
+    entitySetName: "BerksLocations"
     propertyDefinitions:
       location.street:
         type: "location.street"
@@ -25,7 +27,7 @@ entityDefinitions:
 
   housing_history: 
     fqn: "ol.housinghistory"
-    entitySetName: "BerksCEHHousingHistories"
+    entitySetName: "BerksHousingHistories"
     propertyDefinitions: 
       ol.id: #not sure what this prop type will be. 
         type: "ol.id"
@@ -138,7 +140,7 @@ entityDefinitions:
 
   evictionhistory:
     fqn: "ol.evictionhistory"
-    entitySetName: "BerksCEHEvictionHistory"
+    entitySetName: "BerksEvictionHistory"
     propertyDefinitions:
       ol.id: 
         type: "ol.id"
@@ -186,7 +188,7 @@ entityDefinitions:
 
   timetohousingloss: 
     fqn: "ol.timetohousingloss"
-    entitySetName: "BerksCEHTimeToHousingLoss"
+    entitySetName: "BerksTimeToHousingLoss"
     propertyDefinitions:
       ol.id: 
         type: "ol.id"
@@ -235,7 +237,7 @@ entityDefinitions:
 associationDefinitions:
   locatedat: 
     fqn: "locatedat"
-    entitySetName: "BerksCEHLocatedAt"
+    entitySetName: "BerksLocatedAt"
     src: "client"
     dst: "location"
     propertyDefinitions:
@@ -254,8 +256,8 @@ associationDefinitions:
     name: "locatedat"
 
   reported1:
-    fqn: "ol.has"
-    entitySetName: "BerksCEHHas"
+    fqn: "ol.reported"
+    entitySetName: "BerksReported"
     src: "client"
     dst: "housing_history"
     propertyDefinitions:
@@ -265,11 +267,17 @@ associationDefinitions:
         - !<transforms.ConcatTransform>
           columns: ["PersonalID", "EnrollmentID"]
           separator: "_"
+        date.completeddatetime: 
+        type: "date.completeddatetime"
+        column: "EntryDate"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss"]
     name: "reported1"
 
   reported2: 
-    fqn: "ol.has"
-    entitySetName: "BerksCEHHas"
+    fqn: "ol.reported"
+    entitySetName: "BerksReported"
     src: "client"
     dst: "evictionhistory"
     propertyDefinitions: 
@@ -279,11 +287,17 @@ associationDefinitions:
         - !<transforms.ConcatTransform>
           columns: ["PersonalID", "EnrollmentID"]
           separator: "_"
+      date.completeddatetime: 
+        type: "date.completeddatetime"
+        column: "EntryDate"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss"]
     name: "reported2"
 
   reported3: 
-    fqn: "ol.has"
-    entitySetName: "BerksCEHHas"
+    fqn: "ol.reported"
+    entitySetName: "BerksReported"
     src: "client"
     dst: "timetohousingloss"
     propertyDefinitions: 
@@ -293,5 +307,11 @@ associationDefinitions:
         - !<transforms.ConcatTransform>
           columns: ["PersonalID", "EnrollmentID"]
           separator: "_"
+      date.completeddatetime: 
+        type: "date.completeddatetime"
+        column: "EntryDate"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss"]
     name: "reported3"
 
