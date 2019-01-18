@@ -1,9 +1,9 @@
-# select e.*, ex."ExitID", ex."ExitDate", ex."Destination", ex."OtherDestination", ex."AssessmentDisposition", ex."HousingAssessment", ex."OtherDisposition", s."ServicesID", s."DateProvided", p."ProjectType", o."Organizationname" from enrollment as e left join exit as ex on e."EnrollmentID"=ex."EnrollmentID" AND e."PersonalID"=ex."PersonalID" left join services as s on e."EnrollmentID"=s."EnrollmentID" AND e."PersonalID"=s."PersonalID" left join project as p on e."ProjectID"=p."ProjectID" left join organization as o on p."OrganizationID"=o."OrganizationID" limit 5000;
+# select e.*, ex."ExitDate", ex."Destination", em."Employed", em."EmploymentType", h."DomesticViolenceVictim", h."WhenOccurred", h."CurrentlyFleeing", h."PregnancyStatus", s."ServicesID", s."DateProvided", s."TypeProvided", s."FAAmount" from enrollment as e left join exit as ex on e."EnrollmentID"=ex."EnrollmentID" left join services as s on e."EnrollmentID"=s."EnrollmentID" AND e."PersonalID"=s."PersonalID" left join health_and_dv as h on e."EnrollmentID"=h."EnrollmentID" AND e."PersonalID"=h."PersonalID" left join employmenteducation as em on e."EnrollmentID"=em."EnrollmentID" AND e."PersonalID"=em."PersonalID" limit 5000;
 
 entityDefinitions: 
   client: 
     fqn: "general.person"
-    entitySetName: "BerksClients"
+    entitySetName: "BerksCEHClients"
     propertyDefinitions:
       nc.SubjectIdentification:
         type: "nc.SubjectIdentification"
@@ -12,7 +12,7 @@ entityDefinitions:
   
   enrollment: 
     fqn: "ol.episode" 
-    entitySetName: "BerksEnrollments"
+    entitySetName: "BerksCEHEnrollments"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -40,7 +40,7 @@ entityDefinitions:
 
   service:
     fqn: "ol.encounter" 
-    entitySetName: "BerksServices"
+    entitySetName: "BerksCEHServices"
     propertyDefinitions:
       ol.id:
         type: "ol.id" 
@@ -55,7 +55,7 @@ entityDefinitions:
   
   housing_exit: 
     fqn: "ol.housing"
-    entitySetName: "BerksHousingExits"
+    entitySetName: "BerksCEHHousingExits"
     propertyDefinitions:
       ol.id:
         type: "ol.id"
@@ -97,7 +97,7 @@ entityDefinitions:
 
   referral:
     fqn: "ol.referral"
-    entitySetName: "BerksReferrals"
+    entitySetName: "BerksCEHReferrals"
     propertyDefinitions: 
       general.id:
         type: "general.id"
@@ -132,7 +132,7 @@ entityDefinitions:
 
   homeless:
     fqn: "ol.homeless"
-    entitySetName: "BerksHomeless"
+    entitySetName: "BerksCEHHomeless"
     propertyDefinitions: 
       general.id:
         type: "general.id"
@@ -196,7 +196,7 @@ entityDefinitions:
 associationDefinitions:
   presentsfor1: 
     fqn: "ol.presentsfor"
-    entitySetName: "BerksPresentsFor"
+    entitySetName: "BerksCEHPresentsFor"
     src: "client"
     dst: "service"
     propertyDefinitions:
@@ -210,7 +210,7 @@ associationDefinitions:
 
   presentsfor2: 
     fqn: "ol.presentsfor"
-    entitySetName: "BerksPresentsFor"
+    entitySetName: "BerksCEHPresentsFor"
     src: "client"
     dst: "enrollment"
     propertyDefinitions:
@@ -224,7 +224,7 @@ associationDefinitions:
 
   partof: 
     fqn: "ol.partof"
-    entitySetName: "BerksPartof"
+    entitySetName: "BerksCEHPartof"
     src: "service"
     dst: "enrollment"
     propertyDefinitions:
@@ -238,7 +238,7 @@ associationDefinitions:
 
   releasedto: 
     fqn: "ol.releasedto"
-    entitySetName: "BerksReleasedTo"
+    entitySetName: "BerksCEHReleasedTo"
     src: "enrollment"
     dst: "housing_exit"
     propertyDefinitions:
@@ -252,7 +252,7 @@ associationDefinitions:
 
   reported1: 
     fqn: "ol.reported"
-    entitySetName: "BerksReported"
+    entitySetName: "BerksCEHReported"
     src: "client"
     dst: "housing_exit"
     propertyDefinitions: 
@@ -276,7 +276,7 @@ associationDefinitions:
 
   referredby:
     fqn: "health.referredby"
-    entitySetName: "BerksReferredBy"
+    entitySetName: "BerksCEHReferredBy"
     src: "client"
     dst: "referral"
     propertyDefinitions:
@@ -295,7 +295,7 @@ associationDefinitions:
 
   reported2:
     fqn: "o.is"
-    entitySetName: "BerksReported"
+    entitySetName: "BerksCEHIs"
     src: "client"
     dst: "homeless"
     propertyDefinitions:

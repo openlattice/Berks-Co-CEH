@@ -1,9 +1,9 @@
-# select e."PersonalID", e."EnrollmentID", e."EntryDate", e."HouseholdID", e."DisabledHoH", e."RelationshipToHoH", i."HouseholdType", s."ServicesID", s."DateProvided", s."RecordType", s."TypeProvided", p.*, o.*, g.* from enrollment as e left join project as p on e."ProjectID"=p."ProjectID" left join inventory as i on e."ProjectID"=i."ProjectID" left join organization as o on p."OrganizationID"=o."OrganizationID" left join geography as g on e."ProjectID"=g."ProjectID" left join services as s on e."EnrollmentID"=s."EnrollmentID" AND e."PersonalID"= s."PersonalID" limit 5000; 
+# select e."PersonalID", e."EnrollmentID", e."HouseholdID", e."DisabledHoH", e."RelationshipToHoH", i."HouseholdType", p.*, o.*, g.* from enrollment as e left join project as p on e."ProjectID"=p."ProjectID" left join inventory as i on e."ProjectID"=i."ProjectID" left join organization as o on p."OrganizationID"=o."OrganizationID" left join geography as g on e."ProjectID"=g."ProjectID" limit 5000; 
 
 entityDefinitions: 
   client: 
     fqn: "general.person"
-    entitySetName: "BerksClients"
+    entitySetName: "BerksCEHClients"
     propertyDefinitions:
       nc.SubjectIdentification:
         type: "nc.SubjectIdentification"
@@ -12,23 +12,30 @@ entityDefinitions:
 
   household: 
     fqn: "demographics.household"
-    entitySetName: "BerksHouseholds"
+    entitySetName: "BerksCEHHouseholds"
     propertyDefinitions:
       household.id:
         type: "household.id"
         column: "HouseholdID" # enrollment table
       ol.disabledheadofhousehold:
         type: "ol.disabledheadofhousehold"
-        column: "DisabledHoH" #enrollment
+        column: "DisabledHoH"
         transforms: 
         - !<transforms.ReplaceTransform>
           target: ["0", "1"]
           goal: ["No", "Yes"]
+      # demographics.hhtype: #this is not what this column means. 
+      #   type: "demographics.hhtype"
+      #   column: "HouseholdType" # inventory table
+      #   transforms: 
+      #   - !<transforms.ReplaceTransform>
+      #     target: ["1", "3", "4"]
+      #     goal: ["households without children", "households with at least one adult and one child", "households with only children"]
     name: "household"
 
   enrollment: 
     fqn: "ol.episode"  
-    entitySetName: "BerksEnrollments"
+    entitySetName: "BerksCEHEnrollments"
     propertyDefinitions:
       ol.id: 
         type: "ol.id"
@@ -43,7 +50,7 @@ entityDefinitions:
 
   organization:
     fqn: "ol.organization"
-    entitySetName: "BerksOrganizations"
+    entitySetName: "BerksCEHOrganizations"
     propertyDefinitions:
       ol.id:
         type: "ol.id"
@@ -58,7 +65,7 @@ entityDefinitions:
 
   program: 
     fqn: "ol.program"
-    entitySetName: "BerksPrograms"
+    entitySetName: "BerksCEHPrograms"
     propertyDefinitions:
       general.id: 
         type: "general.id"
@@ -97,7 +104,7 @@ entityDefinitions:
 
   service:
     fqn: "ol.encounter" 
-    entitySetName: "BerksServices"
+    entitySetName: "BerksCEHServices"
     propertyDefinitions:
       ol.id:
         type: "ol.id" 
@@ -163,7 +170,7 @@ entityDefinitions:
 
   location: 
     fqn: "ol.location"
-    entitySetName: "BerksLocations"
+    entitySetName: "BerksCEHLocations"
     propertyDefinitions: 
       general.id:
         type: "general.id"
@@ -198,7 +205,7 @@ entityDefinitions:
 associationDefinitions:
   presentsfor1:
     fqn: "ol.presentsfor"
-    entitySetName: "BerksPresentsFor"
+    entitySetName: "BerksCEHPresentsFor"
     src: "household"
     dst: "enrollment"
     propertyDefinitions:
@@ -212,7 +219,7 @@ associationDefinitions:
 
   presentsfor2:
     fqn: "ol.presentsfor"
-    entitySetName: "BerksPresentsFor"
+    entitySetName: "BerksCEHPresentsFor"
     src: "client"
     dst: "enrollment"
     propertyDefinitions:
@@ -232,7 +239,7 @@ associationDefinitions:
 
   presentsfor3:
     fqn: "ol.presentsfor"
-    entitySetName: "BerksPresentsFor"
+    entitySetName: "BerksCEHPresentsFor"
     src: "client"
     dst: "service"
     propertyDefinitions:
@@ -253,7 +260,7 @@ associationDefinitions:
 
   partof1:
     fqn: "ol.partof"
-    entitySetName: "BerksPartOf"
+    entitySetName: "BerksCEHPartOf"
     src: "client"
     dst: "household"
     propertyDefinitions:
@@ -272,9 +279,9 @@ associationDefinitions:
           goal: ["Self (head of household", "Child", "Spouse or partner", "Other relative", "Unrealted household member", "Data not collected"]
     name: "partof1"
 
-  provided1: 
+  provided: 
     fqn: "ol.provided"
-    entitySetName: "BerksProvided"
+    entitySetName: "BerksCEHProvided"
     src: "organization"
     dst: "enrollment"
     propertyDefinitions:
@@ -282,27 +289,13 @@ associationDefinitions:
         type: "general.id"
         transforms: 
         - !<transforms.ConcatTransform>
-          columns: ["OrganizationID", "EnrollmentID"]
+          columns: ["ServicesID", "ProjectID"]
           separator: "_"
-    name: "provided1"
-
-  provided2: 
-    fqn: "ol.provided"
-    entitySetName: "BerksProvided"
-    src: "program"
-    dst: "enrollment"
-    propertyDefinitions:
-      general.id:
-        type: "general.id"
-        transforms: 
-        - !<transforms.ConcatTransform>
-          columns: ["ProjectID", "EnrollmentID"]
-          separator: "_"
-    name: "provided2"
+    name: "provided"
 
   includes: 
     fqn: "ol.includes"
-    entitySetName: "BerksIncludes"
+    entitySetName: "BerksCEHIncludes"
     src: "organization"
     dst: "program"
     propertyDefinitions: 
@@ -316,7 +309,7 @@ associationDefinitions:
 
   locatedat: 
     fqn: "ol.locatedat"
-    entitySetName: "BerksLocatedAt"
+    entitySetName: "BerksCEHLocatedAt"
     src: "program"
     dst: "location"
     propertyDefinitions: 
@@ -330,7 +323,7 @@ associationDefinitions:
 
   partof2:
     fqn: "ol.partof"
-    entitySetName: "BerksPartOf"
+    entitySetName: "BerksCEHPartOf"
     src: "service"
     dst: "program"
     propertyDefinitions:
@@ -344,7 +337,7 @@ associationDefinitions:
     
   partof3:
     fqn: "ol.partof"
-    entitySetName: "BerksPartOf"
+    entitySetName: "BerksCEHPartOf"
     src: "service"
     dst: "enrollment"
     propertyDefinitions:
@@ -359,7 +352,7 @@ associationDefinitions:
 
   locatedat2: 
     fqn: "ol.locatedat"
-    entitySetName: "BerksLocatedAt"
+    entitySetName: "BerksCEHLocatedAt"
     src: "service"
     dst: "location"
     propertyDefinitions: 
