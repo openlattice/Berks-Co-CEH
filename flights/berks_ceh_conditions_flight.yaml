@@ -224,6 +224,19 @@ associationDefinitions:
           pattern: ["yyyy-MM-dd HH:mm:ss"]      
     name: "addresses2"
 
+# <<<<<<< HEAD
+# =======
+#   partof1:
+#     fqn: "ol.exhibits"
+#     entitySetName: "BerksPartOf"
+#     src: "disabilities"
+#     dst: "enrollment"
+#     propertyDefinitions:
+#       ol.id:
+#         type: "ol.id"
+#         column: "EnrollmentID"
+#     name: "partof1"
+# >>>>>>> b61faa8fa0a53ef118a7626d4cb84cee63f83af5
 
   # partof1:
   #   fqn: "ol.exhibits"
