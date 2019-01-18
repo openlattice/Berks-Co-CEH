@@ -4,7 +4,7 @@
 entityDefinitions:
   client:
     fqn: "general.person"
-    entitySetName: "BerksCEHClients"
+    entitySetName: "BerksClients"
     propertyDefinitions: 
       nc.SubjectIdentification:
         type: "nc.SubjectIdentification"
@@ -106,7 +106,7 @@ entityDefinitions:
     
   clientdetails:
     fqn: "ol.persondetails"
-    entitySetName: "BerksCEHClientDetails"
+    entitySetName: "BerksClientDetails"
     propertyDefinitions:
       general.id:
         type: "general.id"
@@ -135,7 +135,7 @@ entityDefinitions:
 
   education: 
     fqn: "ol.education" 
-    entitySetName: "BerksCEHEducation"
+    entitySetName: "BerksEducation"
     propertyDefinitions:
       ol.id:
         type: "ol.id"
@@ -157,7 +157,7 @@ entityDefinitions:
 
   employment:
     fqn: "ol.employment"
-    entitySetName: "BerksCEHEmployment"
+    entitySetName: "BerksEmployment"
     propertyDefinitions:
       ol.id: 
         type: "ol.id"
@@ -178,9 +178,9 @@ entityDefinitions:
           goal: ["Full-time", "Part-time", "Seasonal / sporadic (including day labor)", "Data not collected"]
     name: "employment"
 
-  domesticviolenceinfo:
+  domesticviolence:
     fqn: "ol.domesticviolence"
-    entitySetName: "BerksCEHDomesticViolenceInfo"
+    entitySetName: "BerksDomesticViolenceInfo"
     propertyDefinitions:
       ol.id:  
         type: "ol.id"
@@ -199,31 +199,31 @@ entityDefinitions:
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "4", "8", "9", "99"]
           goal: ["within the past three months", "three to six months ago (excluding six months exactly)", "six months to one year ago (excluding one year exactly)", "one year or more", "Client doesn't know", "Client refused", "Data not collected"]
-      health.fleeingdomesticviolence:
-      # ol.status:
-        type: "health.fleeingdomesticviolence"
+      # health.fleeingdomesticviolence: 
+      ol.status: #using status instead of fleeing
+        type: "ol.status"
         column: "CurrentlyFleeing"
         transforms:
-        # - !<transforms.BooleanContainsTransform>
-        #   column: "CurrentlyFleeing"
-        #   string: "1"
-        #   transformsIfTrue:
-        #   - !<transforms.ValueTransform>
-        #     value: "fleeing domestic violence"
-        #   transformsIfFalse:
-        - !<transforms.ReplaceTransform> 
-          target: ["0", "1", "8", "9", "99"] 
-          goal: ["No", "", "Client doesn't know", "Client refused", "Data not collected"]
+        - !<transforms.BooleanContainsTransform>
+          column: "CurrentlyFleeing"
+          string: "1"
+          transformsIfTrue:
+          - !<transforms.ValueTransform>
+            value: "fleeing domestic violence"
+          transformsIfFalse:
+          - !<transforms.ReplaceTransform> 
+            target: ["0", "1", "8", "9", "99"] 
+            goal: ["No", "", "Client doesn't know", "Client refused", "Data not collected"]
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "DomesticViolenceVictim"
       reverse: true
-    name: "domesticviolenceinfo"
+    name: "domesticviolence"
 
 associationDefinitions:
   has1:
     fqn: "ol.has"
-    entitySetName: "BerksCEHHas"
+    entitySetName: "BerksHas"
     src: "client"
     dst: "clientdetails" #or should it be called disability? 
     propertyDefinitions:
@@ -234,7 +234,7 @@ associationDefinitions:
 
   has2:
     fqn: "ol.has"
-    entitySetName: "BerksCEHHas"
+    entitySetName: "BerksHas"
     src: "client"
     dst: "employment"
     propertyDefinitions:
@@ -248,7 +248,7 @@ associationDefinitions:
 
   has3: 
     fqn: "ol.has"
-    entitySetName: "BerksCEHHas"
+    entitySetName: "BerksHas"
     src: "client"
     dst: "education"
     propertyDefinitions: 
@@ -260,11 +260,11 @@ associationDefinitions:
           separator: "_"
     has: "has3"
 
-  has4:
-    fqn: "ol.has"
-    entitySetName: "BerksCEHHas"
+  reported:
+    fqn: "ol.reported"
+    entitySetName: "BerksReported"
     src: "client"
-    dst: "domesticviolenceinfo"
+    dst: "domesticviolence"
     propertyDefinitions:
       ol.id:
         type: "ol.id"
@@ -272,4 +272,4 @@ associationDefinitions:
         - !<transforms.ConcatTransform>
           columns: ["PersonalID", "EnrollmentID"]
           separator: "_"
-    name: "has4"
+    name: "reported"

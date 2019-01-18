@@ -3,7 +3,7 @@
 entityDefinitions: 
   client: 
     fqn: "general.person"
-    entitySetName: "BerksCEHClients"
+    entitySetName: "BerksClients"
     propertyDefinitions:
       nc.SubjectIdentification:
         type: "nc.SubjectIdentification"
@@ -12,7 +12,7 @@ entityDefinitions:
   
   enrollment: 
     fqn: "ol.episode" 
-    entitySetName: "BerksCEHEnrollments"
+    entitySetName: "BerksEnrollments"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -40,7 +40,7 @@ entityDefinitions:
 
   service:
     fqn: "ol.encounter" 
-    entitySetName: "BerksCEHServices"
+    entitySetName: "BerksServices"
     propertyDefinitions:
       ol.id:
         type: "ol.id" 
@@ -55,7 +55,7 @@ entityDefinitions:
   
   housing_exit: 
     fqn: "ol.housing"
-    entitySetName: "BerksCEHHousingExits"
+    entitySetName: "BerksHousingExits"
     propertyDefinitions:
       ol.id:
         type: "ol.id"
@@ -97,7 +97,7 @@ entityDefinitions:
 
   referral:
     fqn: "ol.referral"
-    entitySetName: "BerksCEHReferrals"
+    entitySetName: "BerksReferrals"
     propertyDefinitions: 
       general.id:
         type: "general.id"
@@ -132,7 +132,7 @@ entityDefinitions:
 
   homeless:
     fqn: "ol.homeless"
-    entitySetName: "BerksCEHHomeless"
+    entitySetName: "BerksHomeless"
     propertyDefinitions: 
       general.id:
         type: "general.id"
@@ -196,7 +196,7 @@ entityDefinitions:
 associationDefinitions:
   presentsfor1: 
     fqn: "ol.presentsfor"
-    entitySetName: "BerksCEHPresentsFor"
+    entitySetName: "BerksPresentsFor"
     src: "client"
     dst: "service"
     propertyDefinitions:
@@ -210,7 +210,7 @@ associationDefinitions:
 
   presentsfor2: 
     fqn: "ol.presentsfor"
-    entitySetName: "BerksCEHPresentsFor"
+    entitySetName: "BerksPresentsFor"
     src: "client"
     dst: "enrollment"
     propertyDefinitions:
@@ -224,7 +224,7 @@ associationDefinitions:
 
   partof: 
     fqn: "ol.partof"
-    entitySetName: "BerksCEHPartof"
+    entitySetName: "BerksPartof"
     src: "service"
     dst: "enrollment"
     propertyDefinitions:
@@ -238,7 +238,7 @@ associationDefinitions:
 
   releasedto: 
     fqn: "ol.releasedto"
-    entitySetName: "BerksCEHReleasedTo"
+    entitySetName: "BerksReleasedTo"
     src: "enrollment"
     dst: "housing_exit"
     propertyDefinitions:
@@ -252,7 +252,7 @@ associationDefinitions:
 
   reported1: 
     fqn: "ol.reported"
-    entitySetName: "BerksCEHReported"
+    entitySetName: "BerksReported"
     src: "client"
     dst: "housing_exit"
     propertyDefinitions: 
@@ -276,7 +276,7 @@ associationDefinitions:
 
   referredby:
     fqn: "health.referredby"
-    entitySetName: "BerksCEHReferredBy"
+    entitySetName: "BerksReferredBy"
     src: "client"
     dst: "referral"
     propertyDefinitions:
@@ -295,7 +295,7 @@ associationDefinitions:
 
   reported2:
     fqn: "o.is"
-    entitySetName: "BerksCEHReported"
+    entitySetName: "BerksReported"
     src: "client"
     dst: "homeless"
     propertyDefinitions:

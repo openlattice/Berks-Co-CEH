@@ -3,7 +3,7 @@
 entityDefinitions:
   client: 
     fqn: "general.person"
-    entitySetName: "BerksCEHClients"
+    entitySetName: "BerksClients"
     propertyDefinitions:
       nc.SubjectIdentification:
         type: "nc.SubjectIdentification"
@@ -12,7 +12,7 @@ entityDefinitions:
 
   enrollment:
     fqn: "ol.episodeofcare"
-    entitySetName: "BerksCEHEnrollments"
+    entitySetName: "BerksEnrollments"
     propertyDefinitions:
       ol.id:
         type: "ol.id"
@@ -33,7 +33,7 @@ entityDefinitions:
 
   disabilities:
     fqn: "ol.healthcondition" 
-    entitySetName: "BerksCEHDisabilities"
+    entitySetName: "BerksDisabilities"
     propertyDefinitions:
       ol.id:
         type: "ol.id"
@@ -112,7 +112,7 @@ entityDefinitions:
 
   pregnancy:
     fqn: "ol.healthcondition"
-    entitySetName: "BerksCEHPregnancy"
+    entitySetName: "BerksPregnancy"
     propertyDefinitions:
       ol.id: 
         type: "ol.id"
@@ -148,64 +148,117 @@ entityDefinitions:
     name: "pregnancy"
 
 associationDefinitions: 
-  observedin1:
-    fqn: "ol.associatedwith"
-    entitySetName: "BerksCEHObservedIn"
-    src: "disabilities"
-    dst: "client"
+  # observedin1:
+  #   fqn: "ol.observedin"
+  #   entitySetName: "BerksObservedIn"
+  #   src: "disabilities"
+  #   dst: "client"
+  #   propertyDefinitions:
+  #     ol.id:
+  #       type: "ol.id"
+  #       transforms: 
+  #       - !<transforms.ConcatTransform>
+  #         columns: ["DisabilitiesID", "PersonalID"]
+  #     date.completeddatetime: 
+  #       type: "date.completeddatetime"
+  #       column: "InformationDate"
+  #       transforms: 
+  #       - !<transforms.DateTimeTransform>
+  #         pattern: ["yyyy-MM-dd HH:mm:ss"]
+  #   name: "observedin1"
+
+  # observedin2:
+  #   fqn: "ol.observedin"
+  #   entitySetName: "BerksObservedIn"
+  #   src: "pregnancy"
+  #   dst: "client"
+  #   propertyDefinitions:
+  #     ol.id:
+  #       type: "ol.id"
+  #       transforms: 
+  #       - !<transforms.ConcatTransform>
+  #         columns: ["HealthAndDVID", "PersonalID"]
+  #     date.completeddatetime: 
+  #       type: "date.completeddatetime"
+  #       column: "InformationDate_HDV"
+  #       transforms: 
+  #       - !<transforms.DateTimeTransform>
+  #         pattern: ["yyyy-MM-dd HH:mm:ss"]      
+  #   name: "observedin2"
+
+  addresses1:
+    fqn: "ol.addresses"
+    entitySetName: "BerksAddresses"
+    src: "enrollment"
+    dst: "disabilities"
     propertyDefinitions:
       ol.id:
         type: "ol.id"
         transforms: 
         - !<transforms.ConcatTransform>
-          columns: ["DisabilitiesID", "PersonalID"]
+          columns: ["EnrollmentID", "DisabilitiesID"]
       date.completeddatetime: 
         type: "date.completeddatetime"
         column: "InformationDate"
         transforms: 
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
-    name: "observedin1"
+          pattern: ["yyyy-MM-dd HH:mm:ss"]      
+    name: "addresses1"
 
-  observedin2:
-    fqn: "ol.associatedwith"
-    entitySetName: "BerksCEHObservedIn"
-    src: "pregnancy"
-    dst: "client"
+  addresses2:
+    fqn: "ol.addresses"
+    entitySetName: "BerksAddresses"
+    src: "enrollment"
+    dst: "pregnancy"
     propertyDefinitions:
       ol.id:
         type: "ol.id"
         transforms: 
         - !<transforms.ConcatTransform>
-          columns: ["HealthAndDVID", "PersonalID"]
+          columns: ["EnrollmentID", "HealthAndDVID"]
       date.completeddatetime: 
         type: "date.completeddatetime"
         column: "InformationDate_HDV"
         transforms: 
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss"]      
-    name: "observedin2"
+    name: "addresses2"
 
-  partof1:
-    fqn: "ol.exhibits"
-    entitySetName: "BerksCEHPartOf"
-    src: "disabilities"
+
+  # partof1:
+  #   fqn: "ol.exhibits"
+  #   entitySetName: "BerksPartOf"
+  #   src: "disabilities"
+  #   dst: "enrollment"
+  #   propertyDefinitions:
+  #     ol.id:
+  #       type: "ol.id"
+  #       column: "EnrollmentID"
+  #   name: "partof1"
+
+
+  # partof2:
+  #   fqn: "ol.exhibits"
+  #   entitySetName: "BerksPartOf"
+  #   src: "pregnancy"
+  #   dst: "enrollment"
+  #   propertyDefinitions:
+  #     ol.id:
+  #       type: "ol.id"
+  #       column: "EnrollmentID"
+  #   name: "partof2"
+
+  presentsfor:
+    fqn: "ol.presentsfor"
+    entitySetName: "BerksPresentsFor"
+    src: "client"
     dst: "enrollment"
-    propertyDefinitions:
-      ol.id:
+    propertyDefinitions: 
+      ol.id: 
         type: "ol.id"
-        column: "EnrollmentID"
-    name: "partof1"
-
-
-  partof2:
-    fqn: "ol.exhibits"
-    entitySetName: "BerksCEHPartOf"
-    src: "pregnancy"
-    dst: "enrollment"
-    propertyDefinitions:
-      ol.id:
-        type: "ol.id"
-        column: "EnrollmentID"
-    name: "partof2"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["PersonalID", "EnrollmentID"]
+          separator: "_"
+    name: "presentsfor"
 

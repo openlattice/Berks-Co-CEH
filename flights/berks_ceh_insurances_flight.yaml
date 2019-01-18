@@ -3,7 +3,7 @@
 entityDefinitions:
   client:
     fqn: "general.person"
-    entitySetName: "BerksCEHClients"
+    entitySetName: "BerksClients"
     propertyDefinitions:
       nc.SubjectIdentification:
         type: "nc.SubjectIdentification"
@@ -13,7 +13,7 @@ entityDefinitions:
 
   medicaid: 
     fqn: "ol.insurance"
-    entitySetName: "BerksCEHMedicaid"
+    entitySetName: "BerksMedicaid"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
@@ -50,7 +50,7 @@ entityDefinitions:
 
   medicare: 
     fqn: "ol.insurance"
-    entitySetName: "BerksCEHMedicare"
+    entitySetName: "BerksMedicare"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
@@ -87,7 +87,7 @@ entityDefinitions:
 
   schip: 
     fqn: "ol.insurance"
-    entitySetName: "BerksCEHSCHIP"
+    entitySetName: "BerksSCHIP"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
@@ -124,7 +124,7 @@ entityDefinitions:
 
   vamedicalservices: 
     fqn: "ol.insurance"
-    entitySetName: "BerksCEHVAMedicalServices"
+    entitySetName: "BerksVAMedicalServices"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
@@ -146,7 +146,7 @@ entityDefinitions:
 
   employerprovided: 
     fqn: "ol.insurance"
-    entitySetName: "BerksCEHEmployerProvided"
+    entitySetName: "BerksEmployerProvided"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
@@ -183,7 +183,7 @@ entityDefinitions:
 
   cobra: 
     fqn: "ol.insurance"
-    entitySetName: "BerksCEHCOBRA"
+    entitySetName: "BerksCOBRA"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
@@ -220,7 +220,7 @@ entityDefinitions:
 
   privatepay: 
     fqn: "ol.insurance"
-    entitySetName: "BerksCEHPrivatePay"
+    entitySetName: "BerksPrivatePay"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
@@ -257,7 +257,7 @@ entityDefinitions:
 
   statehealthins: 
     fqn: "ol.insurance"
-    entitySetName: "BerksCEHStateHealthIns"
+    entitySetName: "BerksStateHealthIns"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
@@ -294,7 +294,7 @@ entityDefinitions:
 
   indianhealthservices: 
     fqn: "ol.insurance"
-    entitySetName: "BerksCEHIndianHealthServices"
+    entitySetName: "BerksIndianHealthServices"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
@@ -331,7 +331,7 @@ entityDefinitions:
 
   otherinsurance: 
     fqn: "ol.insurance"
-    entitySetName: "BerksCEHOtherInsurances"
+    entitySetName: "BerksOtherInsurances"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
@@ -358,7 +358,7 @@ entityDefinitions:
       
   connectionwithsoar: #not sure what this is? 
     fqn: "ol.insurance"
-    entitySetName: "BerksCEHConnectionWithSOAR"
+    entitySetName: "BerksConnectionWithSOAR"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
@@ -390,7 +390,7 @@ entityDefinitions:
 associationDefinitions: 
   insuredby1: 
     fqn: "health.insuredby"
-    entitySetName: "BerksCEHInsuredBy"
+    entitySetName: "BerksInsuredBy"
     src: "client"
     dst: "medicare"
     propertyDefinitions: 
@@ -404,7 +404,7 @@ associationDefinitions:
 
   insuredby2: 
     fqn: "health.insuredby"
-    entitySetName: "BerksCEHInsuredby"
+    entitySetName: "BerksInsuredby"
     src: "client"
     dst: "medicaid"
     propertyDefinitions: 
@@ -418,7 +418,7 @@ associationDefinitions:
 
   insuredby3: 
     fqn: "health.insuredby"
-    entitySetName: "BerksCEHInsuredby"
+    entitySetName: "BerksInsuredby"
     src: "client"
     dst: "schip"
     propertyDefinitions: 
@@ -432,7 +432,7 @@ associationDefinitions:
 
   insuredby4: 
     fqn: "health.insuredby"
-    entitySetName: "BerksCEHInsuredby"
+    entitySetName: "BerksInsuredby"
     src: "client"
     dst: "vamedicalservices"
     propertyDefinitions: 
@@ -446,7 +446,7 @@ associationDefinitions:
 
   insuredby5: 
     fqn: "health.insuredby"
-    entitySetName: "BerksCEHInsuredby"
+    entitySetName: "BerksInsuredby"
     src: "client"
     dst: "employerprovided"
     propertyDefinitions: 
@@ -460,7 +460,7 @@ associationDefinitions:
 
   insuredby6: 
     fqn: "health.insuredby"
-    entitySetName: "BerksCEHInsuredby"
+    entitySetName: "BerksInsuredby"
     src: "client"
     dst: "cobra"
     propertyDefinitions: 
@@ -474,7 +474,7 @@ associationDefinitions:
 
   insuredby7: 
     fqn: "health.insuredby"
-    entitySetName: "BerksCEHInsuredby"
+    entitySetName: "BerksInsuredby"
     src: "client"
     dst: "privatepay"
     propertyDefinitions: 
@@ -488,7 +488,7 @@ associationDefinitions:
 
   insuredby8: 
     fqn: "health.insuredby"
-    entitySetName: "BerksCEHInsuredby"
+    entitySetName: "BerksInsuredby"
     src: "client"
     dst: "statehealthins"
     propertyDefinitions: 
@@ -502,7 +502,7 @@ associationDefinitions:
 
   insuredby9: 
     fqn: "health.insuredby"
-    entitySetName: "BerksCEHInsuredby"
+    entitySetName: "BerksInsuredby"
     src: "client"
     dst: "indianhealthservices"
     propertyDefinitions: 
@@ -516,7 +516,7 @@ associationDefinitions:
 
   insuredby10: 
     fqn: "health.insuredby"
-    entitySetName: "BerksCEHInsuredby"
+    entitySetName: "BerksInsuredby"
     src: "client"
     dst: "otherinsurance"
     propertyDefinitions: 
@@ -530,7 +530,7 @@ associationDefinitions:
 
   insuredby11: 
     fqn: "health.insuredby"
-    entitySetName: "BerksCEHInsuredby"
+    entitySetName: "BerksInsuredby"
     src: "client"
     dst: "connectionwithsoar"
     propertyDefinitions: 

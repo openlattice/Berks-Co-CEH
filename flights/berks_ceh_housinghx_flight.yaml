@@ -3,7 +3,7 @@
 entityDefinitions: 
   client: 
     fqn: "general.person"
-    entitySetName: "BerksCEHClients"
+    entitySetName: "BerksClients"
     propertyDefinitions:
       nc.SubjectIdentification:
         type: "nc.SubjectIdentification"
@@ -12,7 +12,7 @@ entityDefinitions:
 
   location: #Last Permanent Address
     fqn: "ol.location"
-    entitySetName: "BerksCEHLocations"
+    entitySetName: "BerksLocations"
     propertyDefinitions:
       location.street:
         type: "location.street"
@@ -27,7 +27,7 @@ entityDefinitions:
 
   housing_history: 
     fqn: "ol.housinghistory"
-    entitySetName: "BerksCEHHousingHistories"
+    entitySetName: "BerksHousingHistories"
     propertyDefinitions: 
       ol.id: #not sure what this prop type will be. 
         type: "ol.id"
@@ -140,7 +140,7 @@ entityDefinitions:
 
   evictionhistory:
     fqn: "ol.evictionhistory"
-    entitySetName: "BerksCEHEvictionHistory"
+    entitySetName: "BerksEvictionHistory"
     propertyDefinitions:
       ol.id: 
         type: "ol.id"
@@ -188,7 +188,7 @@ entityDefinitions:
 
   timetohousingloss: 
     fqn: "ol.timetohousingloss"
-    entitySetName: "BerksCEHTimeToHousingLoss"
+    entitySetName: "BerksTimeToHousingLoss"
     propertyDefinitions:
       ol.id: 
         type: "ol.id"
@@ -237,7 +237,7 @@ entityDefinitions:
 associationDefinitions:
   locatedat: 
     fqn: "locatedat"
-    entitySetName: "BerksCEHLocatedAt"
+    entitySetName: "BerksLocatedAt"
     src: "client"
     dst: "location"
     propertyDefinitions:
@@ -257,7 +257,7 @@ associationDefinitions:
 
   reported1:
     fqn: "ol.reported"
-    entitySetName: "BerksCEHReported"
+    entitySetName: "BerksReported"
     src: "client"
     dst: "housing_history"
     propertyDefinitions:
@@ -277,7 +277,7 @@ associationDefinitions:
 
   reported2: 
     fqn: "ol.reported"
-    entitySetName: "BerksCEHReported"
+    entitySetName: "BerksReported"
     src: "client"
     dst: "evictionhistory"
     propertyDefinitions: 
@@ -297,7 +297,7 @@ associationDefinitions:
 
   reported3: 
     fqn: "ol.reported"
-    entitySetName: "BerksCEHReported"
+    entitySetName: "BerksReported"
     src: "client"
     dst: "timetohousingloss"
     propertyDefinitions: 

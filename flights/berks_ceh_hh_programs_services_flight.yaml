@@ -3,7 +3,7 @@
 entityDefinitions: 
   client: 
     fqn: "general.person"
-    entitySetName: "BerksCEHClients"
+    entitySetName: "BerksClients"
     propertyDefinitions:
       nc.SubjectIdentification:
         type: "nc.SubjectIdentification"
@@ -12,7 +12,7 @@ entityDefinitions:
 
   household: 
     fqn: "demographics.household"
-    entitySetName: "BerksCEHHouseholds"
+    entitySetName: "BerksHouseholds"
     propertyDefinitions:
       household.id:
         type: "household.id"
@@ -28,7 +28,7 @@ entityDefinitions:
 
   enrollment: 
     fqn: "ol.episode"  
-    entitySetName: "BerksCEHEnrollments"
+    entitySetName: "BerksEnrollments"
     propertyDefinitions:
       ol.id: 
         type: "ol.id"
@@ -43,7 +43,7 @@ entityDefinitions:
 
   organization:
     fqn: "ol.organization"
-    entitySetName: "BerksCEHOrganizations"
+    entitySetName: "BerksOrganizations"
     propertyDefinitions:
       ol.id:
         type: "ol.id"
@@ -58,7 +58,7 @@ entityDefinitions:
 
   program: 
     fqn: "ol.program"
-    entitySetName: "BerksCEHPrograms"
+    entitySetName: "BerksPrograms"
     propertyDefinitions:
       general.id: 
         type: "general.id"
@@ -97,7 +97,7 @@ entityDefinitions:
 
   service:
     fqn: "ol.encounter" 
-    entitySetName: "BerksCEHServices"
+    entitySetName: "BerksServices"
     propertyDefinitions:
       ol.id:
         type: "ol.id" 
@@ -163,7 +163,7 @@ entityDefinitions:
 
   location: 
     fqn: "ol.location"
-    entitySetName: "BerksCEHLocations"
+    entitySetName: "BerksLocations"
     propertyDefinitions: 
       general.id:
         type: "general.id"
@@ -198,7 +198,7 @@ entityDefinitions:
 associationDefinitions:
   presentsfor1:
     fqn: "ol.presentsfor"
-    entitySetName: "BerksCEHPresentsFor"
+    entitySetName: "BerksPresentsFor"
     src: "household"
     dst: "enrollment"
     propertyDefinitions:
@@ -212,7 +212,7 @@ associationDefinitions:
 
   presentsfor2:
     fqn: "ol.presentsfor"
-    entitySetName: "BerksCEHPresentsFor"
+    entitySetName: "BerksPresentsFor"
     src: "client"
     dst: "enrollment"
     propertyDefinitions:
@@ -232,7 +232,7 @@ associationDefinitions:
 
   presentsfor3:
     fqn: "ol.presentsfor"
-    entitySetName: "BerksCEHPresentsFor"
+    entitySetName: "BerksPresentsFor"
     src: "client"
     dst: "service"
     propertyDefinitions:
@@ -253,7 +253,7 @@ associationDefinitions:
 
   partof1:
     fqn: "ol.partof"
-    entitySetName: "BerksCEHPartOf"
+    entitySetName: "BerksPartOf"
     src: "client"
     dst: "household"
     propertyDefinitions:
@@ -272,9 +272,9 @@ associationDefinitions:
           goal: ["Self (head of household", "Child", "Spouse or partner", "Other relative", "Unrealted household member", "Data not collected"]
     name: "partof1"
 
-  provided: 
+  provided1: 
     fqn: "ol.provided"
-    entitySetName: "BerksCEHProvided"
+    entitySetName: "BerksProvided"
     src: "organization"
     dst: "enrollment"
     propertyDefinitions:
@@ -282,13 +282,27 @@ associationDefinitions:
         type: "general.id"
         transforms: 
         - !<transforms.ConcatTransform>
-          columns: ["ServicesID", "ProjectID"]
+          columns: ["OrganizationID", "EnrollmentID"]
           separator: "_"
-    name: "provided"
+    name: "provided1"
+
+  provided2: 
+    fqn: "ol.provided"
+    entitySetName: "BerksProvided"
+    src: "program"
+    dst: "enrollment"
+    propertyDefinitions:
+      general.id:
+        type: "general.id"
+        transforms: 
+        - !<transforms.ConcatTransform>
+          columns: ["ProjectID", "EnrollmentID"]
+          separator: "_"
+    name: "provided2"
 
   includes: 
     fqn: "ol.includes"
-    entitySetName: "BerksCEHIncludes"
+    entitySetName: "BerksIncludes"
     src: "organization"
     dst: "program"
     propertyDefinitions: 
@@ -302,7 +316,7 @@ associationDefinitions:
 
   locatedat: 
     fqn: "ol.locatedat"
-    entitySetName: "BerksCEHLocatedAt"
+    entitySetName: "BerksLocatedAt"
     src: "program"
     dst: "location"
     propertyDefinitions: 
@@ -316,7 +330,7 @@ associationDefinitions:
 
   partof2:
     fqn: "ol.partof"
-    entitySetName: "BerksCEHPartOf"
+    entitySetName: "BerksPartOf"
     src: "service"
     dst: "program"
     propertyDefinitions:
@@ -330,7 +344,7 @@ associationDefinitions:
     
   partof3:
     fqn: "ol.partof"
-    entitySetName: "BerksCEHPartOf"
+    entitySetName: "BerksPartOf"
     src: "service"
     dst: "enrollment"
     propertyDefinitions:
@@ -345,7 +359,7 @@ associationDefinitions:
 
   locatedat2: 
     fqn: "ol.locatedat"
-    entitySetName: "BerksCEHLocatedAt"
+    entitySetName: "BerksLocatedAt"
     src: "service"
     dst: "location"
     propertyDefinitions: 
