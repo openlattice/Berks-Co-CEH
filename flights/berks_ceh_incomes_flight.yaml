@@ -1,4 +1,4 @@
-# select i.*, e."HouseholdID", iv."HouseholdType", e."d" from incomebenefits as i left join enrollment as e on i."EnrollmentID"=e."EnrollmentID" left join project as p on e."ProjectID"=p."ProjectID" left join inventory as iv on p."ProjectID"=iv."ProjectID" limit 5000; 
+# select i.*, s."FAAmount" from incomebenefits as i left join services as s on i."EnrollmentID"=s."EnrollmentID" AND i."PersonalID"=s."PersonalID" limit 5000; 
 
 entityDefinitions: 
   client:
@@ -44,15 +44,15 @@ entityDefinitions:
       ol.value: 
         type: "ol.value"
         column: "TotalMonthlyIncome"
+        transforms:
+        - !<transforms.PrefixTransform>
+          prefix: "$"
       # ol.maximumvalue: 
       #   type: "ol.maximumvalue"
       #   value: 
       # ol.minimumvalue:
       #   type: "ol.minimumvalue"
       #   value:
-      # ol.qualifier: 
-      #   type: "ol.qualifier"
-      #   value: "$"
       ol.notes: 
         type: "ol.notes"
         column: "IncomeFromAnySource"
@@ -64,6 +64,9 @@ entityDefinitions:
           transformsIfTrue:
           - !<transforms.ValueTransform>
             value: "Income from Any Source"
+          transformsIfFalse:
+          - !<transforms.ValueTransform>
+            value: "No income"
       ol.units: 
         type: "ol.unit"
         value: "monthly"
@@ -94,6 +97,9 @@ entityDefinitions:
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "EarnedAmount"
+            transforms:
+            - !<transforms.PrefixTransform>
+              prefix: "$"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
             value: "0"
@@ -121,6 +127,9 @@ entityDefinitions:
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "UnemploymentAmount"
+            transforms:
+            - !<transforms.PrefixTransform>
+              prefix: "$"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
             value: "0"
@@ -147,6 +156,9 @@ entityDefinitions:
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "SSIAmount"
+            transforms:
+            - !<transforms.PrefixTransform>
+              prefix: "$"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
             value: "0"
@@ -173,6 +185,9 @@ entityDefinitions:
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "SSDIAmount"
+            transforms:
+            - !<transforms.PrefixTransform>
+              prefix: "$"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
             value: "0"
@@ -199,6 +214,9 @@ entityDefinitions:
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "VADisabilityServiceAmount"
+            transforms:
+            - !<transforms.PrefixTransform>
+              prefix: "$"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
             value: "0"
@@ -225,6 +243,9 @@ entityDefinitions:
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "VADisabilityNonServiceAmount"
+            transforms:
+            - !<transforms.PrefixTransform>
+              prefix: "$"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
             value: "0"
@@ -251,6 +272,9 @@ entityDefinitions:
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "PrivateDisabilityAmount"
+            transforms:
+            - !<transforms.PrefixTransform>
+              prefix: "$"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
             value: "0"
@@ -277,6 +301,9 @@ entityDefinitions:
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "WorkersCompAmount"
+            transforms:
+            - !<transforms.PrefixTransform>
+              prefix: "$"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
             value: "0"
@@ -303,6 +330,9 @@ entityDefinitions:
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "TANFAmount"
+            transforms:
+            - !<transforms.PrefixTransform>
+              prefix: "$"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
             value: "0"
@@ -329,6 +359,9 @@ entityDefinitions:
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "GAAmount"
+            transforms:
+            - !<transforms.PrefixTransform>
+              prefix: "$"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
             value: "0"
@@ -355,6 +388,9 @@ entityDefinitions:
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "SocSecRetirementAmount"
+            transforms:
+            - !<transforms.PrefixTransform>
+              prefix: "$"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
             value: "0"
@@ -381,6 +417,9 @@ entityDefinitions:
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "PensionAmount"
+            transforms:
+            - !<transforms.PrefixTransform>
+              prefix: "$"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
             value: "0"
@@ -407,6 +446,9 @@ entityDefinitions:
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "ChildSupportAmount"
+            transforms:
+            - !<transforms.PrefixTransform>
+              prefix: "$"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
             value: "0"
@@ -433,6 +475,9 @@ entityDefinitions:
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "AlimonyAmount"
+            transforms:
+            - !<transforms.PrefixTransform>
+              prefix: "$"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
             value: "0"
@@ -638,9 +683,9 @@ entityDefinitions:
       reverse: true
     name: "other_benefits"
 
-  percentami_income:
-    fqn: "ol.income"
-    entitySetName: "BerksCEHPercentAMIIncomes"
+  percentareamedianincome:
+    fqn: "ol.areamedianincome"
+    entitySetName: "BerksCEHPercentAMI"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -684,11 +729,11 @@ entityDefinitions:
     - !<conditions.BooleanIsNullCondition>
       column: "PercentAMI"
       reverse: true
-    name: "percentami_income"
+    name: "percentareamedianincome"
 
-  annualami_income:
+  annualareamedianincome:
     fqn: "ol.areamedianincome"
-    entitySetName: "BerksCEHAnnualAMIIncomes"
+    entitySetName: "BerksCEHAnnualAMI"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -732,11 +777,11 @@ entityDefinitions:
     - !<conditions.BooleanIsNullCondition>
       column: "AnnualPercentAMI"
       reverse: true
-    name: "annualami_income"
+    name: "annualareamedianincome"
 
   financialassistance_income: 
     fqn: "ol.income"
-    entitySetName: "BerksCEHFAAmountIncomes"
+    entitySetName: "BerksCEHFinancialAssistanceIncomes"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -749,6 +794,9 @@ entityDefinitions:
       ol.value: 
         type: "ol.value"
         column: "FAAmount"
+        transforms:
+        - !<transforms.PrefixTransform>
+          prefix: "$"
     conditions: 
     - !<conditions.BooleanIsNullCondition>
       column: "FAAmount"
@@ -1222,7 +1270,7 @@ associationDefinitions:
     fqn: "ol.reported"
     entitySetName: "BerksCEHreported"
     src: "client"
-    dst: "percentami_income"
+    dst: "percentareamedianincome"
     propertyDefinitions:
       general.id:
         type: "general.id"
@@ -1242,7 +1290,7 @@ associationDefinitions:
     fqn: "ol.reported"
     entitySetName: "BerksCEHreported"
     src: "client"
-    dst: "annualami_income"
+    dst: "annualareamedianincome"
     propertyDefinitions:
       general.id:
         type: "general.id"

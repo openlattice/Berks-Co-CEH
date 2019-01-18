@@ -1,4 +1,4 @@
-# select * from incomebenefits; 
+# select * from incomebenefits limit 5000; 
 
 entityDefinitions:
   client:
@@ -404,7 +404,7 @@ associationDefinitions:
 
   insuredby2: 
     fqn: "health.insuredby"
-    entitySetName: "BerksCEHinsuredby"
+    entitySetName: "BerksCEHInsuredby"
     src: "client"
     dst: "medicaid"
     propertyDefinitions: 
@@ -418,7 +418,7 @@ associationDefinitions:
 
   insuredby3: 
     fqn: "health.insuredby"
-    entitySetName: "BerksCEHinsuredby"
+    entitySetName: "BerksCEHInsuredby"
     src: "client"
     dst: "schip"
     propertyDefinitions: 
@@ -432,7 +432,7 @@ associationDefinitions:
 
   insuredby4: 
     fqn: "health.insuredby"
-    entitySetName: "BerksCEHinsuredby"
+    entitySetName: "BerksCEHInsuredby"
     src: "client"
     dst: "vamedicalservices"
     propertyDefinitions: 
@@ -446,7 +446,7 @@ associationDefinitions:
 
   insuredby5: 
     fqn: "health.insuredby"
-    entitySetName: "BerksCEHinsuredby"
+    entitySetName: "BerksCEHInsuredby"
     src: "client"
     dst: "employerprovided"
     propertyDefinitions: 
@@ -460,7 +460,7 @@ associationDefinitions:
 
   insuredby6: 
     fqn: "health.insuredby"
-    entitySetName: "BerksCEHinsuredby"
+    entitySetName: "BerksCEHInsuredby"
     src: "client"
     dst: "cobra"
     propertyDefinitions: 
@@ -474,7 +474,7 @@ associationDefinitions:
 
   insuredby7: 
     fqn: "health.insuredby"
-    entitySetName: "BerksCEHinsuredby"
+    entitySetName: "BerksCEHInsuredby"
     src: "client"
     dst: "privatepay"
     propertyDefinitions: 
@@ -488,7 +488,7 @@ associationDefinitions:
 
   insuredby8: 
     fqn: "health.insuredby"
-    entitySetName: "BerksCEHinsuredby"
+    entitySetName: "BerksCEHInsuredby"
     src: "client"
     dst: "statehealthins"
     propertyDefinitions: 
@@ -502,7 +502,7 @@ associationDefinitions:
 
   insuredby9: 
     fqn: "health.insuredby"
-    entitySetName: "BerksCEHinsuredby"
+    entitySetName: "BerksCEHInsuredby"
     src: "client"
     dst: "indianhealthservices"
     propertyDefinitions: 
@@ -516,7 +516,7 @@ associationDefinitions:
 
   insuredby10: 
     fqn: "health.insuredby"
-    entitySetName: "BerksCEHinsuredby"
+    entitySetName: "BerksCEHInsuredby"
     src: "client"
     dst: "otherinsurance"
     propertyDefinitions: 
@@ -530,7 +530,7 @@ associationDefinitions:
 
   insuredby11: 
     fqn: "health.insuredby"
-    entitySetName: "BerksCEHinsuredby"
+    entitySetName: "BerksCEHInsuredby"
     src: "client"
     dst: "connectionwithsoar"
     propertyDefinitions: 

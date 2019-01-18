@@ -1,4 +1,4 @@
-# select e.*, ex."ExitDate", ex."Destination", em."Employed", em."EmploymentType", h."DomesticViolenceVictim", h."WhenOccurred", h."CurrentlyFleeing", h."PregnancyStatus", s."ServicesID", s."DateProvided", s."TypeProvided", s."FAAmount" from enrollment as e left join exit as ex on e."EnrollmentID"=ex."EnrollmentID" left join services as s on e."EnrollmentID"=s."EnrollmentID" AND e."PersonalID"=s."PersonalID" left join health_and_dv as h on e."EnrollmentID"=h."EnrollmentID" AND e."PersonalID"=h."PersonalID" left join employmenteducation as em on e."EnrollmentID"=em."EnrollmentID" AND e."PersonalID"=em."PersonalID" limit 5000;
+# select e.*, ex."ExitID", ex."ExitDate", ex."Destination", ex."OtherDestination", ex."AssessmentDisposition", ex."HousingAssessment", ex."OtherDisposition", s."ServicesID", s."DateProvided", p."ProjectType", o."Organizationname" from enrollment as e left join exit as ex on e."EnrollmentID"=ex."EnrollmentID" AND e."PersonalID"=ex."PersonalID" left join services as s on e."EnrollmentID"=s."EnrollmentID" AND e."PersonalID"=s."PersonalID" left join project as p on e."ProjectID"=p."ProjectID" left join organization as o on p."OrganizationID"=o."OrganizationID" limit 5000;
 
 entityDefinitions: 
   client: 
@@ -295,7 +295,7 @@ associationDefinitions:
 
   reported2:
     fqn: "o.is"
-    entitySetName: "BerksCEHIs"
+    entitySetName: "BerksCEHReported"
     src: "client"
     dst: "homeless"
     propertyDefinitions:

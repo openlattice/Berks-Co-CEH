@@ -1,4 +1,4 @@
-# select c.*, e."LastGradeCompleted", e."EmploymentType", e."SchoolStatus", e."Employed", e."EmploymentEducationID", en."EnrollmentID", en."FormerWardJuvenileJustice", en."SexualOrientation" from client as c left join employmenteducation as e on c."PersonalID"=e."PersonalID" left join enrollment as en on e."EnrollmentID"=en."EnrollmentID" AND c."PersonalID"=en."PersonalID" limit 5000;
+# select c.*, e."LastGradeCompleted", e."EmploymentType", e."SchoolStatus", e."Employed", e."EmploymentEducationID", en."EnrollmentID", en."FormerWardJuvenileJustice", en."SexualOrientation", h."DomesticViolenceVictim", h."WhenOccurred", h."CurrentlyFleeing" from client as c left join employmenteducation as e on c."PersonalID"=e."PersonalID" left join enrollment as en on e."EnrollmentID"=en."EnrollmentID" AND c."PersonalID"=en."PersonalID" left join health_and_dv as h on en."EnrollmentID"=h."EnrollmentID" AND c."PersonalID"=h."PersonalID" limit 5000;
 
 
 entityDefinitions:
@@ -134,13 +134,13 @@ entityDefinitions:
     name: "clientdetails"
 
   education: 
-    fqn: "ol.education" #NEW education entity type - TBD actual name. 
-    entitySetName: "BerksCEHEducations"
+    fqn: "ol.education" 
+    entitySetName: "BerksCEHEducation"
     propertyDefinitions:
       ol.id:
         type: "ol.id"
         column: "EmploymentEducationID"
-      person.highesteducation: #moved from persondetails to new education entity type
+      person.highesteducation: 
         type: "person.highesteducation"
         column: "LastGradeCompleted" # from employmenteducation
         transforms:
@@ -157,7 +157,7 @@ entityDefinitions:
 
   employment:
     fqn: "ol.employment"
-    entitySetName: "BerksCEHEmployments"
+    entitySetName: "BerksCEHEmployment"
     propertyDefinitions:
       ol.id: 
         type: "ol.id"
@@ -200,12 +200,20 @@ entityDefinitions:
           target: ["1", "2", "3", "4", "8", "9", "99"]
           goal: ["within the past three months", "three to six months ago (excluding six months exactly)", "six months to one year ago (excluding one year exactly)", "one year or more", "Client doesn't know", "Client refused", "Data not collected"]
       health.fleeingdomesticviolence:
+      # ol.status:
         type: "health.fleeingdomesticviolence"
         column: "CurrentlyFleeing"
         transforms:
-        - !<transforms.ReplaceTransform>
+        # - !<transforms.BooleanContainsTransform>
+        #   column: "CurrentlyFleeing"
+        #   string: "1"
+        #   transformsIfTrue:
+        #   - !<transforms.ValueTransform>
+        #     value: "fleeing domestic violence"
+        #   transformsIfFalse:
+        - !<transforms.ReplaceTransform> 
           target: ["0", "1", "8", "9", "99"] 
-          goal: ["No", "Yes", "Client doesn't know", "Client refused", "Data not collected"]
+          goal: ["No", "", "Client doesn't know", "Client refused", "Data not collected"]
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "DomesticViolenceVictim"

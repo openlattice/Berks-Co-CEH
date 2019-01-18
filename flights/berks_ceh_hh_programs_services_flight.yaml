@@ -1,4 +1,4 @@
-# select e."PersonalID", e."EnrollmentID", e."HouseholdID", e."DisabledHoH", e."RelationshipToHoH", i."HouseholdType", p.*, o.*, g.* from enrollment as e left join project as p on e."ProjectID"=p."ProjectID" left join inventory as i on e."ProjectID"=i."ProjectID" left join organization as o on p."OrganizationID"=o."OrganizationID" left join geography as g on e."ProjectID"=g."ProjectID" limit 5000; 
+# select e."PersonalID", e."EnrollmentID", e."EntryDate", e."HouseholdID", e."DisabledHoH", e."RelationshipToHoH", i."HouseholdType", s."ServicesID", s."DateProvided", s."RecordType", s."TypeProvided", p.*, o.*, g.* from enrollment as e left join project as p on e."ProjectID"=p."ProjectID" left join inventory as i on e."ProjectID"=i."ProjectID" left join organization as o on p."OrganizationID"=o."OrganizationID" left join geography as g on e."ProjectID"=g."ProjectID" left join services as s on e."EnrollmentID"=s."EnrollmentID" AND e."PersonalID"= s."PersonalID" limit 5000; 
 
 entityDefinitions: 
   client: 
@@ -19,18 +19,11 @@ entityDefinitions:
         column: "HouseholdID" # enrollment table
       ol.disabledheadofhousehold:
         type: "ol.disabledheadofhousehold"
-        column: "DisabledHoH"
+        column: "DisabledHoH" #enrollment
         transforms: 
         - !<transforms.ReplaceTransform>
           target: ["0", "1"]
           goal: ["No", "Yes"]
-      # demographics.hhtype: #this is not what this column means. 
-      #   type: "demographics.hhtype"
-      #   column: "HouseholdType" # inventory table
-      #   transforms: 
-      #   - !<transforms.ReplaceTransform>
-      #     target: ["1", "3", "4"]
-      #     goal: ["households without children", "households with at least one adult and one child", "households with only children"]
     name: "household"
 
   enrollment: 

@@ -1,4 +1,4 @@
-#select e.*, d."InformationDate" as "InformationDate", h."InformationDate" as "InformationDate_HDV", e."EntryDate", ex."ExitDate", e."DisablingCondition" from enrollment as e left join disabilities as d on e."EnrollmentID"=d."EnrollmentID" left join health_and_dv as h on d."EnrollmentID"=h."EnrollmentID" limit 5000; 
+# select d.*, h."InformationDate" as "InformationDate_HDV", h."PregnancyStatus", h."DueDate", e."EntryDate", ex."ExitDate", e."DisablingCondition" from enrollment as e left join exit as ex on e."EnrollmentID"=ex."EnrollmentID" AND e."PersonalID"=ex."PersonalID" left join disabilities as d on e."EnrollmentID"=d."EnrollmentID" AND e."PersonalID"=d."PersonalID" left join health_and_dv as h on d."EnrollmentID"=h."EnrollmentID" AND e."PersonalID"=h."PersonalID" limit 5000;
 
 entityDefinitions:
   client: 
@@ -82,8 +82,8 @@ entityDefinitions:
         - !<transforms.ReplaceTransform>
           target: ["5", "6", "7", "8", "9", "10"]
           goal: ["Physical disability", "Developmental disability", "Chronic health condition", "HIV/AIDS", "Mental health problem", "Substance abuse"]
-      ol.name2:
-        type: "ol.name"
+      ol.description:
+        type: "ol.description"
         transforms: 
         - !<transforms.BooleanContainsTransform>
           column: "DisabilityType"
@@ -96,7 +96,7 @@ entityDefinitions:
               target: ["0", "1", "2", "3", "8", "9", "99"]
               goal: ["No", "Alcohol abuse", "Drug abuse", "Both alcohol and drug abuse", "Client doesn't know", "Client refused", "Data not collected"]
       ol.clinicalstatus2:
-        type: "ol.description"
+        type: "ol.clinicalstatus"
         transforms:
         - !<transforms.BooleanRegexTransform>
           column: "DisabilityType"
@@ -188,7 +188,7 @@ associationDefinitions:
 
   partof1:
     fqn: "ol.exhibits"
-    entitySetName: "BerksCEHHas"
+    entitySetName: "BerksCEHPartOf"
     src: "disabilities"
     dst: "enrollment"
     propertyDefinitions:
@@ -200,7 +200,7 @@ associationDefinitions:
 
   partof2:
     fqn: "ol.exhibits"
-    entitySetName: "BerksCEHHas"
+    entitySetName: "BerksCEHPartOf"
     src: "pregnancy"
     dst: "enrollment"
     propertyDefinitions:
