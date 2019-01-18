@@ -188,7 +188,7 @@ associationDefinitions:
 
   partof1:
     fqn: "ol.exhibits"
-    entitySetName: "BerksCEHPartOf"
+    entitySetName: "BerksPartOf"
     src: "disabilities"
     dst: "enrollment"
     propertyDefinitions:
