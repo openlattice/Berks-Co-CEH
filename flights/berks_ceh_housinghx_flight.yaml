@@ -1,9 +1,9 @@
-# select e."*" from enrollment limit 5000; 
+# change limit for prod: select e."*" from enrollment limit 5000; 
 
 entityDefinitions: 
   client: 
     fqn: "general.person"
-    entitySetName: "BerksClients"
+    entitySetName: "BerksCEHClients"
     propertyDefinitions:
       nc.SubjectIdentification:
         type: "nc.SubjectIdentification"
@@ -12,7 +12,7 @@ entityDefinitions:
 
   location: #Last Permanent Address
     fqn: "ol.location"
-    entitySetName: "BerksLocations"
+    entitySetName: "BerksCEHLocations"
     propertyDefinitions:
       location.street:
         type: "location.street"
@@ -27,7 +27,7 @@ entityDefinitions:
 
   housing_history: 
     fqn: "ol.housinghistory"
-    entitySetName: "BerksHousingHistories"
+    entitySetName: "BerksCEHHousingHistories"
     propertyDefinitions: 
       ol.id: #not sure what this prop type will be. 
         type: "ol.id"
@@ -140,7 +140,7 @@ entityDefinitions:
 
   evictionhistory:
     fqn: "ol.evictionhistory"
-    entitySetName: "BerksEvictionHistory"
+    entitySetName: "BerksCEHEvictionHistory"
     propertyDefinitions:
       ol.id: 
         type: "ol.id"
@@ -188,7 +188,7 @@ entityDefinitions:
 
   timetohousingloss: 
     fqn: "ol.timetohousingloss"
-    entitySetName: "BerksTimeToHousingLoss"
+    entitySetName: "BerksCEHTimeToHousingLoss"
     propertyDefinitions:
       ol.id: 
         type: "ol.id"

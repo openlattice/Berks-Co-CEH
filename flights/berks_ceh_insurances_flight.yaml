@@ -1,9 +1,9 @@
-# select * from incomebenefits limit 5000; 
+#change limit for prod: select * from incomebenefits limit 5000;
 
 entityDefinitions:
   client:
     fqn: "general.person"
-    entitySetName: "BerksClients"
+    entitySetName: "BerksCEHClients"
     propertyDefinitions:
       nc.SubjectIdentification:
         type: "nc.SubjectIdentification"
@@ -13,7 +13,7 @@ entityDefinitions:
 
   medicaid: 
     fqn: "ol.insurance"
-    entitySetName: "BerksMedicaid"
+    entitySetName: "BerksCEHMedicaid"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
@@ -50,7 +50,7 @@ entityDefinitions:
 
   medicare: 
     fqn: "ol.insurance"
-    entitySetName: "BerksMedicare"
+    entitySetName: "BerksCEHMedicare"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
@@ -87,7 +87,7 @@ entityDefinitions:
 
   schip: 
     fqn: "ol.insurance"
-    entitySetName: "BerksSCHIP"
+    entitySetName: "BerksCEHSCHIP"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
@@ -124,7 +124,7 @@ entityDefinitions:
 
   vamedicalservices: 
     fqn: "ol.insurance"
-    entitySetName: "BerksVAMedicalServices"
+    entitySetName: "BerksCEHVAMedicalServices"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
@@ -146,7 +146,7 @@ entityDefinitions:
 
   employerprovided: 
     fqn: "ol.insurance"
-    entitySetName: "BerksEmployerProvided"
+    entitySetName: "BerksCEHEmployerProvided"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
@@ -183,7 +183,7 @@ entityDefinitions:
 
   cobra: 
     fqn: "ol.insurance"
-    entitySetName: "BerksCOBRA"
+    entitySetName: "BerksCEHCOBRA"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
@@ -220,7 +220,7 @@ entityDefinitions:
 
   privatepay: 
     fqn: "ol.insurance"
-    entitySetName: "BerksPrivatePay"
+    entitySetName: "BerksCEHPrivatePay"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
@@ -257,7 +257,7 @@ entityDefinitions:
 
   statehealthins: 
     fqn: "ol.insurance"
-    entitySetName: "BerksStateHealthIns"
+    entitySetName: "BerksCEHStateHealthIns"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
@@ -294,7 +294,7 @@ entityDefinitions:
 
   indianhealthservices: 
     fqn: "ol.insurance"
-    entitySetName: "BerksIndianHealthServices"
+    entitySetName: "BerksCEHIndianHealthServices"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
@@ -331,7 +331,7 @@ entityDefinitions:
 
   otherinsurance: 
     fqn: "ol.insurance"
-    entitySetName: "BerksOtherInsurances"
+    entitySetName: "BerksCEHOtherInsurances"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
@@ -358,7 +358,7 @@ entityDefinitions:
       
   connectionwithsoar: #not sure what this is? 
     fqn: "ol.insurance"
-    entitySetName: "BerksConnectionWithSOAR"
+    entitySetName: "BerksCEHConnectionWithSOAR"
     propertyDefinitions: 
       general.id: 
         type: "general.id"

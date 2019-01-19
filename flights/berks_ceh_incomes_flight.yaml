@@ -1,9 +1,9 @@
-# select i.*, s."FAAmount" from incomebenefits as i left join services as s on i."EnrollmentID"=s."EnrollmentID" AND i."PersonalID"=s."PersonalID" limit 5000; 
+#change limit for prod: select i.*, s."FAAmount" from incomebenefits as i left join services as s on i."EnrollmentID"=s."EnrollmentID" AND i."PersonalID"=s."PersonalID" limit 5000; 
 
 entityDefinitions: 
   client:
     fqn: "general.person"
-    entitySetName: "BerksClients"
+    entitySetName: "BerksCEHClients"
     propertyDefinitions:
       nc.SubjectIdentification:
         type: "nc.SubjectIdentification"
@@ -12,7 +12,7 @@ entityDefinitions:
 
   # household:
   #   fqn: "demographics.household"
-  #   entitySetName: "BerksHouseholds"
+  #   entitySetName: "BerksCEHHouseholds"
   #   propertyDefinitions:
   #     household.id:
   #       type: "household.id"
@@ -36,7 +36,7 @@ entityDefinitions:
 
   total_income:
     fqn: "ol.income"
-    entitySetName: "BerksTotalIncomes"
+    entitySetName: "BerksCEHTotalIncomes"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -79,7 +79,7 @@ entityDefinitions:
 
   earned_income:
     fqn: "ol.income"
-    entitySetName: "BerksEarnedIncomes"
+    entitySetName: "BerksCEHEarnedIncomes"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -106,7 +106,7 @@ entityDefinitions:
 
   unemployment_income:
     fqn: "ol.income"
-    entitySetName: "BerksUnemploymentIncomes"
+    entitySetName: "BerksCEHUnemploymentIncomes"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -132,7 +132,7 @@ entityDefinitions:
 
   ssi_income:
     fqn: "ol.income"
-    entitySetName: "BerksSSIIncomes"
+    entitySetName: "BerksCEHSSIIncomes"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -158,7 +158,7 @@ entityDefinitions:
 
   ssdi_income:
     fqn: "ol.income"
-    entitySetName: "BerksSSDIIncomes"
+    entitySetName: "BerksCEHSSDIIncomes"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -184,7 +184,7 @@ entityDefinitions:
   
   vadisabilityservice_income:
     fqn: "ol.income"
-    entitySetName: "BerksVADisabilityServiceIncomes"
+    entitySetName: "BerksCEHVADisabilityServiceIncomes"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -210,7 +210,7 @@ entityDefinitions:
 
   vadisabilitynonservice_income:
     fqn: "ol.income"
-    entitySetName: "BerksVADisabilityNonServiceIncomes"
+    entitySetName: "BerksCEHVADisabilityNonServiceIncomes"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -236,7 +236,7 @@ entityDefinitions:
 
   privatedisability_income:
     fqn: "ol.income"
-    entitySetName: "BerksPrivateDisabilityIncomes"
+    entitySetName: "BerksCEHPrivateDisabilityIncomes"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -262,7 +262,7 @@ entityDefinitions:
 
   workerscomp_income:
     fqn: "ol.income"
-    entitySetName: "BerksWorkersCompIncomes"
+    entitySetName: "BerksCEHWorkersCompIncomes"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -288,7 +288,7 @@ entityDefinitions:
 
   tanf_income:
     fqn: "ol.income"
-    entitySetName: "BerksTANFIncomes"
+    entitySetName: "BerksCEHTANFIncomes"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -314,7 +314,7 @@ entityDefinitions:
 
   ga_income:
     fqn: "ol.income"
-    entitySetName: "BerksGAIncomes"
+    entitySetName: "BerksCEHGAIncomes"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -340,7 +340,7 @@ entityDefinitions:
 
   socsecretirement_income:
     fqn: "ol.income"
-    entitySetName: "BerksSocSecRetirementIncomes"
+    entitySetName: "BerksCEHSocSecRetirementIncomes"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -366,7 +366,7 @@ entityDefinitions:
 
   pension_income:
     fqn: "ol.income"
-    entitySetName: "BerksPensionIncomes"
+    entitySetName: "BerksCEHPensionIncomes"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -392,7 +392,7 @@ entityDefinitions:
 
   childsupport_income:
     fqn: "ol.income"
-    entitySetName: "BerksChildSupportIncomes"
+    entitySetName: "BerksCEHChildSupportIncomes"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -418,7 +418,7 @@ entityDefinitions:
 
   alimony_income:
     fqn: "ol.income"
-    entitySetName: "BerksAlimonyIncomes"
+    entitySetName: "BerksCEHAlimonyIncomes"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -444,7 +444,7 @@ entityDefinitions:
 
   other_income:
     fqn: "ol.income"
-    entitySetName: "BerksOtherIncomes"
+    entitySetName: "BerksCEHOtherIncomes"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -470,7 +470,7 @@ entityDefinitions:
 
   noncashbenefits:
     fqn: "ol.income"
-    entitySetName: "BerksNonCashBenefits"
+    entitySetName: "BerksCEHNonCashBenefits"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -498,7 +498,7 @@ entityDefinitions:
 
   snap_benefits:
     fqn: "ol.income"
-    entitySetName: "BerksSNAPBenefits"
+    entitySetName: "BerksCEHSNAPBenefits"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -522,7 +522,7 @@ entityDefinitions:
 
   wic_benefits:
     fqn: "ol.income"
-    entitySetName: "BerksWICBenefits"
+    entitySetName: "BerksCEHWICBenefits"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -545,7 +545,7 @@ entityDefinitions:
 
   tanfchildcare_benefits:
     fqn: "ol.income"
-    entitySetName: "BerksTANFChildCareBenefits"
+    entitySetName: "BerksCEHTANFChildCareBenefits"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -568,7 +568,7 @@ entityDefinitions:
 
   tanftransportation_benefits:
     fqn: "ol.income"
-    entitySetName: "BerksTANFTransportationBenefits"
+    entitySetName: "BerksCEHTANFTransportationBenefits"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -591,7 +591,7 @@ entityDefinitions:
 
   othertanf_benefits:
     fqn: "ol.income"
-    entitySetName: "BerksOtherTANFBenefits"
+    entitySetName: "BerksCEHOtherTANFBenefits"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -614,7 +614,7 @@ entityDefinitions:
 
   other_benefits:
     fqn: "ol.income"
-    entitySetName: "BerksOtherNonCashBenefits"
+    entitySetName: "BerksCEHOtherNonCashBenefits"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -640,7 +640,7 @@ entityDefinitions:
 
   percentareamedianincome:
     fqn: "ol.areamedianincome"
-    entitySetName: "BerksPercentAMI"
+    entitySetName: "BerksCEHPercentAMI"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -688,7 +688,7 @@ entityDefinitions:
 
   annualareamedianincome:
     fqn: "ol.areamedianincome"
-    entitySetName: "BerksAnnualAMI"
+    entitySetName: "BerksCEHAnnualAMI"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
@@ -736,7 +736,7 @@ entityDefinitions:
 
   financialassistance_income: 
     fqn: "ol.income"
-    entitySetName: "BerksFinancialAssistanceIncomes"
+    entitySetName: "BerksCEHFinancialAssistanceIncomes"
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"

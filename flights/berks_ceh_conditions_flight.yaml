@@ -1,9 +1,9 @@
-# select d.*, h."InformationDate" as "InformationDate_HDV", h."PregnancyStatus", h."DueDate", e."EntryDate", ex."ExitDate", e."DisablingCondition" from enrollment as e left join exit as ex on e."EnrollmentID"=ex."EnrollmentID" AND e."PersonalID"=ex."PersonalID" left join disabilities as d on e."EnrollmentID"=d."EnrollmentID" AND e."PersonalID"=d."PersonalID" left join health_and_dv as h on d."EnrollmentID"=h."EnrollmentID" AND e."PersonalID"=h."PersonalID" limit 5000;
+# change limit for prod: select d.*, h."InformationDate" as "InformationDate_HDV", h."PregnancyStatus", h."DueDate", e."EntryDate", ex."ExitDate", e."DisablingCondition" from enrollment as e left join exit as ex on e."EnrollmentID"=ex."EnrollmentID" AND e."PersonalID"=ex."PersonalID" left join disabilities as d on e."EnrollmentID"=d."EnrollmentID" AND e."PersonalID"=d."PersonalID" left join health_and_dv as h on d."EnrollmentID"=h."EnrollmentID" AND e."PersonalID"=h."PersonalID" limit 5000;
 
 entityDefinitions:
   client: 
     fqn: "general.person"
-    entitySetName: "BerksClients"
+    entitySetName: "BerksCEHClients"
     propertyDefinitions:
       nc.SubjectIdentification:
         type: "nc.SubjectIdentification"
@@ -12,7 +12,7 @@ entityDefinitions:
 
   enrollment:
     fqn: "ol.episodeofcare"
-    entitySetName: "BerksEnrollments"
+    entitySetName: "BerksCEHEnrollments"
     propertyDefinitions:
       ol.id:
         type: "ol.id"
@@ -33,7 +33,7 @@ entityDefinitions:
 
   disabilities:
     fqn: "ol.healthcondition" 
-    entitySetName: "BerksDisabilities"
+    entitySetName: "BerksCEHDisabilities"
     propertyDefinitions:
       ol.id:
         type: "ol.id"
@@ -112,7 +112,7 @@ entityDefinitions:
 
   pregnancy:
     fqn: "ol.healthcondition"
-    entitySetName: "BerksPregnancy"
+    entitySetName: "BerksCEHPregnancy"
     propertyDefinitions:
       ol.id: 
         type: "ol.id"

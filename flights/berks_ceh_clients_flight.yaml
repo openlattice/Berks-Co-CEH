@@ -1,10 +1,10 @@
-# select c.*, e."LastGradeCompleted", e."EmploymentType", e."SchoolStatus", e."Employed", e."EmploymentEducationID", en."EnrollmentID", en."FormerWardJuvenileJustice", en."SexualOrientation", h."DomesticViolenceVictim", h."WhenOccurred", h."CurrentlyFleeing" from client as c left join employmenteducation as e on c."PersonalID"=e."PersonalID" left join enrollment as en on e."EnrollmentID"=en."EnrollmentID" AND c."PersonalID"=en."PersonalID" left join health_and_dv as h on en."EnrollmentID"=h."EnrollmentID" AND c."PersonalID"=h."PersonalID" limit 5000;
+# change limit for prod: select c.*, e."LastGradeCompleted", e."EmploymentType", e."SchoolStatus", e."Employed", e."EmploymentEducationID", en."EnrollmentID", en."FormerWardJuvenileJustice", en."SexualOrientation", h."DomesticViolenceVictim", h."WhenOccurred", h."CurrentlyFleeing" from client as c left join employmenteducation as e on c."PersonalID"=e."PersonalID" left join enrollment as en on e."EnrollmentID"=en."EnrollmentID" AND c."PersonalID"=en."PersonalID" left join health_and_dv as h on en."EnrollmentID"=h."EnrollmentID" AND c."PersonalID"=h."PersonalID" limit 5000;
 
 
 entityDefinitions:
   client:
     fqn: "general.person"
-    entitySetName: "BerksClients"
+    entitySetName: "BerksCEHClients"
     propertyDefinitions: 
       nc.SubjectIdentification:
         type: "nc.SubjectIdentification"
@@ -106,7 +106,7 @@ entityDefinitions:
     
   clientdetails:
     fqn: "ol.persondetails"
-    entitySetName: "BerksClientDetails"
+    entitySetName: "BerksCEHClientDetails"
     propertyDefinitions:
       general.id:
         type: "general.id"
@@ -135,7 +135,7 @@ entityDefinitions:
 
   education: 
     fqn: "ol.education" 
-    entitySetName: "BerksEducation"
+    entitySetName: "BerksCEHEducation"
     propertyDefinitions:
       ol.id:
         type: "ol.id"
@@ -157,7 +157,7 @@ entityDefinitions:
 
   employment:
     fqn: "ol.employment"
-    entitySetName: "BerksEmployment"
+    entitySetName: "BerksCEHEmployment"
     propertyDefinitions:
       ol.id: 
         type: "ol.id"
@@ -180,7 +180,7 @@ entityDefinitions:
 
   domesticviolence:
     fqn: "ol.domesticviolence"
-    entitySetName: "BerksDomesticViolenceInfo"
+    entitySetName: "BerksCEHDomesticViolenceInfo"
     propertyDefinitions:
       ol.id:  
         type: "ol.id"
