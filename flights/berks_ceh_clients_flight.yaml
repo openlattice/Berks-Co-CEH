@@ -1,4 +1,4 @@
-# change limit for prod: select c.*, e."LastGradeCompleted", e."EmploymentType", e."SchoolStatus", e."Employed", e."EmploymentEducationID", en."EnrollmentID", en."FormerWardJuvenileJustice", en."SexualOrientation", h."DomesticViolenceVictim", h."WhenOccurred", h."CurrentlyFleeing" from client as c left join employmenteducation as e on c."PersonalID"=e."PersonalID" left join enrollment as en on e."EnrollmentID"=en."EnrollmentID" AND c."PersonalID"=en."PersonalID" left join health_and_dv as h on en."EnrollmentID"=h."EnrollmentID" AND c."PersonalID"=h."PersonalID" limit 5000;
+# select c.*, e."LastGradeCompleted", e."EmploymentType", e."SchoolStatus", e."Employed", e."EmploymentEducationID", en."EnrollmentID", en."FormerWardJuvenileJustice", en."SexualOrientation", h."DomesticViolenceVictim", h."WhenOccurred", h."CurrentlyFleeing" from client as c left join employmenteducation as e on c."PersonalID"=e."PersonalID" left join enrollment as en on e."EnrollmentID"=en."EnrollmentID" AND c."PersonalID"=en."PersonalID" left join health_and_dv as h on en."EnrollmentID"=h."EnrollmentID" AND c."PersonalID"=h."PersonalID" limit 5000;
 
 
 entityDefinitions:
@@ -266,8 +266,8 @@ associationDefinitions:
     src: "client"
     dst: "domesticviolence"
     propertyDefinitions:
-      ol.id:
-        type: "ol.id"
+      general.id:
+        type: "general.id"
         transforms: 
         - !<transforms.ConcatTransform>
           columns: ["PersonalID", "EnrollmentID"]

@@ -14,6 +14,9 @@ entityDefinitions:
     fqn: "ol.location"
     entitySetName: "BerksCEHLocations"
     propertyDefinitions:
+      general.id:
+        type: "general.id"
+        column: "EnrollmentID"
       location.street:
         type: "location.street"
         column: "LastPermanentStreet"
@@ -236,7 +239,7 @@ entityDefinitions:
 
 associationDefinitions:
   locatedat: 
-    fqn: "locatedat"
+    fqn: "ol.locatedat"
     entitySetName: "BerksLocatedAt"
     src: "client"
     dst: "location"
