@@ -45,8 +45,8 @@ entityDefinitions:
     fqn: "ol.organization"
     entitySetName: "BerksCEHOrganizations"
     propertyDefinitions:
-      ol.id:
-        type: "ol.id"
+      general.id:
+        type: "general.id"
         column: "OrganizationID"
       ol.organizationname: 
         type: "ol.organizationname"
@@ -60,8 +60,8 @@ entityDefinitions:
     fqn: "ol.program"
     entitySetName: "BerksCEHPrograms"
     propertyDefinitions:
-      general.id: 
-        type: "general.id"
+      ol.id: 
+        type: "ol.id"
         column: "ProjectID"
       ol.name: 
         type: "ol.name"

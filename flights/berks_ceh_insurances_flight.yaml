@@ -390,7 +390,7 @@ entityDefinitions:
 associationDefinitions: 
   insuredby1: 
     fqn: "health.insuredby"
-    entitySetName: "BerksInsuredBy"
+    entitySetName: "BerksInsuredby"
     src: "client"
     dst: "medicare"
     propertyDefinitions: 

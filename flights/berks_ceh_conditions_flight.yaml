@@ -11,7 +11,7 @@ entityDefinitions:
     name: "client"
 
   enrollment:
-    fqn: "ol.episodeofcare"
+    fqn: "ol.episode"
     entitySetName: "BerksCEHEnrollments"
     propertyDefinitions:
       ol.id:
