@@ -10,6 +10,15 @@ entityDefinitions:
       nc.SubjectIdentification:
         type: "nc.SubjectIdentification"
         column: "PersonalID"
+      ol.datasource:
+        type: "ol.datasource"
+        transforms:
+        - !<transforms.ValueTransform>
+          value: "Berks County CEH"
+    conditions:
+    - !<conditions.BooleanIsNullCondition>
+      column: "PersonalID"
+      reverse: false
     name: "client"
 
   # household:
@@ -65,7 +74,7 @@ entityDefinitions:
             value: "Income from Any Source"
           transformsIfFalse:
           - !<transforms.ValueTransform>
-            value: "No income"
+            value: "None reported"
       ol.units: 
         type: "ol.units"
         transforms: 
@@ -100,7 +109,7 @@ entityDefinitions:
             column: "EarnedAmount"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
-            value: "0"
+            value: ""
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "Earned"
@@ -127,7 +136,7 @@ entityDefinitions:
             column: "UnemploymentAmount"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
-            value: "0"
+            value: ""
     conditions: 
     - !<conditions.BooleanIsNullCondition>
       column: "Unemployment"
@@ -153,7 +162,7 @@ entityDefinitions:
             column: "SSIAmount"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
-            value: "0"
+            value: ""
     conditions: 
     - !<conditions.BooleanIsNullCondition>
       column: "SSI"
@@ -179,7 +188,7 @@ entityDefinitions:
             column: "SSDIAmount"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
-            value: "0"
+            value: ""
     conditions: 
     - !<conditions.BooleanIsNullCondition>
       column: "SSDI"
@@ -205,7 +214,7 @@ entityDefinitions:
             column: "VADisabilityServiceAmount"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
-            value: "0"
+            value: ""
     conditions: 
     - !<conditions.BooleanIsNullCondition>
       column: "VADisabilityService"
@@ -231,7 +240,7 @@ entityDefinitions:
             column: "VADisabilityNonServiceAmount"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
-            value: "0"
+            value: ""
     conditions: 
     - !<conditions.BooleanIsNullCondition>
       column: "VADisabilityNonService"
@@ -257,7 +266,7 @@ entityDefinitions:
             column: "PrivateDisabilityAmount"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
-            value: "0"
+            value: ""
     conditions: 
     - !<conditions.BooleanIsNullCondition>
       column: "PrivateDisability"
@@ -283,7 +292,7 @@ entityDefinitions:
             column: "WorkersCompAmount"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
-            value: "0"
+            value: ""
     conditions: 
     - !<conditions.BooleanIsNullCondition>
       column: "WorkersComp"
@@ -309,7 +318,7 @@ entityDefinitions:
             column: "TANFAmount"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
-            value: "0"
+            value: ""
     conditions: 
     - !<conditions.BooleanIsNullCondition>
       column: "TANF"
@@ -335,7 +344,7 @@ entityDefinitions:
             column: "GAAmount"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
-            value: "0"
+            value: ""
     conditions: 
     - !<conditions.BooleanIsNullCondition>
       column: "GA"
@@ -361,7 +370,7 @@ entityDefinitions:
             column: "SocSecRetirementAmount"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
-            value: "0"
+            value: ""
     conditions: 
     - !<conditions.BooleanIsNullCondition>
       column: "SocSecRetirement"
@@ -387,7 +396,7 @@ entityDefinitions:
             column: "PensionAmount"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
-            value: "0"
+            value: ""
     conditions: 
     - !<conditions.BooleanIsNullCondition>
       column: "Pension"
@@ -413,7 +422,7 @@ entityDefinitions:
             column: "ChildSupportAmount"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
-            value: "0"
+            value: ""
     conditions: 
     - !<conditions.BooleanIsNullCondition>
       column: "ChildSupport"
@@ -439,7 +448,7 @@ entityDefinitions:
             column: "AlimonyAmount"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
-            value: "0"
+            value: ""
     conditions: 
     - !<conditions.BooleanIsNullCondition>
       column: "Alimony"
@@ -503,7 +512,6 @@ entityDefinitions:
           - !<transforms.ValueTransform>
             value: "Non-Cash Benefits from Any Source"
           transformsIfFalse: 
-          - !<transforms.ParseIntTransform> 
             column: "BenefitsFromAnySource"
           - !<transforms.ReplaceTransform>
             target: ["0", "8", "9", "99"]
@@ -715,7 +723,6 @@ entityDefinitions:
         type: "ol.category"
         column: "PercentAMI"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "99" ]
           goal: ["Less than 30%", "30% to 50%", "Greater than 50%", "Data not collected"]
@@ -736,23 +743,20 @@ entityDefinitions:
         type: "ol.maximumvalue"
         column: "AnnualPercentAMI"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "2", "99"]
-          goal: [14, 30, "", "Data not collected"]
+          goal: [14, 30, "", ""]
       ol.minimumvalue: 
         type: "ol.minimumvalue"
         column: "AnnualPercentAMI"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "2", "99"]
-          goal: [0, 15, "", "Data not collected"]
+          goal: [0, 15, "", ""]
       ol.qualifier:
         type: "ol.qualifier"
         column: "AnnualPercentAMI"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "2", "99"]
           goal: ["", "", ">", ""]
@@ -768,7 +772,6 @@ entityDefinitions:
         type: "ol.category"
         column: "AnnualPercentAMI"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "2", "99"]
           goal: ["0-14% of AMI for household size", "15-30% of AMI for household size", "More than 30% of AMI for household size", "Data not collected"]
