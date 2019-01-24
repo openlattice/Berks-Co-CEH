@@ -25,14 +25,10 @@ entityDefinitions:
       nc.PersonSuffix:
         type: "nc.PersonSuffix"
         column: "NameSuffix"
-      nc.SSN:
-        type: "nc.SSN"
-        column: "SSN"
       nc.PersonSex:
         type: "nc.PersonSex"
         column: "Gender" 
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "2", "3"]
           goal: ["Female", "Male", "Female", "Male"]
@@ -40,58 +36,52 @@ entityDefinitions:
         type: "nc.PersonBirthDate"
         column: "DOB"
         transforms:
-        - !<transforms.DateTransform>
+        - !<transforms.DateTimeAsDateTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
       nc.PersonRace1:
         type: "nc.PersonRace"
         column: "AmIndAKNative"
         transforms: 
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1"]
-          goal: ["", "AmIndianAKNative"]
+          goal: ["", "amindian"]
           partial: true
       nc.PersonRace2:
         type: "nc.PersonRace"
         column: "Asian"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1"]
-          goal: ["", "Asian"]
+          goal: ["", "asian"]
           partial: true
       nc.PersonRace3:
         type: "nc.PersonRace"
         column: "BlackAfAmerican"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1"]
-          goal: ["", "BlackAfAmerican"]
+          goal: ["", "black"]
           partial: true
       nc.PersonRace4:
         type: "nc.PersonRace"
         column: "NativeHIOtherPacific"
         transforms: 
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1"]
-          goal: ["", "NativeHIOtherPacific"]
+          goal: ["", "pacislander"]
           partial: true
       nc.PersonRace5:
         type: "nc.PersonRace"
         column: "White"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1"]
-          goal: ["", "White"]
+          goal: ["", "white"]
           partial: true
       nc.PersonRace6:
         type: "nc.PersonRace"
         column: "RaceNone"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1"]
           goal: ["", ""]
@@ -100,16 +90,19 @@ entityDefinitions:
         type: "nc.PersonEthnicity"
         column: "Ethnicity"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "8", "9", "99"]
-          goal: ["Nonhispanic", "Hispanic", "Client doesn't know", "Client refused", "Data not collected"]
+          goal: ["nonhispanic", "hispanic", "", "", ""]
           partial: true
       ol.datasource:
         type: "ol.datasource"
         transforms:
         - !<transforms.ValueTransform>
           value: "Berks County CEH"
+    conditions:
+    - !<conditions.BooleanIsNullCondition>
+      column: "PersonalID"
+      reverse: false
     name: "client"
 
     
@@ -124,7 +117,6 @@ entityDefinitions:
         type: "person.gender"
         column: "Gender"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "2", "3", "4", "8", "9", "99"]
           goal: ["Female", "Male", "Trans Female (MTF or Male to Female)", "Trans Male (FTM or Female to Male)", "Gender non-conforming (i.e. not exclusively male or female)", "Client doesn’t know", "Client refused", "Data not collected"]
@@ -132,26 +124,9 @@ entityDefinitions:
         type: "person.veteranstatus"
         column: "VeteranStatus"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "99"]
           goal: ["No", "Yes", "Data not collected"]
-      person.juvenile: 
-        type: "person.juvenile"
-        column: "FormerWardJuvenileJustice" #from enrollment, currently empty. maybe they can give this to us in future? 
-        transforms:
-        - !<transforms.ParseIntTransform> {}
-        - !<transforms.ReplaceTransform>
-          target: ["0", "1", "8", "9", "99"]
-          goal: ["No", "Yes", "Client doesn't know", "Client refused", "Data not collected"]
-      person.sexualorientation:
-        type: "person.sexualorientation"
-        column: "SexualOrientation" #from enrollment, currently empty. maybe they can give this to us in future? 
-        transforms:
-        - !<transforms.ParseIntTransform> {}
-        - !<transforms.ReplaceTransform>
-          target: ["1", "2", "3", "4", "5", "8", "9", "99"]
-          goal: ["Heterosexual", "Gay", "Lesbian", "Bisexual", "Questioning/unsure", "Client doesn’t know", "Client refused", "Data not collected"]
     name: "clientdetails"
 
   education: 
@@ -165,7 +140,6 @@ entityDefinitions:
         type: "person.highesteducation"
         column: "LastGradeCompleted" # from employmenteducation
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "99"]
           goal: ["Less than grade 5", "Grades 5-6", "Grades 7-8", "Grades 9-11", "Grade 12", "School program does not have grade levels", "GED", "Client doesn't know", "Client refused", "Some college", "Associate's degree", "Bachelor's degree", "Graduate degree", "Vocational certification", "Data not collected"]      
@@ -173,7 +147,6 @@ entityDefinitions:
           type: "ol.status" 
           column: "SchoolStatus" # from employmenteducation 
           transforms:
-          - !<transforms.ParseIntTransform> {}
           - !<transforms.ReplaceTransform>
             target: ["1", "2", "3", "4", "5", "8", "9", "99"]
             goal: ["Attending school regularly", "Attending school irregularly", "Graduated from high school", "Obtained ged", "Dropped out", "Client doesn't know", "Client refused", "Data not collected" ]
@@ -190,7 +163,6 @@ entityDefinitions:
         type: "ol.status"
         column: "Employed"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "8", "9", "99"]
           goal: ["No", "Yes", "Client doesn't know", "Client refused", "Data not collected" ]
@@ -198,7 +170,6 @@ entityDefinitions:
         type: "ol.category"
         column: "EmploymentType"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "99"]
           goal: ["Full-time", "Part-time", "Seasonal / sporadic (including day labor)", "Data not collected"]
@@ -215,7 +186,6 @@ entityDefinitions:
         type: "ol.domesticviolenceflag"
         column: "DomesticViolenceVictim"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "8", "9", "99"] 
           goal: ["No", "Yes", "Client doesn't know", "Client refused", "Data not collected"]
@@ -223,13 +193,11 @@ entityDefinitions:
         type: "health.domesticviolenceoccurrence"
         column: "WhenOccurred"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "4", "8", "9", "99"]
           goal: ["within the past three months", "three to six months ago (excluding six months exactly)", "six months to one year ago (excluding one year exactly)", "one year or more", "Client doesn't know", "Client refused", "Data not collected"]
       ol.status: # still need to test this!
         type: "ol.status"
-        # column: "CurrentlyFleeing"
         transforms:
         # - !<transforms.ParseIntTransform>
         #   column: "CurrentlyFleeing"
@@ -240,7 +208,6 @@ entityDefinitions:
           - !<transforms.ValueTransform>
             value: "fleeing domestic violence"
           transformsIfFalse:
-          - !<transforms.ParseIntTransform>
             column: "CurrentlyFleeing"
           - !<transforms.ReplaceTransform> 
             target: ["0", "1", "8", "9", "99"] 
