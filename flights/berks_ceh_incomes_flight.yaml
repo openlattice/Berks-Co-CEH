@@ -1,4 +1,6 @@
-#change limit for prod: select i.*, s."FAAmount" from incomebenefits as i left join services as s on i."EnrollmentID"=s."EnrollmentID" AND i."PersonalID"=s."PersonalID" limit 5000; 
+#change limit for prod: 
+# psql: select i.*, s."FAAmount", e."PercentAMI", e."AnnualPercentAMI" from incomebenefits as i left join services as s on i."EnrollmentID"=s."EnrollmentID" AND i."PersonalID"=s."PersonalID" left join enrollment as e on e."EnrollmentID"=i."EnrollmentID" AND e."PersonalID"=i."PersonalID" limit 5000; 
+# intellij: "select i.*, s.\"FAAmount\", s.\"ServicesID\", s.\"DateProvided\", e.\"PercentAMI\", e.\"AnnualPercentAMI\" from incomebenefits as i left join services as s on i.\"EnrollmentID\"=s.\"EnrollmentID\" AND i.\"PersonalID\"=s.\"PersonalID\" left join enrollment as e on e.\"EnrollmentID\"=i.\"EnrollmentID\" AND e.\"PersonalID\"=i.\"PersonalID\"  limit 5000;"
 
 entityDefinitions: 
   client:
@@ -52,7 +54,7 @@ entityDefinitions:
       #   value:
       ol.notes: 
         type: "ol.notes"
-        column: "IncomeFromAnySource"
+        # column: "IncomeFromAnySource"
         transforms: 
         - !<transforms.BooleanContainsTransform>
           column: "IncomeFromAnySource"
@@ -65,8 +67,10 @@ entityDefinitions:
           - !<transforms.ValueTransform>
             value: "No income"
       ol.units: 
-        type: "ol.unit"
-        value: "monthly"
+        type: "ol.units"
+        transforms: 
+        - !<transforms.ValueTransform>
+          value: "monthly"
     conditions:
     - !<conditions.ConditionalOr> {}
     - !<conditions.BooleanIsNullCondition>
@@ -90,7 +94,7 @@ entityDefinitions:
         - !<transforms.BooleanContainsTransform>
           column: "Earned"
           string: "1"
-          ignoreCare: true
+          ignoreCase: true
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "EarnedAmount"
@@ -117,7 +121,7 @@ entityDefinitions:
         - !<transforms.BooleanContainsTransform>
           column: "Unemployment"
           string: "1"
-          ignoreCare: true
+          ignoreCase: true
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "UnemploymentAmount"
@@ -143,7 +147,7 @@ entityDefinitions:
         - !<transforms.BooleanContainsTransform>
           column: "SSI"
           string: "1"
-          ignoreCare: true
+          ignoreCase: true
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "SSIAmount"
@@ -169,7 +173,7 @@ entityDefinitions:
         - !<transforms.BooleanContainsTransform>
           column: "SSDI"
           string: "1"
-          ignoreCare: true
+          ignoreCase: true
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "SSDIAmount"
@@ -195,7 +199,7 @@ entityDefinitions:
         - !<transforms.BooleanContainsTransform>
           column: "VADisabilityService"
           string: "1"
-          ignoreCare: true
+          ignoreCase: true
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "VADisabilityServiceAmount"
@@ -221,7 +225,7 @@ entityDefinitions:
         - !<transforms.BooleanContainsTransform>
           column: "VADisabilityNonService"
           string: "1"
-          ignoreCare: true
+          ignoreCase: true
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "VADisabilityNonServiceAmount"
@@ -247,7 +251,7 @@ entityDefinitions:
         - !<transforms.BooleanContainsTransform>
           column: "PrivateDisability"
           string: "1"
-          ignoreCare: true
+          ignoreCase: true
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "PrivateDisabilityAmount"
@@ -273,7 +277,7 @@ entityDefinitions:
         - !<transforms.BooleanContainsTransform>
           column: "WorkersComp"
           string: "1"
-          ignoreCare: true
+          ignoreCase: true
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "WorkersCompAmount"
@@ -299,7 +303,7 @@ entityDefinitions:
         - !<transforms.BooleanContainsTransform>
           column: "TANF"
           string: "1"
-          ignoreCare: true
+          ignoreCase: true
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "TANFAmount"
@@ -325,7 +329,7 @@ entityDefinitions:
         - !<transforms.BooleanContainsTransform>
           column: "GA"
           string: "1"
-          ignoreCare: true
+          ignoreCase: true
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "GAAmount"
@@ -351,7 +355,7 @@ entityDefinitions:
         - !<transforms.BooleanContainsTransform>
           column: "SocSecRetirement"
           string: "1"
-          ignoreCare: true
+          ignoreCase: true
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "SocSecRetirementAmount"
@@ -377,7 +381,7 @@ entityDefinitions:
         - !<transforms.BooleanContainsTransform>
           column: "Pension"
           string: "1"
-          ignoreCare: true
+          ignoreCase: true
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "PensionAmount"
@@ -403,7 +407,7 @@ entityDefinitions:
         - !<transforms.BooleanContainsTransform>
           column: "ChildSupport"
           string: "1"
-          ignoreCare: true
+          ignoreCase: true
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "ChildSupportAmount"
@@ -429,7 +433,7 @@ entityDefinitions:
         - !<transforms.BooleanContainsTransform>
           column: "Alimony"
           string: "1"
-          ignoreCare: true
+          ignoreCase: true
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "AlimonyAmount"
@@ -455,13 +459,26 @@ entityDefinitions:
         - !<transforms.BooleanContainsTransform>
           column: "OtherIncomeSource"
           string: "1"
-          ignoreCare: true
+          ignoreCase: true
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "OtherIncomeSourceIdentify"
           transformsIfFalse: 
           - !<transforms.ValueTransform>
-            value: "None"   
+            value: ""
+      ol.value: 
+        type: "ol.value"
+        transforms:
+        - !<transforms.BooleanContainsTransform>
+          column: "OtherIncomeSource"
+          string: "1"
+          ignoreCase: true
+          transformsIfTrue:
+          - !<transforms.ColumnTransform>
+            column: "OtherIncomeAmount"
+          transformsIfFalse: 
+          - !<transforms.ValueTransform>
+            value: ""
     conditions: 
     - !<conditions.BooleanIsNullCondition>
       column: "OtherIncomeSource"
@@ -481,11 +498,13 @@ entityDefinitions:
         - !<transforms.BooleanContainsTransform>
           column: "BenefitsFromAnySource"
           string: "1"
-          ignoreCare: true
+          ignoreCase: true
           transformsIfTrue:
           - !<transforms.ValueTransform>
             value: "Non-Cash Benefits from Any Source"
           transformsIfFalse: 
+          - !<transforms.ParseIntTransform> 
+            column: "BenefitsFromAnySource"
           - !<transforms.ReplaceTransform>
             target: ["0", "8", "9", "99"]
             goal: ["No", "Client doesn't know", "Client refused", "Data not collected"]
@@ -509,10 +528,13 @@ entityDefinitions:
         - !<transforms.BooleanContainsTransform>
           column: "SNAP"
           string: "1"
-          ignoreCare: true
+          ignoreCase: true
           transformsIfTrue:
           - !<transforms.ValueTransform>
             value: "SNAP"
+          transformsIfFalse: 
+          - !<transforms.ValueTransform>
+            value: ""
     conditions: 
     - !<conditions.BooleanIsNullCondition>
       column: "SNAP"
@@ -533,10 +555,13 @@ entityDefinitions:
         - !<transforms.BooleanContainsTransform>
           column: "WIC"
           string: "1"
-          ignoreCare: true
+          ignoreCase: true
           transformsIfTrue:
           - !<transforms.ValueTransform>
             value: "WIC"
+          transformsIfFalse: 
+          - !<transforms.ValueTransform>
+            value: ""
     conditions: 
     - !<conditions.BooleanIsNullCondition>
       column: "WIC"
@@ -556,10 +581,13 @@ entityDefinitions:
         - !<transforms.BooleanContainsTransform>
           column: "TANFChildCare"
           string: "1"
-          ignoreCare: true
+          ignoreCase: true
           transformsIfTrue:
           - !<transforms.ValueTransform>
             value: "TANF Childcare"
+          transformsIfFalse: 
+          - !<transforms.ValueTransform>
+            value: ""
     conditions: 
     - !<conditions.BooleanIsNullCondition>
       column: "TANFChildCare"
@@ -579,10 +607,13 @@ entityDefinitions:
         - !<transforms.BooleanContainsTransform>
           column: "TANFTransportation"
           string: "1"
-          ignoreCare: true
+          ignoreCase: true
           transformsIfTrue:
           - !<transforms.ValueTransform>
             value: "TANF Transportation"
+          transformsIfFalse: 
+          - !<transforms.ValueTransform>
+            value: ""
     conditions: 
     - !<conditions.BooleanIsNullCondition>
       column: "TANFTransportation"
@@ -602,10 +633,13 @@ entityDefinitions:
         - !<transforms.BooleanContainsTransform>
           column: "OtherTANF"
           string: "1"
-          ignoreCare: true
+          ignoreCase: true
           transformsIfTrue:
           - !<transforms.ValueTransform>
             value: "Other TANF"
+          transformsIfFalse: 
+          - !<transforms.ValueTransform>
+            value: ""
     conditions: 
     - !<conditions.BooleanIsNullCondition>
       column: "OtherTANF"
@@ -625,7 +659,7 @@ entityDefinitions:
         - !<transforms.BooleanContainsTransform>
           column: "OtherBenefitsSource"
           string: "1"
-          ignoreCare: true
+          ignoreCase: true
           transformsIfTrue:
           - !<transforms.ColumnTransform>
             column: "OtherBenefitsSourceIdentify"
@@ -644,11 +678,12 @@ entityDefinitions:
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
-        column: "IncomeBenefitsID"
+        column: "EnrollmentID"
       ol.maximumvalue:
         type: "ol.maximumvalue"
         column: "PercentAMI"
         transforms:
+        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "99" ]
           goal: ["", 50, "", ""]
@@ -656,6 +691,7 @@ entityDefinitions:
         type: "ol.minimumvalue"
         column: "PercentAMI"
         transforms:
+        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "99" ]
           goal: ["", 30, "", ""]
@@ -663,6 +699,7 @@ entityDefinitions:
         type: "ol.value"
         column: "PercentAMI"
         transforms:
+        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "99" ]
           goal: [30, "", 50, ""]
@@ -670,13 +707,15 @@ entityDefinitions:
         type: "ol.qualifier"
         column: "PercentAMI"
         transforms:
+        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "99" ]
           goal: ["<", "", ">", ""]
       ol.category: 
-        type: "ol.cagtegory"
+        type: "ol.category"
         column: "PercentAMI"
         transforms:
+        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "99" ]
           goal: ["Less than 30%", "30% to 50%", "Greater than 50%", "Data not collected"]
@@ -697,6 +736,7 @@ entityDefinitions:
         type: "ol.maximumvalue"
         column: "AnnualPercentAMI"
         transforms:
+        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "2", "99"]
           goal: [14, 30, "", "Data not collected"]
@@ -704,6 +744,7 @@ entityDefinitions:
         type: "ol.minimumvalue"
         column: "AnnualPercentAMI"
         transforms:
+        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "2", "99"]
           goal: [0, 15, "", "Data not collected"]
@@ -711,6 +752,7 @@ entityDefinitions:
         type: "ol.qualifier"
         column: "AnnualPercentAMI"
         transforms:
+        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "2", "99"]
           goal: ["", "", ">", ""]
@@ -718,6 +760,7 @@ entityDefinitions:
         type: "ol.value"
         column: "AnnualPercentAMI"
         transforms:
+        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "2", "99"]
           goal: ["", "", 30, ""]
@@ -725,6 +768,7 @@ entityDefinitions:
         type: "ol.category"
         column: "AnnualPercentAMI"
         transforms:
+        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "2", "99"]
           goal: ["0-14% of AMI for household size", "15-30% of AMI for household size", "More than 30% of AMI for household size", "Data not collected"]
@@ -740,7 +784,7 @@ entityDefinitions:
     propertyDefinitions: 
       ol.id: 
         type: "ol.id"
-        column: "IncomeBenefitsID"
+        column: "ServicesID"
       ol.type: 
         type: "ol.type"
         transforms:
@@ -774,7 +818,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported1"
 
   reported2:
@@ -794,7 +838,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported2"
 
   reported3:
@@ -814,7 +858,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported3"
 
   reported4:
@@ -834,7 +878,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported4"
 
   reported5:
@@ -854,7 +898,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported5"
 
   reported6:
@@ -874,7 +918,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported6"
 
   reported7:
@@ -894,7 +938,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported7"
 
   reported8:
@@ -914,7 +958,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported8"
 
   reported9:
@@ -934,7 +978,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported9"
 
   reported10:
@@ -954,7 +998,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported10"
 
 
@@ -975,7 +1019,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported11"
 
   reported12:
@@ -995,7 +1039,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported12"
 
   reported13:
@@ -1015,7 +1059,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported13"
 
   reported14:
@@ -1035,7 +1079,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported14"
 
   reported15:
@@ -1055,7 +1099,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported15"
 
   reported16:
@@ -1075,7 +1119,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported16"
 
   reported17:
@@ -1095,7 +1139,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported17"
 
   reported18:
@@ -1115,7 +1159,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported18"
 
   reported19:
@@ -1135,7 +1179,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported19"
 
   reported20:
@@ -1155,7 +1199,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported20"
 
   reported21:
@@ -1175,7 +1219,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported21"
 
   reported22:
@@ -1195,7 +1239,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported22"
 
   reported23:
@@ -1215,7 +1259,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported23"
 
   reported24:
@@ -1235,7 +1279,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported24"
 
   reported25:
@@ -1255,7 +1299,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported25"
 
   reported26:
@@ -1268,14 +1312,14 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID"]
+          columns: ["PersonalID", "ServicesID"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
-        column: "InformationDate"
+        column: "DateProvided"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported26"
 
   # partof:

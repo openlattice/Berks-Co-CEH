@@ -1,5 +1,7 @@
 # change limit for prod: select d.*, h."InformationDate" as "InformationDate_HDV", h."PregnancyStatus", h."DueDate", e."EntryDate", ex."ExitDate", e."DisablingCondition" from enrollment as e left join exit as ex on e."EnrollmentID"=ex."EnrollmentID" AND e."PersonalID"=ex."PersonalID" left join disabilities as d on e."EnrollmentID"=d."EnrollmentID" AND e."PersonalID"=d."PersonalID" left join health_and_dv as h on d."EnrollmentID"=h."EnrollmentID" AND e."PersonalID"=h."PersonalID" limit 5000;
 
+# intelliJ: "select d.*, h.\"HealthAndDVID\", h.\"InformationDate\" as \"InformationDate_HDV\", h.\"PregnancyStatus\", h.\"DueDate\", e.\"EntryDate\", ex.\"ExitDate\", e.\"DisablingCondition\" from enrollment as e left join exit as ex on e.\"EnrollmentID\"=ex.\"EnrollmentID\" AND e.\"PersonalID\"=ex.\"PersonalID\" left join disabilities as d on e.\"EnrollmentID\"=d.\"EnrollmentID\" AND e.\"PersonalID\"=d.\"PersonalID\" left join health_and_dv as h on d.\"EnrollmentID\"=h.\"EnrollmentID\" AND e.\"PersonalID\"=h.\"PersonalID\" limit 5000; "
+
 entityDefinitions:
   client: 
     fqn: "general.person"
@@ -17,18 +19,18 @@ entityDefinitions:
       ol.id:
         type: "ol.id"
         column: "EnrollmentID"
-      ol.admissiondate: 
-        type: "ol.admissiondate"
+      ol.effectivedate: 
+        type: "ol.effectivedate"
         column: "EntryDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
-      ol.dischargedate: 
-        type: "ol.dischargedate"
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+      ol.datetimeend: 
+        type: "ol.datetimeend"
         column: "ExitDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "enrollment"
 
   disabilities:
@@ -43,14 +45,15 @@ entityDefinitions:
         column: "InformationDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
-      ol.clinicalstatus: 
-        type: "ol.clinicalstatus"
-        column: "DisablingCondition" #from enrollment
-        transforms:
-        - !<transforms.ReplaceTransform>
-          target: ["0", "1", "8", "9", "99"]
-          goal: ["no", "yes", "Client doesn't know", "Client refused", "Data not collected"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+      # ol.clinicalstatus: #taking out because this pertains to client in general
+      #   type: "ol.clinicalstatus"
+      #   column: "DisablingCondition" #from enrollment - does client have disabling condition
+      #   transforms:
+      #   - !<transforms.ParseIntTransform> {}
+      #   - !<transforms.ReplaceTransform>
+      #     target: ["0", "1", "8", "9", "99"]
+      #     goal: ["No", "Yes", "Client doesn't know", "Client refused", "Data not collected"]
       health.mentalissue: 
         type: "health.mentalissue"
         transforms:
@@ -79,35 +82,90 @@ entityDefinitions:
         type: "ol.name"
         column: "DisabilityType"
         transforms:
+        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["5", "6", "7", "8", "9", "10"]
           goal: ["Physical disability", "Developmental disability", "Chronic health condition", "HIV/AIDS", "Mental health problem", "Substance abuse"]
-      ol.description:
-        type: "ol.description"
+      ol.clinicalstatus: 
+        type: "ol.clinicalstatus"
         transforms: 
         - !<transforms.BooleanContainsTransform>
           column: "DisabilityType"
           string: "10"
           transformsIfTrue:
-          - !<transforms.ColumnTransform>
+          - !<transforms.ParseIntTransform>
             column: "DisabilityResponse"
-            transforms:
-            - !<transforms.ReplaceTransform>
-              target: ["0", "1", "2", "3", "8", "9", "99"]
-              goal: ["No", "Alcohol abuse", "Drug abuse", "Both alcohol and drug abuse", "Client doesn't know", "Client refused", "Data not collected"]
-      ol.clinicalstatus2:
+          - !<transforms.ReplaceTransform>
+            target: ["0", "1", "2", "3", "8", "9", "99"]
+            goal: ["Substance Abuse: No", "Alcohol abuse", "Drug abuse", "Both alcohol and drug abuse", "Client doesn't know", "Client refused", "Data not collected"]
+      ol.clinicalstatus2: 
         type: "ol.clinicalstatus"
         transforms:
-        - !<transforms.BooleanRegexTransform>
+        - !<transforms.BooleanContainsTransform>
           column: "DisabilityType"
-          pattern: "(?i)(\\b5\\b|\\b6\\b|\\b7\\b|\\b8\\b|\\b9\\b)"
+          string: "5"
           transformsIfTrue:
-          - !<transforms.ColumnTransform>
+          - !<transforms.ParseIntTransform>
             column: "DisabilityResponse"
-            transforms:
-            - !<transforms.ReplaceTransform>
-              target: ["0", "1", "8", "9", "99"]
-              goal: ["No", "Yes", "Client doesn't know", "Client refused", "Data not collected"]
+          - !<transforms.ReplaceTransform>
+            target: ["0", "1", "8", "9", "99"]
+            goal: ["Physical disability: No", "Physical disability: Yes", "Physical disability: Client doesn't know", "Physical disability: Client refused", "Physical disability: Data not collected"]
+      ol.clinicalstatus3: 
+        type: "ol.clinicalstatus"
+        transforms:
+        - !<transforms.BooleanContainsTransform>
+          column: "DisabilityType"
+          string: "6"
+          transformsIfTrue:
+          - !<transforms.ParseIntTransform>
+            column: "DisabilityResponse"
+          - !<transforms.ReplaceTransform>
+            target: ["0", "1", "8", "9", "99"]
+            goal: ["Developmental disability: No", "Developmental disability: Yes", "Developmental disability: Client doesn't know", "Developmental disability: Client refused", "Developmental disability: Data not collected"]
+      ol.clinicalstatus4: 
+        type: "ol.clinicalstatus"
+        transforms:
+        - !<transforms.BooleanContainsTransform>
+          column: "DisabilityType"
+          string: "7"
+          transformsIfTrue:
+          - !<transforms.ParseIntTransform>
+            column: "DisabilityResponse"
+          - !<transforms.ReplaceTransform>
+            target: ["0", "1", "8", "9", "99"]
+            goal: ["Chronic health condition: No", "Chronic health condition: Yes", "Chronic health condition: Client doesn't know", "Chronic health condition: Client refused", "Chronic health condition: Data not collected"]
+      ol.clinicalstatus5: 
+        type: "ol.clinicalstatus"
+        transforms:
+        - !<transforms.BooleanContainsTransform>
+          column: "DisabilityType"
+          string: "8"
+          transformsIfTrue:
+          - !<transforms.ParseIntTransform>
+            column: "DisabilityResponse"
+          - !<transforms.ReplaceTransform>
+            target: ["0", "1", "8", "9", "99"]
+            goal: ["HIV/AIDS: No", "HIV/AIDS: Yes", "HIV/AIDS: Client doesn't know", "HIV/AIDS: Client refused", "HIV/AIDS: Data not collected"]
+      ol.clinicalstatus6: 
+        type: "ol.clinicalstatus"
+        transforms:
+        - !<transforms.BooleanContainsTransform>
+          column: "DisabilityType"
+          string: "9"
+          transformsIfTrue:
+          - !<transforms.ParseIntTransform>
+            column: "DisabilityResponse"
+          - !<transforms.ReplaceTransform>
+            target: ["0", "1", "8", "9", "99"]
+            goal: ["Mental health problem: No", "Mental health problem: Yes", "Mental health problem: Client doesn't know", "Mental health problem: Client refused", "Mental health problem: Data not collected"]
+      ol.severity: 
+        type: "ol.severity"
+        column: "IndefiniteAndImpairs"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform> 
+          target: ["0", "1", "8", "9", "99"]
+          goal: ["No", "Yes", "Client doesn't know", "Client refused", "Data not collected"]
     name: "disabilities"
 
   pregnancy:
@@ -127,14 +185,15 @@ entityDefinitions:
         column: "InformationDate_HDV"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
       ol.clinicalstatus:
         type: "ol.clinicalstatus"
         column: "PregnancyStatus"
         transforms: 
+        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "8", "9", "99"] 
-          goal: ["no", "yes", "Client doesn't know", "Client refused", "Data not collected"]
+          goal: ["No", "Yes", "Client doesn't know", "Client refused", "Data not collected"]
       ol.enddate:
         type: "ol.enddate"
         column: "DueDate"
@@ -202,7 +261,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms: 
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]      
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]      
     name: "addresses1"
 
   addresses2:
@@ -221,7 +280,7 @@ associationDefinitions:
         column: "InformationDate_HDV"
         transforms: 
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]      
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]      
     name: "addresses2"
 
 
@@ -260,5 +319,11 @@ associationDefinitions:
         - !<transforms.ConcatTransform>
           columns: ["PersonalID", "EnrollmentID"]
           separator: "_"
+      date.completeddatetime:
+        type: "date.completeddatetime" 
+        column: "EntryDate"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "presentsfor"
 

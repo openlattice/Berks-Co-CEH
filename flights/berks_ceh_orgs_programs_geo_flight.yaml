@@ -1,0 +1,372 @@
+# change limit for prod: select e."EnrollmentID", e."EntryDate",  s."ServicesID", s."DateProvided", p."ProjectID", p."ProjectType", p."ProjectName", p."HousingType", p."OperatingStartDate", p."OperatingEndDate", o."OrganizationID", o."Organizationname", o."Organizationcommonname", g."GeographyID", g."GeographyType", g."Address1", g."Address2", g."City", g."State", g."ZIP" from enrollment as e left join project as p on e."ProjectID"=p."ProjectID" left join organization as o on p."OrganizationID"=o."OrganizationID" left join geography as g on e."ProjectID"=g."ProjectID" left join services as s on e."EnrollmentID"=s."EnrollmentID" AND e."PersonalID"= s."PersonalID" limit 5000; 
+#intellij: "select e.\"EnrollmentID\", e.\"EntryDate\", s.\"ServicesID\", s.\"DateProvided\", p.\"ProjectID\", p.\"ProjectType\", p.\"ProjectName\", p.\"HousingType\", p.\"OperatingStartDate\", p.\"OperatingEndDate\", o.\"OrganizationID\", o.\"Organizationname\", o.\"Organizationcommonname\", g.\"GeographyID\", g.\"GeographyType\", g.\"Address1\", g.\"Address2\", g.\"City\", g.\"State\", g.\"ZIP\" from enrollment as e left join project as p on e.\"ProjectID\"=p.\"ProjectID\" left join organization as o on p.\"OrganizationID\"=o.\"OrganizationID\" left join geography as g on e.\"ProjectID\"=g.\"ProjectID\" left join services as s on e.\"EnrollmentID\"=s.\"EnrollmentID\" AND e.\"PersonalID\"= s.\"PersonalID\" limit 5000;"
+
+entityDefinitions: 
+  enrollment: 
+    fqn: "ol.episode"  
+    entitySetName: "BerksCEHEnrollments"
+    propertyDefinitions:
+      ol.id: 
+        type: "ol.id"
+        column: "EnrollmentID"
+      ol.effectivedate: 
+        type: "ol.effectivedate"
+        column: "EntryDate"
+        transforms: 
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+    name: "enrollment"
+
+  organization:
+    fqn: "ol.organization"
+    entitySetName: "BerksCEHOrganizations"
+    propertyDefinitions:
+      general.id:
+        type: "general.id"
+        column: "OrganizationID"
+      ol.organizationname: 
+        type: "ol.organizationname"
+        column: "Organizationname"
+      ol.abbreviation:
+        type: "ol.abbreviation" 
+        column: "Organizationcommonname" 
+    name: "organization"
+
+  program: 
+    fqn: "ol.program"
+    entitySetName: "BerksCEHPrograms"
+    propertyDefinitions:
+      ol.id: 
+        type: "ol.id"
+        column: "ProjectID"
+      ol.name: 
+        type: "ol.name"
+        column: "ProjectName"
+      ol.type: 
+        type: "ol.type"
+        column: "ProjectType"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["1", "2", "3", "4", "6", "7", "8", "9", "10", "11", "12", "13", "14"]
+          goal: ["Emergency Shelter", "Transitional Housing", "PH - Permanent Supportive Housing", "Street Outreach", "Services Only", "Other", "Safe Haven", "PH – Housing Only", "PH – Housing with Services (no disability required for entry)", "Day Shelter", "Homelessness Prevention", "PH - Rapid Re-Housing", "Coordinated Assessment"]
+      ol.description: 
+        type: "ol.description"
+        column: "HousingType"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["1", "2", "3"]
+          goal: ["site-based - single site", "site-based - clustered/multiple sites", "tenant-based - scattered site"]
+      ol.datetimestart: 
+        type: "ol.datetimestart"
+        column: "OperatingStartDate"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+      ol.datetimeend:
+        type: "ol.datetimeend"
+        column: "OperatingEndDate" #this is a text and is empty in table
+        transforms:
+        - !<transforms.DateAsDateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+    name: "program"
+
+
+  service:
+    fqn: "ol.encounter" 
+    entitySetName: "BerksCEHServices"
+    propertyDefinitions:
+      ol.id:
+        type: "ol.id" 
+        column: "ServicesID"
+      ol.datetimestart:
+        type: "ol.datetimestart" 
+        column: "DateProvided"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+      # ol.servicetype: 
+      #   type: "ol.servicetype"
+      #   column: "RecordType"
+      #   transforms:
+      #   - !<transforms.ParseIntTransform> {}
+      #   - !<transforms.ReplaceTransform>
+      #     target: ["12", "13", "141", "142", "143", "144", "151", "152", "161", "162", 200", "210"]
+      #     goal: ["Contact", "Contact", "PATH Service", "RHY Service", "HOPWA Service", "SSVF Service", "HOPWA financial assistance", "SSVF Financial Assistance", "PATH referral", "RHY referral", "Bed Night", "HUD-VASH OTH voucher tracking"]
+      # ol.type: 
+      #   type: "ol.type"
+      #   transforms:
+      #   - !<transforms.BooleanContainsTransform>
+      #     column: "RecordType"
+      #     string: "12"
+      #     transformsIfTrue:
+      #     # - !<transforms.ColumnTransform>
+      #     #   column: "TypeProvided"
+      #     - !<transforms.ParseIntTransform>
+      #       column: "TypeProvided"
+      #     - !<transforms.ReplaceTransform>
+      #       target: ["1", "2", "3"] 
+      #       goal: ["Place not meant for habitation", "Service setting, non-residential", "Service setting, residential"]
+      #   - !<transforms.BooleanContainsTransform> #not sure if i can do this. 
+      #     column: "RecordType"
+      #     string: "13"
+      #     transformsIfTrue:
+      #     - !<transforms.ParseIntTransform>
+      #       column: "TypeProvided"
+      #     - !<transforms.ReplaceTransform>
+      #       target: ["0", "1", "2"] 
+      #       goal: ["No", "Yes", "Worker unable to determine"]
+      #   - !<transforms.BooleanContainsTransform> #not sure if i can do this. 
+      #     column: "RecordType"
+      #     string: "144"
+      #     transformsIfTrue:
+      #     - !<transforms.ParseIntTransform>
+      #       column: "TypeProvided"
+      #     - !<transforms.ReplaceTransform>
+      #       target: ["1", "2", "3", "4", "5", "6"] 
+      #       goal: ["Outreach services", "Case management services", "Assistance obtaining VA benefits", "Assistance obtaining/coordinating other public benefits", "Direct provision of other public benefits", "Other (non-TFA) supportive service approved by VA"]
+      #   - !<transforms.BooleanContainsTransform> #not sure if i can do this. 
+      #     column: "RecordType"
+      #     string: "152"
+      #     transformsIfTrue:
+      #     - !<transforms.ParseIntTransform>
+      #       column: "TypeProvided"
+      #     - !<transforms.ReplaceTransform>
+      #       target: ["1", "2", "3", "4", "5", "8", "9", "10", "11", "12", "14"] 
+      #       goal: ["Rental assistance", "Security deposit", "Utility deposit", "Utility fee payment assistance", "Moving costs", "Transportation services: tokens/vouchers", "Transportation services: vehicle repair/maintenance", "Child care", "General housing stability assistance - emergency supplies", "General housing stability assistance - other", "Emergency housing assistance"]
+    name: "service"
+
+
+  location: 
+    fqn: "ol.location"
+    entitySetName: "BerksCEHLocations"
+    propertyDefinitions: 
+      general.id:
+        type: "general.id"
+        column: "GeographyID"
+      ol.id: 
+        type: "ol.id"
+        column: "ProjectID"
+      ol.type: 
+        type: "ol.type"
+        column: "GeographyType"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["1", "2", "3"]
+          goal: ["Urban", "Suburban", "Rural"]
+      location.street: 
+        type: "location.street"
+        column: "Address1"
+      location.addressline2: 
+        type: "location.addressline2"
+        column: "Address2"
+      location.city:
+        type: "location.city"
+        column: "City"
+      location.state:
+        type: "location.state"
+        column: "State"
+      location.zip:
+        type: "location.zip"
+        column: "ZIP"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+    name: "location"
+
+associationDefinitions:
+  # presentsfor1:
+  #   fqn: "ol.presentsfor"
+  #   entitySetName: "BerksPresentsFor"
+  #   src: "household"
+  #   dst: "enrollment"
+  #   propertyDefinitions:
+  #     ol.id:
+  #       type: "ol.id"
+  #       transforms:
+  #       - !<transforms.ConcatTransform>
+  #         columns: ["HouseholdID", "EnrollmentID"]
+  #         separator: "_"
+  #   name: "presentsfor1"
+
+  # presentsfor2:
+  #   fqn: "ol.presentsfor"
+  #   entitySetName: "BerksPresentsFor"
+  #   src: "client"
+  #   dst: "enrollment"
+  #   propertyDefinitions:
+  #     ol.id:
+  #       type: "ol.id"
+  #       transforms:
+  #       - !<transforms.ConcatTransform>
+  #         columns: ["PersonalID", "EnrollmentID"]
+  #         separator: "_"
+  #     date.completeddatetime:
+  #       type: "date.completeddatetime"
+  #       column: "EntryDate"
+  #       transforms: 
+  #       - !<transforms.DateTimeTransform>
+  #         pattern: ["yyyy-MM-dd HH:mm:ss"]
+  #   name: "presentsfor2"
+
+  # presentsfor3:
+  #   fqn: "ol.presentsfor"
+  #   entitySetName: "BerksPresentsFor"
+  #   src: "client"
+  #   dst: "service"
+  #   propertyDefinitions:
+  #     ol.id:
+  #       type: "ol.id"
+  #       transforms:
+  #       - !<transforms.ConcatTransform>
+  #         columns: ["PersonalID", "ServicesID"]
+  #         separator: "_"
+  #     date.completeddatetime:
+  #       type: "date.completeddatetime" 
+  #       column: "DateProvided"
+  #       transforms:
+  #       - !<transforms.DateTransform>
+  #         pattern: ["MM/dd/yy","M/dd/yy","MM/d/yy","M/d/yy"]
+  #   name: "presentsfor3"
+
+
+  # partof1:
+  #   fqn: "ol.partof"
+  #   entitySetName: "BerksPartOf"
+  #   src: "client"
+  #   dst: "household"
+  #   propertyDefinitions:
+  #     ol.id:
+  #       type: "ol.id"
+  #       transforms:
+  #       - !<transforms.ConcatTransform>
+  #         columns: ["PersonalID", "HouseholdID"]
+  #         separator: "_"
+  #     ol.role: 
+  #       type: "ol.role"
+  #       column: "RelationshiptoHoH"
+  #       transforms:
+  #       - !<transforms.ParseIntTransform> {} 
+  #       - !<transforms.ReplaceTransform>
+  #         target: ["1", "2", "3", "4", "5", "99"]
+  #         goal: ["Self (head of household", "Child", "Spouse or partner", "Other relative", "Unrealted household member", "Data not collected"]
+  #   name: "partof1"
+
+  provided1: 
+    fqn: "ol.provided"
+    entitySetName: "BerksProvided"
+    src: "organization"
+    dst: "enrollment"
+    propertyDefinitions:
+      general.id:
+        type: "general.id"
+        transforms: 
+        - !<transforms.ConcatTransform>
+          columns: ["OrganizationID", "EnrollmentID"]
+          separator: "_"
+      general.datetime: 
+        type: "general.datetime"
+        column: "EntryDate"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+    name: "provided1"
+
+  provided2: 
+    fqn: "ol.provided"
+    entitySetName: "BerksProvided"
+    src: "program"
+    dst: "enrollment"
+    propertyDefinitions:
+      general.id:
+        type: "general.id"
+        transforms: 
+        - !<transforms.ConcatTransform>
+          columns: ["ProjectID", "EnrollmentID"]
+          separator: "_"
+      general.datetime: 
+        type: "general.datetime"
+        column: "EntryDate"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+    name: "provided2"
+
+  includes: 
+    fqn: "ol.includes"
+    entitySetName: "BerksIncludes"
+    src: "organization"
+    dst: "program"
+    propertyDefinitions: 
+      general.id: 
+        type: "general.id"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["OrganizationID", "ProjectID"]
+          separator: "_"
+    name: "includes"
+
+  locatedat1: 
+    fqn: "ol.locatedat"
+    entitySetName: "BerksLocatedAt"
+    src: "program"
+    dst: "location"
+    propertyDefinitions: 
+      general.id: 
+        type: "general.id"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["ProjectID", "GeographyID"]
+          separator: "_"
+    name: "locatedat1"
+
+  partof2:
+    fqn: "ol.partof"
+    entitySetName: "BerksPartOf"
+    src: "service"
+    dst: "program"
+    propertyDefinitions:
+      ol.id:
+        type: "ol.id"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["ServicesID", "ProjectID"]
+          separator: "_"
+    name: "partof2"
+    
+  partof:
+    fqn: "ol.partof"
+    entitySetName: "BerksPartOf"
+    src: "service"
+    dst: "enrollment"
+    propertyDefinitions:
+      ol.id:
+        type: "ol.id"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["ServicesID", "EnrollmentID"]
+          separator: "_"
+    name: "partof"
+    
+
+  locatedat2: 
+    fqn: "ol.locatedat"
+    entitySetName: "BerksLocatedAt"
+    src: "service"
+    dst: "location"
+    propertyDefinitions: 
+      general.id: 
+        type: "general.id"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["ServicesID", "GeographyID"]
+          separator: "_"
+      date.completeddatetime:
+        type: "date.completeddatetime" 
+        column: "DateProvided"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+    name: "locatedat2"
+  
