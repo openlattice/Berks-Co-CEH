@@ -10,6 +10,15 @@ entityDefinitions:
       nc.SubjectIdentification:
         type: "nc.SubjectIdentification"
         column: "PersonalID"
+    ol.datasource:
+        type: "ol.datasource"
+        transforms:
+        - !<transforms.ValueTransform>
+          value: "Berks County CEH"
+    conditions:
+    - !<conditions.BooleanIsNullCondition>
+      column: "PersonalID"
+      reverse: false
     name: "client"
 
   household: 
@@ -23,7 +32,6 @@ entityDefinitions:
         type: "ol.disabledheadofhousehold"
         column: "DisabledHoH" #enrollment
         transforms: 
-        - !<transforms.ParseIntTransform> {}
         # - !<transforms.ParseBoolTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1"]
@@ -118,36 +126,9 @@ entityDefinitions:
         type: "ol.servicetype"
         column: "RecordType"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["12", "13", "141", "142", "143", "144", "151", "152", "161", "162", 200", "210"]
           goal: ["Contact", "Contact", "PATH Service", "RHY Service", "HOPWA Service", "SSVF Service", "HOPWA financial assistance", "SSVF Financial Assistance", "PATH referral", "RHY referral", "Bed Night", "HUD-VASH OTH voucher tracking"]
-      ol.type: 
-        type: "ol.type"
-        transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "RecordType"
-          string: "12"
-          transformsIfTrue:
-          # - !<transforms.ColumnTransform>
-          #   column: "TypeProvided"
-          - !<transforms.ParseIntTransform>
-            column: "TypeProvided"
-          - !<transforms.ReplaceTransform>
-            target: ["1", "2", "3"] 
-            goal: ["Place not meant for habitation", "Service setting, non-residential", "Service setting, residential"]
-      ol.type2:
-        type: "ol.type"
-        transforms:
-        - !<transforms.BooleanContainsTransform> #not sure if i can do this. 
-          column: "RecordType"
-          string: "13"
-          transformsIfTrue:
-          - !<transforms.ParseIntTransform>
-            column: "TypeProvided"
-          - !<transforms.ReplaceTransform>
-            target: ["0", "1", "2"] 
-            goal: ["No", "Yes", "Worker unable to determine"]
       ol.type3:
         type: "ol.type"
         transforms:
@@ -155,13 +136,12 @@ entityDefinitions:
           column: "RecordType"
           string: "144"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform>
             column: "TypeProvided"
           - !<transforms.ReplaceTransform>
             target: ["1", "2", "3", "4", "5", "6"] 
             goal: ["Outreach services", "Case management services", "Assistance obtaining VA benefits", "Assistance obtaining/coordinating other public benefits", "Direct provision of other public benefits", "Other (non-TFA) supportive service approved by VA"]
-      ol.type4:
-        type: "ol.type"
+      ol.reason:
+        type: "ol.reason"
         transforms: 
         - !<transforms.BooleanContainsTransform> #not sure if i can do this. 
           column: "RecordType"
@@ -288,7 +268,6 @@ associationDefinitions:
         type: "ol.role"
         column: "RelationshipToHoH"
         transforms:
-        - !<transforms.ParseIntTransform> {} 
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "4", "5", "99"]
           goal: ["Self (head of household)", "Child", "Spouse or partner", "Other relative", "Unrelated household member", "Data not collected"]
