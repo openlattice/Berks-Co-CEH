@@ -8,6 +8,15 @@ entityDefinitions:
       nc.SubjectIdentification:
         type: "nc.SubjectIdentification"
         column: "PersonalID"
+      ol.datasource:
+        type: "ol.datasource"
+        transforms:
+        - !<transforms.ValueTransform>
+          value: "Berks County CEH"
+    conditions:
+    - !<conditions.BooleanIsNullCondition>
+      column: "PersonalID"
+      reverse: false
     name: "client"
 
 
@@ -35,7 +44,6 @@ entityDefinitions:
         type: "ol.notes"
         column: "NoMedicaidReason"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "4", "8", "9", "99"]
           goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
@@ -74,7 +82,6 @@ entityDefinitions:
         type: "ol.notes"
         column: "NoMedicareReason"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "4", "8", "9", "99"]
           goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
@@ -113,7 +120,6 @@ entityDefinitions:
         type: "ol.notes"
         column: "NoSCHIPReason"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "4", "8", "9", "99"]
           goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
@@ -160,7 +166,7 @@ entityDefinitions:
 
   employerprovided: 
     fqn: "ol.insurance"
-    entitySetName: "BerksCEHEmployerProvided"
+    entitySetName: "BerksCEHEmployerProvidedInsurance"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
@@ -182,7 +188,6 @@ entityDefinitions:
         type: "ol.notes"
         column: "NoEmployerProvidedReason"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "4", "8", "9", "99"]
           goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
@@ -199,7 +204,7 @@ entityDefinitions:
 
   cobra: 
     fqn: "ol.insurance"
-    entitySetName: "BerksCEHCOBRA"
+    entitySetName: "BerksCEHCOBRAInsurance"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
@@ -221,7 +226,6 @@ entityDefinitions:
         type: "ol.notes"
         column: "NoCOBRAReason"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "4", "8", "9", "99"]
           goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
@@ -238,7 +242,7 @@ entityDefinitions:
 
   privatepay: 
     fqn: "ol.insurance"
-    entitySetName: "BerksCEHPrivatePay"
+    entitySetName: "BerksCEHPrivatePayInsurance"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
@@ -260,7 +264,6 @@ entityDefinitions:
         type: "ol.notes"
         column: "NoPrivatePayReason"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "4", "8", "9", "99"]
           goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
@@ -277,7 +280,7 @@ entityDefinitions:
 
   statehealthins: 
     fqn: "ol.insurance"
-    entitySetName: "BerksCEHStateHealthIns"
+    entitySetName: "BerksCEHStateHealthInsurance"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
@@ -299,7 +302,6 @@ entityDefinitions:
         type: "ol.notes"
         column: "NoStateHealthInsReason"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "4", "8", "9", "99"]
           goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
@@ -316,7 +318,7 @@ entityDefinitions:
 
   indianhealthservices: 
     fqn: "ol.insurance"
-    entitySetName: "BerksCEHIndianHealthServices"
+    entitySetName: "BerksCEHIndianHealthServicesInsurance"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
@@ -338,7 +340,6 @@ entityDefinitions:
         type: "ol.notes"
         column: "NoStateHealthInsReason"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "4", "8", "9", "99"]
           goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
@@ -382,7 +383,7 @@ entityDefinitions:
       
   connectionwithsoar: 
     fqn: "ol.insurance"
-    entitySetName: "BerksCEHConnectionWithSOAR"
+    entitySetName: "BerksCEHConnectionWithSOARInsurance"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
