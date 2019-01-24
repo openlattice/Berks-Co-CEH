@@ -54,7 +54,6 @@ entityDefinitions:
         type: "ol.description"
         column: "HousingType"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3"]
           goal: ["site-based - single site", "site-based - clustered/multiple sites", "tenant-based - scattered site"]
@@ -63,12 +62,6 @@ entityDefinitions:
         column: "OperatingStartDate"
         transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
-      ol.datetimeend:
-        type: "ol.datetimeend"
-        column: "OperatingEndDate" #this is a text and is empty in table
-        transforms:
-        - !<transforms.DateAsDateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "program"
 
@@ -152,7 +145,6 @@ entityDefinitions:
         type: "ol.type"
         column: "GeographyType"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3"]
           goal: ["Urban", "Suburban", "Rural"]
