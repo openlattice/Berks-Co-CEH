@@ -10,6 +10,15 @@ entityDefinitions:
       nc.SubjectIdentification:
         type: "nc.SubjectIdentification"
         column: "PersonalID"
+    ol.datasource:
+        type: "ol.datasource"
+        transforms:
+        - !<transforms.ValueTransform>
+          value: "Berks County CEH"
+    conditions:
+    - !<conditions.BooleanIsNullCondition>
+      column: "PersonalID"
+      reverse: false   
     name: "client"
 
   enrollment:
@@ -82,7 +91,6 @@ entityDefinitions:
         type: "ol.name"
         column: "DisabilityType"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["5", "6", "7", "8", "9", "10"]
           goal: ["Physical disability", "Developmental disability", "Chronic health condition", "HIV/AIDS", "Mental health problem", "Substance abuse"]
@@ -93,7 +101,6 @@ entityDefinitions:
           column: "DisabilityType"
           string: "10"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform>
             column: "DisabilityResponse"
           - !<transforms.ReplaceTransform>
             target: ["0", "1", "2", "3", "8", "9", "99"]
@@ -105,7 +112,6 @@ entityDefinitions:
           column: "DisabilityType"
           string: "5"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform>
             column: "DisabilityResponse"
           - !<transforms.ReplaceTransform>
             target: ["0", "1", "8", "9", "99"]
@@ -117,7 +123,6 @@ entityDefinitions:
           column: "DisabilityType"
           string: "6"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform>
             column: "DisabilityResponse"
           - !<transforms.ReplaceTransform>
             target: ["0", "1", "8", "9", "99"]
@@ -129,7 +134,6 @@ entityDefinitions:
           column: "DisabilityType"
           string: "7"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform>
             column: "DisabilityResponse"
           - !<transforms.ReplaceTransform>
             target: ["0", "1", "8", "9", "99"]
@@ -141,7 +145,6 @@ entityDefinitions:
           column: "DisabilityType"
           string: "8"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform>
             column: "DisabilityResponse"
           - !<transforms.ReplaceTransform>
             target: ["0", "1", "8", "9", "99"]
@@ -153,7 +156,6 @@ entityDefinitions:
           column: "DisabilityType"
           string: "9"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform>
             column: "DisabilityResponse"
           - !<transforms.ReplaceTransform>
             target: ["0", "1", "8", "9", "99"]
@@ -162,7 +164,6 @@ entityDefinitions:
         type: "ol.severity"
         column: "IndefiniteAndImpairs"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform> 
           target: ["0", "1", "8", "9", "99"]
           goal: ["No", "Yes", "Client doesn't know", "Client refused", "Data not collected"]
@@ -190,7 +191,6 @@ entityDefinitions:
         type: "ol.clinicalstatus"
         column: "PregnancyStatus"
         transforms: 
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "8", "9", "99"] 
           goal: ["No", "Yes", "Client doesn't know", "Client refused", "Data not collected"]
@@ -198,7 +198,7 @@ entityDefinitions:
         type: "ol.enddate"
         column: "DueDate"
         transforms:
-        - !<transforms.DateTimeTransform>
+        - !<transforms.DateTimeAsDateTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss"]
     conditions: 
     - !<conditions.BooleanIsNullCondition>
@@ -207,43 +207,43 @@ entityDefinitions:
     name: "pregnancy"
 
 associationDefinitions: 
-  # observedin1:
-  #   fqn: "ol.observedin"
-  #   entitySetName: "BerksObservedIn"
-  #   src: "disabilities"
-  #   dst: "client"
-  #   propertyDefinitions:
-  #     ol.id:
-  #       type: "ol.id"
-  #       transforms: 
-  #       - !<transforms.ConcatTransform>
-  #         columns: ["DisabilitiesID", "PersonalID"]
-  #     date.completeddatetime: 
-  #       type: "date.completeddatetime"
-  #       column: "InformationDate"
-  #       transforms: 
-  #       - !<transforms.DateTimeTransform>
-  #         pattern: ["yyyy-MM-dd HH:mm:ss"]
-  #   name: "observedin1"
+  observedin1:
+    fqn: "ol.observedin"
+    entitySetName: "BerksObservedIn"
+    src: "disabilities"
+    dst: "client"
+    propertyDefinitions:
+      ol.id:
+        type: "ol.id"
+        transforms: 
+        - !<transforms.ConcatTransform>
+          columns: ["DisabilitiesID", "PersonalID"]
+      date.completeddatetime: 
+        type: "date.completeddatetime"
+        column: "InformationDate"
+        transforms: 
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss"]
+    name: "observedin1"
 
-  # observedin2:
-  #   fqn: "ol.observedin"
-  #   entitySetName: "BerksObservedIn"
-  #   src: "pregnancy"
-  #   dst: "client"
-  #   propertyDefinitions:
-  #     ol.id:
-  #       type: "ol.id"
-  #       transforms: 
-  #       - !<transforms.ConcatTransform>
-  #         columns: ["HealthAndDVID", "PersonalID"]
-  #     date.completeddatetime: 
-  #       type: "date.completeddatetime"
-  #       column: "InformationDate_HDV"
-  #       transforms: 
-  #       - !<transforms.DateTimeTransform>
-  #         pattern: ["yyyy-MM-dd HH:mm:ss"]      
-  #   name: "observedin2"
+  observedin2:
+    fqn: "ol.observedin"
+    entitySetName: "BerksObservedIn"
+    src: "pregnancy"
+    dst: "client"
+    propertyDefinitions:
+      ol.id:
+        type: "ol.id"
+        transforms: 
+        - !<transforms.ConcatTransform>
+          columns: ["HealthAndDVID", "PersonalID"]
+      date.completeddatetime: 
+        type: "date.completeddatetime"
+        column: "InformationDate_HDV"
+        transforms: 
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss"]      
+    name: "observedin2"
 
   addresses1:
     fqn: "ol.addresses"
