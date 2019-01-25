@@ -512,6 +512,7 @@ entityDefinitions:
           - !<transforms.ValueTransform>
             value: "Non-Cash Benefits from Any Source"
           transformsIfFalse: 
+          - !<transforms.ParseIntTransform> 
             column: "BenefitsFromAnySource"
           - !<transforms.ReplaceTransform>
             target: ["0", "8", "9", "99"]
@@ -723,6 +724,7 @@ entityDefinitions:
         type: "ol.category"
         column: "PercentAMI"
         transforms:
+        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "99" ]
           goal: ["Less than 30%", "30% to 50%", "Greater than 50%", "Data not collected"]
@@ -743,6 +745,7 @@ entityDefinitions:
         type: "ol.maximumvalue"
         column: "AnnualPercentAMI"
         transforms:
+        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "2", "99"]
           goal: [14, 30, "", ""]
@@ -750,6 +753,7 @@ entityDefinitions:
         type: "ol.minimumvalue"
         column: "AnnualPercentAMI"
         transforms:
+        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "2", "99"]
           goal: [0, 15, "", ""]
@@ -757,6 +761,7 @@ entityDefinitions:
         type: "ol.qualifier"
         column: "AnnualPercentAMI"
         transforms:
+        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "2", "99"]
           goal: ["", "", ">", ""]
@@ -772,6 +777,7 @@ entityDefinitions:
         type: "ol.category"
         column: "AnnualPercentAMI"
         transforms:
+        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "2", "99"]
           goal: ["0-14% of AMI for household size", "15-30% of AMI for household size", "More than 30% of AMI for household size", "Data not collected"]
