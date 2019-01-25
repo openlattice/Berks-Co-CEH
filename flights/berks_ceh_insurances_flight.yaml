@@ -1,571 +1,317 @@
-#change limit for prod: select * from incomebenefits limit 5000;
+# change limit for prod: select e."EnrollmentID", e."EntryDate",  s."ServicesID", s."DateProvided", p."ProjectID", p."ProjectType", p."ProjectName", p."HousingType", p."OperatingStartDate", p."OperatingEndDate", o."OrganizationID", o."Organizationname", o."Organizationcommonname", g."GeographyID", g."GeographyType", g."Address1", g."Address2", g."City", g."State", g."ZIP" from enrollment as e left join project as p on e."ProjectID"=p."ProjectID" left join organization as o on p."OrganizationID"=o."OrganizationID" left join geography as g on e."ProjectID"=g."ProjectID" left join services as s on e."EnrollmentID"=s."EnrollmentID" AND e."PersonalID"= s."PersonalID" limit 5000; 
+#intellij: "select e.\"EnrollmentID\", e.\"EntryDate\", s.\"ServicesID\", s.\"DateProvided\", p.\"ProjectID\", p.\"ProjectType\", p.\"ProjectName\", p.\"HousingType\", p.\"OperatingStartDate\", p.\"OperatingEndDate\", o.\"OrganizationID\", o.\"Organizationname\", o.\"Organizationcommonname\", g.\"GeographyID\", g.\"GeographyType\", g.\"Address1\", g.\"Address2\", g.\"City\", g.\"State\", g.\"ZIP\" from enrollment as e left join project as p on e.\"ProjectID\"=p.\"ProjectID\" left join organization as o on p.\"OrganizationID\"=o.\"OrganizationID\" left join geography as g on e.\"ProjectID\"=g.\"ProjectID\" left join services as s on e.\"EnrollmentID\"=s.\"EnrollmentID\" AND e.\"PersonalID\"= s.\"PersonalID\" limit 5000;"
 
-entityDefinitions:
-  client:
-    fqn: "general.person"
-    entitySetName: "BerksCEHClients"
+entityDefinitions: 
+  enrollment: 
+    fqn: "ol.episode"  
+    entitySetName: "BerksCEHEnrollments"
     propertyDefinitions:
-      nc.SubjectIdentification:
-        type: "nc.SubjectIdentification"
-        column: "PersonalID"
-    ol.datasource:
-        type: "ol.datasource"
-        transforms:
-        - !<transforms.ValueTransform>
-          value: "Berks County CEH"
-    conditions:
-    - !<conditions.BooleanIsNullCondition>
-      column: "PersonalID"
-      reverse: false
-    name: "client"
+      ol.id: 
+        type: "ol.id"
+        column: "EnrollmentID"
+      ol.effectivedate: 
+        type: "ol.effectivedate"
+        column: "EntryDate"
+        transforms: 
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+    name: "enrollment"
 
-
-  medicaid: 
-    fqn: "ol.insurance"
-    entitySetName: "BerksCEHMedicaid"
-    propertyDefinitions: 
-      general.id: 
+  organization:
+    fqn: "ol.organization"
+    entitySetName: "BerksCEHOrganizations"
+    propertyDefinitions:
+      general.id:
         type: "general.id"
-        column: "IncomeBenefitsID"
-      ol.organizationname:
+        column: "OrganizationID"
+      ol.organizationname: 
         type: "ol.organizationname"
-        transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "Medicaid"
-          string: "1" 
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ValueTransform> 
-            value: "Medicaid"
-          transformsIfFalse:
-          - !<transforms.ValueTransform>
-            value: ""
-      ol.notes: 
-        type: "ol.notes"
-        column: "NoMedicaidReason"
+        column: "Organizationname"
+      ol.abbreviation:
+        type: "ol.abbreviation" 
+        column: "Organizationcommonname" 
+    name: "organization"
+
+  program: 
+    fqn: "ol.program"
+    entitySetName: "BerksCEHPrograms"
+    propertyDefinitions:
+      ol.id: 
+        type: "ol.id"
+        column: "ProjectID"
+      ol.name: 
+        type: "ol.name"
+        column: "ProjectName"
+      ol.type: 
+        type: "ol.type"
+        column: "ProjectType"
         transforms:
         - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
-          target: ["1", "2", "3", "4", "8", "9", "99"]
-          goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
-          ignoreCase: true
-    conditions:
-    - !<conditions.ConditionalOr> {} 
-    - !<conditions.BooleanIsNullCondition>
-      column: "Medicaid"
-      reverse: true
-    - !<conditions.BooleanIsNullCondition>
-      column: "NoMedicaidReason"
-      reverse: true
-    name: "medicaid"
-
-  medicare: 
-    fqn: "ol.insurance"
-    entitySetName: "BerksCEHMedicare"
-    propertyDefinitions: 
-      general.id: 
-        type: "general.id"
-        column: "IncomeBenefitsID"
-      ol.organizationname:
-        type: "ol.organizationname"
-        transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "Medicare"
-          string: "1" 
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ValueTransform> 
-            value: "Medicare"
-          transformsIfFalse:
-          - !<transforms.ValueTransform>
-            value: ""
-      ol.notes: 
-        type: "ol.notes"
-        column: "NoMedicareReason"
+          target: ["1", "2", "3", "4", "6", "7", "8", "9", "10", "11", "12", "13", "14"]
+          goal: ["Emergency Shelter", "Transitional Housing", "PH - Permanent Supportive Housing", "Street Outreach", "Services Only", "Other", "Safe Haven", "PH – Housing Only", "PH – Housing with Services (no disability required for entry)", "Day Shelter", "Homelessness Prevention", "PH - Rapid Re-Housing", "Coordinated Assessment"]
+      ol.description: 
+        type: "ol.description"
+        column: "HousingType"
         transforms:
         - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
-          target: ["1", "2", "3", "4", "8", "9", "99"]
-          goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
-          ignoreCase: true
-    conditions:
-    - !<conditions.ConditionalOr> {} 
-    - !<conditions.BooleanIsNullCondition>
-      column: "Medicare"
-      reverse: true
-    - !<conditions.BooleanIsNullCondition>
-      column: "NoMedicareReason"
-      reverse: true        
-    name: "medicare"
-
-  schip: 
-    fqn: "ol.insurance"
-    entitySetName: "BerksCEHSCHIP"
-    propertyDefinitions: 
-      general.id: 
-        type: "general.id"
-        column: "IncomeBenefitsID"
-      ol.organizationname:
-        type: "ol.organizationname"
+          target: ["1", "2", "3"]
+          goal: ["site-based - single site", "site-based - clustered/multiple sites", "tenant-based - scattered site"]
+      ol.datetimestart: 
+        type: "ol.datetimestart"
+        column: "OperatingStartDate"
         transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "SCHIP"
-          string: "1" 
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ValueTransform> 
-            value: "Healthy Kids (CHI) (State Children's HIP)"
-          transformsIfFalse:
-          - !<transforms.ValueTransform>
-            value: ""
-      ol.notes: 
-        type: "ol.notes"
-        column: "NoSCHIPReason"
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+    name: "program"
+
+
+  service:
+    fqn: "ol.encounter" 
+    entitySetName: "BerksCEHServices"
+    propertyDefinitions:
+      ol.id:
+        type: "ol.id" 
+        column: "ServicesID"
+      ol.datetimestart:
+        type: "ol.datetimestart" 
+        column: "DateProvided"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+    name: "service"
+
+
+  location: 
+    fqn: "ol.location"
+    entitySetName: "BerksCEHLocations"
+    propertyDefinitions: 
+      general.id:
+        type: "general.id"
+        column: "GeographyID"
+      ol.id: 
+        type: "ol.id"
+        column: "ProjectID"
+      ol.type: 
+        type: "ol.type"
+        column: "GeographyType"
         transforms:
         - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
-          target: ["1", "2", "3", "4", "8", "9", "99"]
-          goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
-          ignoreCase: true
-    conditions:
-    - !<conditions.ConditionalOr> {} 
-    - !<conditions.BooleanIsNullCondition>
-      column: "SCHIP"
-      reverse: true
-    - !<conditions.BooleanIsNullCondition>
-      column: "NoSCHIPReason"
-      reverse: true
-    name: "schip"
-
-  vamedicalservices: 
-    fqn: "ol.insurance"
-    entitySetName: "BerksCEHVAMedicalServices"
-    propertyDefinitions: 
-      general.id: 
-        type: "general.id"
-        column: "IncomeBenefitsID"
-      ol.organizationname:
-        type: "ol.organizationname"
-        transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "VAMedicalServices"
-          string: "1" 
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ValueTransform> 
-            value: "VA Medical Services"
-          transformsIfFalse:
-          - !<transforms.ValueTransform>
-            value: ""
-    conditions: 
-    - !<conditions.ConditionalOr> {}
-    - !<conditions.BooleanIsNullCondition>
-      column: "VAMedicalServices"
-      reverse: true
-    - !<conditions.BooleanIsNullCondition>
-      column: "NoVAMedReason"
-      reverse: true
-    name: "vamedicalservices"
-
-  employerprovidedinsurance: 
-    fqn: "ol.insurance"
-    entitySetName: "BerksCEHEmployerProvidedInsurance"
-    propertyDefinitions: 
-      general.id: 
-        type: "general.id"
-        column: "IncomeBenefitsID"
-      ol.organizationname:
-        type: "ol.organizationname"
-        transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "EmployerProvided"
-          string: "1" 
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ValueTransform> 
-            value: "Employer Provided"
-          transformsIfFalse:
-          - !<transforms.ValueTransform>
-            value: ""
-      ol.notes: 
-        type: "ol.notes"
-        column: "NoEmployerProvidedReason"
+          target: ["1", "2", "3"]
+          goal: ["Urban", "Suburban", "Rural"]
+      location.street: 
+        type: "location.street"
+        column: "Address1"
+      location.addressline2: 
+        type: "location.addressline2"
+        column: "Address2"
+      location.city:
+        type: "location.city"
+        column: "City"
+      location.state:
+        type: "location.state"
+        column: "State"
+      location.zip:
+        type: "location.zip"
+        column: "ZIP"
         transforms:
         - !<transforms.ParseIntTransform> {}
-        - !<transforms.ReplaceTransform>
-          target: ["1", "2", "3", "4", "8", "9", "99"]
-          goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
-          ignoreCase: true
-    conditions:
-    - !<conditions.ConditionalOr> {} 
-    - !<conditions.BooleanIsNullCondition>
-      column: "EmployerProvided"
-      reverse: true
-    - !<conditions.BooleanIsNullCondition>
-      column: "NoEmployerProvidedReason"
-      reverse: true
-    name: "employerprovidedinsurance"
+    name: "location"
 
-  cobrainsurance: 
-    fqn: "ol.insurance"
-    entitySetName: "BerksCEHCOBRAInsurance"
+associationDefinitions:
+  # presentsfor1:
+  #   fqn: "ol.presentsfor"
+  #   entitySetName: "BerksPresentsFor"
+  #   src: "household"
+  #   dst: "enrollment"
+  #   propertyDefinitions:
+  #     ol.id:
+  #       type: "ol.id"
+  #       transforms:
+  #       - !<transforms.ConcatTransform>
+  #         columns: ["HouseholdID", "EnrollmentID"]
+  #         separator: "_"
+  #   name: "presentsfor1"
+
+  # presentsfor2:
+  #   fqn: "ol.presentsfor"
+  #   entitySetName: "BerksPresentsFor"
+  #   src: "client"
+  #   dst: "enrollment"
+  #   propertyDefinitions:
+  #     ol.id:
+  #       type: "ol.id"
+  #       transforms:
+  #       - !<transforms.ConcatTransform>
+  #         columns: ["PersonalID", "EnrollmentID"]
+  #         separator: "_"
+  #     date.completeddatetime:
+  #       type: "date.completeddatetime"
+  #       column: "EntryDate"
+  #       transforms: 
+  #       - !<transforms.DateTimeTransform>
+  #         pattern: ["yyyy-MM-dd HH:mm:ss"]
+  #   name: "presentsfor2"
+
+  # presentsfor3:
+  #   fqn: "ol.presentsfor"
+  #   entitySetName: "BerksPresentsFor"
+  #   src: "client"
+  #   dst: "service"
+  #   propertyDefinitions:
+  #     ol.id:
+  #       type: "ol.id"
+  #       transforms:
+  #       - !<transforms.ConcatTransform>
+  #         columns: ["PersonalID", "ServicesID"]
+  #         separator: "_"
+  #     date.completeddatetime:
+  #       type: "date.completeddatetime" 
+  #       column: "DateProvided"
+  #       transforms:
+  #       - !<transforms.DateTransform>
+  #         pattern: ["MM/dd/yy","M/dd/yy","MM/d/yy","M/d/yy"]
+  #   name: "presentsfor3"
+
+
+  # partof1:
+  #   fqn: "ol.partof"
+  #   entitySetName: "BerksPartOf"
+  #   src: "client"
+  #   dst: "household"
+  #   propertyDefinitions:
+  #     ol.id:
+  #       type: "ol.id"
+  #       transforms:
+  #       - !<transforms.ConcatTransform>
+  #         columns: ["PersonalID", "HouseholdID"]
+  #         separator: "_"
+  #     ol.role: 
+  #       type: "ol.role"
+  #       column: "RelationshiptoHoH"
+  #       transforms:
+  #       - !<transforms.ParseIntTransform> {} 
+  #       - !<transforms.ReplaceTransform>
+  #         target: ["1", "2", "3", "4", "5", "99"]
+  #         goal: ["Self (head of household", "Child", "Spouse or partner", "Other relative", "Unrealted household member", "Data not collected"]
+  #   name: "partof1"
+
+  provided1: 
+    fqn: "ol.provided"
+    entitySetName: "BerksProvided"
+    src: "organization"
+    dst: "enrollment"
+    propertyDefinitions:
+      general.id:
+        type: "general.id"
+        transforms: 
+        - !<transforms.ConcatTransform>
+          columns: ["OrganizationID", "EnrollmentID"]
+          separator: "_"
+      general.datetime: 
+        type: "general.datetime"
+        column: "EntryDate"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+    name: "provided1"
+
+  provided2: 
+    fqn: "ol.provided"
+    entitySetName: "BerksProvided"
+    src: "program"
+    dst: "enrollment"
+    propertyDefinitions:
+      general.id:
+        type: "general.id"
+        transforms: 
+        - !<transforms.ConcatTransform>
+          columns: ["ProjectID", "EnrollmentID"]
+          separator: "_"
+      general.datetime: 
+        type: "general.datetime"
+        column: "EntryDate"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+    name: "provided2"
+
+  includes: 
+    fqn: "ol.includes"
+    entitySetName: "BerksIncludes"
+    src: "organization"
+    dst: "program"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
-        column: "IncomeBenefitsID"
-      ol.organizationname:
-        type: "ol.organizationname"
         transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "COBRA"
-          string: "1" #the field is a double - make sure can do this. 
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ValueTransform> 
-            value: "COBRA"
-          transformsIfFalse:
-          - !<transforms.ValueTransform>
-            value: ""
-      ol.notes: 
-        type: "ol.notes"
-        column: "NoCOBRAReason"
-        transforms:
-        - !<transforms.ParseIntTransform> {}
-        - !<transforms.ReplaceTransform>
-          target: ["1", "2", "3", "4", "8", "9", "99"]
-          goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
-          ignoreCase: true
-    conditions:
-    - !<conditions.ConditionalOr> {} 
-    - !<conditions.BooleanIsNullCondition>
-      column: "COBRA"
-      reverse: true
-    - !<conditions.BooleanIsNullCondition>
-      column: "NoCOBRAReason"
-      reverse: true
-    name: "cobrainsurance"
+        - !<transforms.ConcatTransform>
+          columns: ["OrganizationID", "ProjectID"]
+          separator: "_"
+    name: "includes"
 
-  privatepay: 
-    fqn: "ol.insurance"
-    entitySetName: "BerksCEHPrivatePay"
+  locatedat1: 
+    fqn: "ol.locatedat"
+    entitySetName: "BerksLocatedAt"
+    src: "program"
+    dst: "location"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
-        column: "IncomeBenefitsID"
-      ol.organizationname:
-        type: "ol.organizationname"
         transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "PrivatePay"
-          string: "1" 
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ValueTransform> 
-            value: "Private Pay Insurance"
-          transformsIfFalse:
-          - !<transforms.ValueTransform>
-            value: ""
-      ol.notes: 
-        type: "ol.notes"
-        column: "NoPrivatePayReason"
-        transforms:
-        - !<transforms.ParseIntTransform> {}
-        - !<transforms.ReplaceTransform>
-          target: ["1", "2", "3", "4", "8", "9", "99"]
-          goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
-          ignoreCase: true
-    conditions:
-    - !<conditions.ConditionalOr> {} 
-    - !<conditions.BooleanIsNullCondition>
-      column: "PrivatePay"
-      reverse: true
-    - !<conditions.BooleanIsNullCondition>
-      column: "NoPrivatePayReason"
-      reverse: true
-    name: "privatepay"
+        - !<transforms.ConcatTransform>
+          columns: ["ProjectID", "GeographyID"]
+          separator: "_"
+    name: "locatedat1"
 
-  statehealthinsurance: 
-    fqn: "ol.insurance"
-    entitySetName: "BerksCEHStateHealthInsurance"
+  partof2:
+    fqn: "ol.partof"
+    entitySetName: "BerksPartOf"
+    src: "service"
+    dst: "program"
+    propertyDefinitions:
+      ol.id:
+        type: "ol.id"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["ServicesID", "ProjectID"]
+          separator: "_"
+    name: "partof2"
+    
+  partof:
+    fqn: "ol.partof"
+    entitySetName: "BerksPartOf"
+    src: "service"
+    dst: "enrollment"
+    propertyDefinitions:
+      ol.id:
+        type: "ol.id"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["ServicesID", "EnrollmentID"]
+          separator: "_"
+    name: "partof"
+    
+
+  locatedat2: 
+    fqn: "ol.locatedat"
+    entitySetName: "BerksLocatedAt"
+    src: "service"
+    dst: "location"
     propertyDefinitions: 
       general.id: 
         type: "general.id"
-        column: "IncomeBenefitsID"
-      ol.organizationname:
-        type: "ol.organizationname"
         transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "StateHealthIns"
-          string: "1" 
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ValueTransform> 
-            value: "State Health Insurance"
-          transformsIfFalse:
-          - !<transforms.ValueTransform>
-            value: ""
-      ol.notes: 
-        type: "ol.notes"
-        column: "NoStateHealthInsReason"
-        transforms:
-        - !<transforms.ParseIntTransform> {}
-        - !<transforms.ReplaceTransform>
-          target: ["1", "2", "3", "4", "8", "9", "99"]
-          goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
-          ignoreCase: true
-    conditions:
-    - !<conditions.ConditionalOr> {} 
-    - !<conditions.BooleanIsNullCondition>
-      column: "StateHealthIns"
-      reverse: true
-    - !<conditions.BooleanIsNullCondition>
-      column: "NoStateHealthInsReason"
-      reverse: true
-    name: "statehealthinsurance"
-
-  indianhealthservices: 
-    fqn: "ol.insurance"
-    entitySetName: "BerksCEHIndianHealthServicesInsurance"
-    propertyDefinitions: 
-      general.id: 
-        type: "general.id"
-        column: "IncomeBenefitsID"
-      ol.organizationname:
-        type: "ol.organizationname"
-        transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "IndianHealthServices"
-          string: "1" 
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ValueTransform> 
-            value: "Indian Health Services"
-          transformsIfFalse:
-          - !<transforms.ValueTransform>
-            value: ""
-      ol.notes: 
-        type: "ol.notes"
-        column: "NoStateHealthInsReason"
-        transforms:
-        - !<transforms.ParseIntTransform> {}
-        - !<transforms.ReplaceTransform>
-          target: ["1", "2", "3", "4", "8", "9", "99"]
-          goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
-          ignoreCase: true
-    conditions:
-    - !<conditions.ConditionalOr> {} 
-    - !<conditions.BooleanIsNullCondition>
-      column: "IndianHealthServices"
-      reverse: true
-    - !<conditions.BooleanIsNullCondition>
-      column: "NoStateHealthInsReason"
-      reverse: true
-    name: "indianhealthservices"
-
-  otherinsurance: 
-    fqn: "ol.insurance"
-    entitySetName: "BerksCEHOtherInsurances"
-    propertyDefinitions: 
-      general.id: 
-        type: "general.id"
-        column: "IncomeBenefitsID"
-      ol.organizationname:
-        type: "ol.organizationname"
-        transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "OtherInsurance"
-          string: "1" 
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ColumnTransform>
-            column: "OtherInsuranceIdentify"
-    conditions:
-    - !<conditions.ConditionalOr> {}
-    - !<conditions.BooleanIsNullCondition>
-      column: "OtherInsurance"
-      reverse: true
-    - !<conditions.BooleanIsNullCondition>
-      column: "OtherInsuranceIdentify"
-      reverse: true
-    name: "otherinsurance"
-      
-  connectionwithsoarinsurance: 
-    fqn: "ol.insurance"
-    entitySetName: "BerksCEHConnectionWithSOARInsurance"
-    propertyDefinitions: 
-      general.id: 
-        type: "general.id"
-        column: "IncomeBenefitsID"
-      ol.organizationname:
-        type: "ol.organizationname"
-        transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "ConnectionWithSOAR"
-          string: "1" 
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ValueTransform> 
-            value: "Connection With SOAR"
-          transformsIfFalse:
-          - !<transforms.ValueTransform>
-            value: ""
-    conditions:
-    - !<conditions.BooleanIsNullCondition>
-      column: "ConnectionWithSOAR"
-      reverse: true
-    name: "connectionwithsoarinsurance"
-
-associationDefinitions: 
-  insuredby1: 
-    fqn: "health.insuredby"
-    entitySetName: "BerksInsuredby"
-    src: "client"
-    dst: "medicare"
-    propertyDefinitions: 
-      date.completeddatetime: 
-        type: "date.completeddatetime"
-        column: "InformationDate"
+        - !<transforms.ConcatTransform>
+          columns: ["ServicesID", "GeographyID"]
+          separator: "_"
+      date.completeddatetime:
+        type: "date.completeddatetime" 
+        column: "DateProvided"
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
-    name: "insuredby1"
-
-  insuredby2: 
-    fqn: "health.insuredby"
-    entitySetName: "BerksInsuredby"
-    src: "client"
-    dst: "medicaid"
-    propertyDefinitions: 
-      date.completeddatetime: 
-        type: "date.completeddatetime"
-        column: "InformationDate"
-        transforms:
-        - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
-    name: "insuredby2"
-
-  insuredby3: 
-    fqn: "health.insuredby"
-    entitySetName: "BerksInsuredby"
-    src: "client"
-    dst: "schip"
-    propertyDefinitions: 
-      date.completeddatetime: 
-        type: "date.completeddatetime"
-        column: "InformationDate"
-        transforms:
-        - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
-    name: "insuredby3"
-
-  insuredby4: 
-    fqn: "health.insuredby"
-    entitySetName: "BerksInsuredby"
-    src: "client"
-    dst: "vamedicalservices"
-    propertyDefinitions: 
-      date.completeddatetime: 
-        type: "date.completeddatetime"
-        column: "InformationDate"
-        transforms:
-        - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
-    name: "insuredby4"
-
-  insuredby5: 
-    fqn: "health.insuredby"
-    entitySetName: "BerksInsuredby"
-    src: "client"
-    dst: "employerprovidedinsurance"
-    propertyDefinitions: 
-      date.completeddatetime: 
-        type: "date.completeddatetime"
-        column: "InformationDate"
-        transforms:
-        - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
-    name: "insuredby5"
-
-  insuredby6: 
-    fqn: "health.insuredby"
-    entitySetName: "BerksInsuredby"
-    src: "client"
-    dst: "cobrainsurance"
-    propertyDefinitions: 
-      date.completeddatetime: 
-        type: "date.completeddatetime"
-        column: "InformationDate"
-        transforms:
-        - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
-    name: "insuredby6"
-
-  insuredby7: 
-    fqn: "health.insuredby"
-    entitySetName: "BerksInsuredby"
-    src: "client"
-    dst: "privatepay"
-    propertyDefinitions: 
-      date.completeddatetime: 
-        type: "date.completeddatetime"
-        column: "InformationDate"
-        transforms:
-        - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
-    name: "insuredby7"
-
-  insuredby8: 
-    fqn: "health.insuredby"
-    entitySetName: "BerksInsuredby"
-    src: "client"
-    dst: "statehealthinsurance"
-    propertyDefinitions: 
-      date.completeddatetime: 
-        type: "date.completeddatetime"
-        column: "InformationDate"
-        transforms:
-        - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
-    name: "insuredby8"
-
-  insuredby9: 
-    fqn: "health.insuredby"
-    entitySetName: "BerksInsuredby"
-    src: "client"
-    dst: "indianhealthservices"
-    propertyDefinitions: 
-      date.completeddatetime: 
-        type: "date.completeddatetime"
-        column: "InformationDate"
-        transforms:
-        - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
-    name: "insuredby9"
-
-  insuredby10: 
-    fqn: "health.insuredby"
-    entitySetName: "BerksInsuredby"
-    src: "client"
-    dst: "otherinsurance"
-    propertyDefinitions: 
-      date.completeddatetime: 
-        type: "date.completeddatetime"
-        column: "InformationDate"
-        transforms:
-        - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
-    name: "insuredby10"
-
-  insuredby11: 
-    fqn: "health.insuredby"
-    entitySetName: "BerksInsuredby"
-    src: "client"
-    dst: "connectionwithsoarinsurance"
-    propertyDefinitions: 
-      date.completeddatetime: 
-        type: "date.completeddatetime"
-        column: "InformationDate"
-        transforms:
-        - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
-    name: "insuredby11"
+    name: "locatedat2"
+  
