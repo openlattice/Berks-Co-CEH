@@ -49,6 +49,12 @@ entityDefinitions:
              separator: ", "
            - !<transforms.GeocoderTransform>
              addressObject: "lat"
+           lonTransforms:
+           - !<transforms.ConcatTransform>
+             columns: ['LastPermanentStreet', 'LastPermanentCity', 'LastPermanentZIP']
+             separator: ", "
+           - !<transforms.GeocoderTransform>
+             addressObject: "lon"
     conditions:
     - !<conditions.ConditionalOr> {}
     - !<conditions.BooleanIsNullCondition>
