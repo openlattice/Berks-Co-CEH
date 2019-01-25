@@ -118,6 +118,42 @@ entityDefinitions:
         column: "ZIP"
         transforms:
         - !<transforms.ParseIntTransform> {}
+      ol.locationcoordinates:
+         type: "ol.locationcoordinates"
+         transforms:
+         - !<transforms.GeographyPointTransform>
+           latTransforms:
+           - !<transforms.ConcatTransform>
+             columns: ['Address1', 'Address2', 'City', 'State', 'ZIP']
+             separator: ", "
+           - !<transforms.GeocoderTransform>
+             addressObject: "lat"
+           lonTransforms:
+           - !<transforms.ConcatTransform>
+             columns: ['Address1', 'Address2', 'City', 'State', 'ZIP']
+             separator: ", "
+           - !<transforms.GeocoderTransform>
+             addressObject: "lon"
+    conditions:
+    - !<conditions.ConditionalOr> {}
+    - !<conditions.BooleanIsNullCondition>
+      column: "GeographyType"
+      reverse: true
+    - !<conditions.BooleanIsNullCondition>
+      column: "Address1"
+      reverse: true
+    - !<conditions.BooleanIsNullCondition>
+      column: "Address2"
+      reverse: true
+    - !<conditions.BooleanIsNullCondition>
+      column: "City"
+      reverse: true
+    - !<conditions.BooleanIsNullCondition>
+      column: "State"
+      reverse: true
+    - !<conditions.BooleanIsNullCondition>
+      column: "ZIP"
+      reverse: true
     name: "location"
 
 associationDefinitions:
