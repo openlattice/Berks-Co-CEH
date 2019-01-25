@@ -10,7 +10,7 @@ entityDefinitions:
       nc.SubjectIdentification:
         type: "nc.SubjectIdentification"
         column: "PersonalID"
-    ol.datasource:
+      ol.datasource:
         type: "ol.datasource"
         transforms:
         - !<transforms.ValueTransform>
@@ -32,6 +32,7 @@ entityDefinitions:
         type: "ol.disabledheadofhousehold"
         column: "DisabledHoH" #enrollment
         transforms: 
+        - !<transforms.ParseIntTransform> {}
         # - !<transforms.ParseBoolTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1"]
@@ -126,16 +127,18 @@ entityDefinitions:
         type: "ol.servicetype"
         column: "RecordType"
         transforms:
+        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["12", "13", "141", "142", "143", "144", "151", "152", "161", "162", 200", "210"]
           goal: ["Contact", "Contact", "PATH Service", "RHY Service", "HOPWA Service", "SSVF Service", "HOPWA financial assistance", "SSVF Financial Assistance", "PATH referral", "RHY referral", "Bed Night", "HUD-VASH OTH voucher tracking"]
-      ol.type3:
+      ol.type:
         type: "ol.type"
         transforms:
-        - !<transforms.BooleanContainsTransform> #not sure if i can do this. 
+        - !<transforms.BooleanContainsTransform> 
           column: "RecordType"
           string: "144"
           transformsIfTrue:
+          - !<transforms.ParseIntTransform>
             column: "TypeProvided"
           - !<transforms.ReplaceTransform>
             target: ["1", "2", "3", "4", "5", "6"] 
@@ -143,7 +146,7 @@ entityDefinitions:
       ol.reason:
         type: "ol.reason"
         transforms: 
-        - !<transforms.BooleanContainsTransform> #not sure if i can do this. 
+        - !<transforms.BooleanContainsTransform> 
           column: "RecordType"
           string: "152"
           transformsIfTrue:
@@ -268,6 +271,7 @@ associationDefinitions:
         type: "ol.role"
         column: "RelationshipToHoH"
         transforms:
+        - !<transforms.ParseIntTransform> {} 
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "4", "5", "99"]
           goal: ["Self (head of household)", "Child", "Spouse or partner", "Other relative", "Unrelated household member", "Data not collected"]
