@@ -1,6 +1,6 @@
 #change limit for prod: 
-# psql: select i.*, s."FAAmount", e."PercentAMI", e."AnnualPercentAMI" from incomebenefits as i left join services as s on i."EnrollmentID"=s."EnrollmentID" AND i."PersonalID"=s."PersonalID" left join enrollment as e on e."EnrollmentID"=i."EnrollmentID" AND e."PersonalID"=i."PersonalID" limit 5000; 
-# intellij: "select i.*, s.\"FAAmount\", s.\"ServicesID\", s.\"DateProvided\", e.\"PercentAMI\", e.\"AnnualPercentAMI\" from incomebenefits as i left join services as s on i.\"EnrollmentID\"=s.\"EnrollmentID\" AND i.\"PersonalID\"=s.\"PersonalID\" left join enrollment as e on e.\"EnrollmentID\"=i.\"EnrollmentID\" AND e.\"PersonalID\"=i.\"PersonalID\"  limit 5000;"
+# psql: select i.*, s."FAAmount", e."PercentAMI", e."AnnualPercentAMI" from incomebenefits as i left join services as s on i."EnrollmentID"=s."EnrollmentID" AND i."PersonalID"=s."PersonalID" left join enrollment as e on e."EnrollmentID"=i."EnrollmentID" AND e."PersonalID"=i."PersonalID" ; 
+# intellij: "select i.*, s.\"FAAmount\", s.\"ServicesID\", s.\"DateProvided\", e.\"PercentAMI\", e.\"AnnualPercentAMI\" from incomebenefits as i left join services as s on i.\"EnrollmentID\"=s.\"EnrollmentID\" AND i.\"PersonalID\"=s.\"PersonalID\" left join enrollment as e on e.\"EnrollmentID\"=i.\"EnrollmentID\" AND e.\"PersonalID\"=i.\"PersonalID\" ;"
 
 entityDefinitions: 
   client:
@@ -99,21 +99,12 @@ entityDefinitions:
         column: "IncomeBenefitsID"
       ol.value:
         type: "ol.value"
-        transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "Earned"
-          string: "1"
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ColumnTransform>
-            column: "EarnedAmount"
-          transformsIfFalse: 
-          - !<transforms.ValueTransform>
-            value: ""
+        column: "EarnedAmount"
     conditions:
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "Earned"
-      reverse: true
+      pattern: "1"
+      reverse: false
     name: "earned_income"
 
 
@@ -126,21 +117,12 @@ entityDefinitions:
         column: "IncomeBenefitsID"
       ol.value:
         type: "ol.value"
-        transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "Unemployment"
-          string: "1"
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ColumnTransform>
-            column: "UnemploymentAmount"
-          transformsIfFalse: 
-          - !<transforms.ValueTransform>
-            value: ""
-    conditions: 
-    - !<conditions.BooleanIsNullCondition>
+        column: "UnemploymentAmount"
+    conditions:
+    - !<conditions.BooleanRegexCondition>
       column: "Unemployment"
-      reverse: true
+      pattern: "1"
+      reverse: false
     name: "unemployment_income"
 
   ssi_income:
@@ -152,21 +134,12 @@ entityDefinitions:
         column: "IncomeBenefitsID"
       ol.value:
         type: "ol.value"
-        transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "SSI"
-          string: "1"
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ColumnTransform>
-            column: "SSIAmount"
-          transformsIfFalse: 
-          - !<transforms.ValueTransform>
-            value: ""
+        column: "SSIAmount"
     conditions: 
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "SSI"
-      reverse: true
+      pattern: "1"
+      reverse: false
     name: "ssi_income"
 
   ssdi_income:
@@ -178,20 +151,11 @@ entityDefinitions:
         column: "IncomeBenefitsID"
       ol.value:
         type: "ol.value"
-        transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "SSDI"
-          string: "1"
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ColumnTransform>
-            column: "SSDIAmount"
-          transformsIfFalse: 
-          - !<transforms.ValueTransform>
-            value: ""
+        column: "SSDIAmount"
     conditions: 
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "SSDI"
+      pattern: "1"
       reverse: true
     name: "ssdi_income"
   
@@ -204,20 +168,11 @@ entityDefinitions:
         column: "IncomeBenefitsID"
       ol.value:
         type: "ol.value"
-        transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "VADisabilityService"
-          string: "1"
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ColumnTransform>
-            column: "VADisabilityServiceAmount"
-          transformsIfFalse: 
-          - !<transforms.ValueTransform>
-            value: ""
+        column: "VADisabilityServiceAmount"
     conditions: 
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "VADisabilityService"
+      pattern: "1"
       reverse: true
     name: "vadisabilityservice_income"
 
@@ -230,20 +185,11 @@ entityDefinitions:
         column: "IncomeBenefitsID"
       ol.value:
         type: "ol.value"
-        transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "VADisabilityNonService"
-          string: "1"
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ColumnTransform>
-            column: "VADisabilityNonServiceAmount"
-          transformsIfFalse: 
-          - !<transforms.ValueTransform>
-            value: ""
+        column: "VADisabilityNonServiceAmount"
     conditions: 
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "VADisabilityNonService"
+      pattern: "1"
       reverse: true
     name: "vadisabilitynonservice_income"
 
@@ -256,20 +202,11 @@ entityDefinitions:
         column: "IncomeBenefitsID"
       ol.value:
         type: "ol.value"
-        transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "PrivateDisability"
-          string: "1"
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ColumnTransform>
-            column: "PrivateDisabilityAmount"
-          transformsIfFalse: 
-          - !<transforms.ValueTransform>
-            value: ""
+        column: "PrivateDisabilityAmount"
     conditions: 
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "PrivateDisability"
+      pattern: "1"
       reverse: true
     name: "privatedisability_income"
 
@@ -282,20 +219,11 @@ entityDefinitions:
         column: "IncomeBenefitsID"
       ol.value:
         type: "ol.value"
-        transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "WorkersComp"
-          string: "1"
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ColumnTransform>
-            column: "WorkersCompAmount"
-          transformsIfFalse: 
-          - !<transforms.ValueTransform>
-            value: ""
+        column: "WorkersCompAmount"
     conditions: 
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "WorkersComp"
+      pattern: "1"
       reverse: true
     name: "workerscomp_income"
 
@@ -308,20 +236,11 @@ entityDefinitions:
         column: "IncomeBenefitsID"
       ol.value:
         type: "ol.value"
-        transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "TANF"
-          string: "1"
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ColumnTransform>
-            column: "TANFAmount"
-          transformsIfFalse: 
-          - !<transforms.ValueTransform>
-            value: ""
+        column: "TANFAmount"
     conditions: 
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "TANF"
+      pattern: "1"
       reverse: true
     name: "tanf_income"
 
@@ -334,20 +253,11 @@ entityDefinitions:
         column: "IncomeBenefitsID"
       ol.value:
         type: "ol.value"
-        transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "GA"
-          string: "1"
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ColumnTransform>
-            column: "GAAmount"
-          transformsIfFalse: 
-          - !<transforms.ValueTransform>
-            value: ""
+        column: "GAAmount"
     conditions: 
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "GA"
+      pattern: "1"
       reverse: true
     name: "ga_income"
 
@@ -360,20 +270,11 @@ entityDefinitions:
         column: "IncomeBenefitsID"
       ol.value:
         type: "ol.value"
-        transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "SocSecRetirement"
-          string: "1"
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ColumnTransform>
-            column: "SocSecRetirementAmount"
-          transformsIfFalse: 
-          - !<transforms.ValueTransform>
-            value: ""
+        column: "SocSecRetirementAmount"
     conditions: 
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "SocSecRetirement"
+      pattern: "1"
       reverse: true
     name: "socsecretirement_income"
 
@@ -386,20 +287,11 @@ entityDefinitions:
         column: "IncomeBenefitsID"
       ol.value:
         type: "ol.value"
-        transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "Pension"
-          string: "1"
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ColumnTransform>
-            column: "PensionAmount"
-          transformsIfFalse: 
-          - !<transforms.ValueTransform>
-            value: ""
+        column: "PensionAmount"
     conditions: 
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "Pension"
+      pattern: "1"
       reverse: true
     name: "pension_income"
 
@@ -412,20 +304,11 @@ entityDefinitions:
         column: "IncomeBenefitsID"
       ol.value:
         type: "ol.value"
-        transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "ChildSupport"
-          string: "1"
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ColumnTransform>
-            column: "ChildSupportAmount"
-          transformsIfFalse: 
-          - !<transforms.ValueTransform>
-            value: ""
+        column: "ChildSupportAmount"
     conditions: 
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "ChildSupport"
+      pattern: "1"
       reverse: true
     name: "childsupport_income"
 
@@ -438,20 +321,11 @@ entityDefinitions:
         column: "IncomeBenefitsID"
       ol.value:
         type: "ol.value"
-        transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "Alimony"
-          string: "1"
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ColumnTransform>
-            column: "AlimonyAmount"
-          transformsIfFalse: 
-          - !<transforms.ValueTransform>
-            value: ""
+        column: "AlimonyAmount"
     conditions: 
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "Alimony"
+      pattern: "1"
       reverse: true
     name: "alimony_income"
 
@@ -464,33 +338,14 @@ entityDefinitions:
         column: "IncomeBenefitsID"
       ol.type:
         type: "ol.type"
-        transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "OtherIncomeSource"
-          string: "1"
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ColumnTransform>
-            column: "OtherIncomeSourceIdentify"
-          transformsIfFalse: 
-          - !<transforms.ValueTransform>
-            value: ""
+        column: "OtherIncomeSourceIdentify"
       ol.value: 
         type: "ol.value"
-        transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "OtherIncomeSource"
-          string: "1"
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ColumnTransform>
-            column: "OtherIncomeAmount"
-          transformsIfFalse: 
-          - !<transforms.ValueTransform>
-            value: ""
+        column: "OtherIncomeAmount"
     conditions: 
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "OtherIncomeSource"
+      pattern: "1"
       reverse: true
     name: "other_income"
 
@@ -534,19 +389,12 @@ entityDefinitions:
       ol.type: 
         type: "ol.type"
         transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "SNAP"
-          string: "1"
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ValueTransform>
-            value: "SNAP"
-          transformsIfFalse: 
-          - !<transforms.ValueTransform>
-            value: ""
+        - !<transforms.ValueTransform>
+          value: "SNAP"
     conditions: 
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "SNAP"
+      pattern: "1"
       reverse: true
     name: "snap_benefits"
 
@@ -561,19 +409,12 @@ entityDefinitions:
       ol.type: 
         type: "ol.type"
         transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "WIC"
-          string: "1"
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ValueTransform>
-            value: "WIC"
-          transformsIfFalse: 
-          - !<transforms.ValueTransform>
-            value: ""
+        - !<transforms.ValueTransform>
+          value: "WIC"
     conditions: 
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "WIC"
+      pattern: "1"
       reverse: true
     name: "wic_benefits"
 
@@ -587,19 +428,12 @@ entityDefinitions:
       ol.type: 
         type: "ol.type"
         transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "TANFChildCare"
-          string: "1"
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ValueTransform>
-            value: "TANF Childcare"
-          transformsIfFalse: 
-          - !<transforms.ValueTransform>
-            value: ""
+        - !<transforms.ValueTransform>
+          value: "TANF Childcare"
     conditions: 
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "TANFChildCare"
+      pattern: "1"
       reverse: true
     name: "tanfchildcare_benefits"
 
@@ -613,19 +447,12 @@ entityDefinitions:
       ol.type: 
         type: "ol.type"
         transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "TANFTransportation"
-          string: "1"
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ValueTransform>
-            value: "TANF Transportation"
-          transformsIfFalse: 
-          - !<transforms.ValueTransform>
-            value: ""
+        - !<transforms.ValueTransform>
+          value: "TANF Transportation"
     conditions: 
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "TANFTransportation"
+      pattern: "1"
       reverse: true
     name: "tanftransportation_benefits"
 
@@ -639,19 +466,12 @@ entityDefinitions:
       ol.type: 
         type: "ol.type"
         transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "OtherTANF"
-          string: "1"
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ValueTransform>
-            value: "Other TANF"
-          transformsIfFalse: 
-          - !<transforms.ValueTransform>
-            value: ""
+        - !<transforms.ValueTransform>
+          value: "Other TANF"
     conditions: 
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "OtherTANF"
+      pattern: "1"
       reverse: true
     name: "othertanf_benefits"
 
@@ -664,20 +484,11 @@ entityDefinitions:
         column: "IncomeBenefitsID"
       ol.type: 
         type: "ol.type"
-        transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "OtherBenefitsSource"
-          string: "1"
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ColumnTransform>
-            column: "OtherBenefitsSourceIdentify"
-          transformsIfFalse: 
-          - !<transforms.ValueTransform>
-            value: "None"  
+        column: "OtherBenefitsSourceIdentify"
     conditions: 
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "OtherBenefitsSource"
+      pattern: "1"
       reverse: true
     name: "other_benefits"
 
