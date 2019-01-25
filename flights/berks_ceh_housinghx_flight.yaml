@@ -39,9 +39,17 @@ entityDefinitions:
         column: "LastPermanentZIP"
         transforms: 
         - !<transforms.ParseIntTransform> {}
-        # - !<transforms.SplitTransform> 
-        #   separator: "."
-        #   index: 0
+    conditions:
+    - !<conditions.ConditionalOr> {}
+    - !<conditions.BooleanIsNullCondition>
+      column: "LastPermanentStreet"
+      reverse: true
+    - !<conditions.BooleanIsNullCondition>
+      column: "LastPermanentCity"
+      reverse: true
+    - !<conditions.BooleanIsNullCondition>
+      column: "LastPermanentZIP"
+      reverse: true
     name: "location"
 
   housing_history: 
