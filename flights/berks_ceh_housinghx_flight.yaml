@@ -39,6 +39,16 @@ entityDefinitions:
         column: "LastPermanentZIP"
         transforms: 
         - !<transforms.ParseIntTransform> {}
+       ol.locationcoordinates:
+         type: "ol.locationcoordinates"
+         transforms:
+         - !<transforms.GeographyPointTransform>
+           latTransforms:
+           - !<transforms.ConcatTransform>
+             columns: ['LastPermanentStreet', 'LastPermanentCity', 'LastPermanentZIP']
+             separator: ", "
+           - !<transforms.GeocoderTransform>
+             addressObject: "lat"
     conditions:
     - !<conditions.ConditionalOr> {}
     - !<conditions.BooleanIsNullCondition>
