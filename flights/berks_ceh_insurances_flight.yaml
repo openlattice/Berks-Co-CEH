@@ -30,16 +30,8 @@ entityDefinitions:
       ol.organizationname:
         type: "ol.organizationname"
         transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "Medicaid"
-          string: "1" 
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ValueTransform> 
-            value: "Medicaid"
-          transformsIfFalse:
-          - !<transforms.ValueTransform>
-            value: ""
+        - !<transforms.ValueTransform> 
+          value: "Medicaid"
       ol.notes: 
         type: "ol.notes"
         column: "NoMedicaidReason"
@@ -51,9 +43,10 @@ entityDefinitions:
           ignoreCase: true
     conditions:
     - !<conditions.ConditionalOr> {} 
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "Medicaid"
-      reverse: true
+      pattern: "1"
+      reverse: false
     - !<conditions.BooleanIsNullCondition>
       column: "NoMedicaidReason"
       reverse: true
@@ -69,16 +62,8 @@ entityDefinitions:
       ol.organizationname:
         type: "ol.organizationname"
         transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "Medicare"
-          string: "1" 
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ValueTransform> 
-            value: "Medicare"
-          transformsIfFalse:
-          - !<transforms.ValueTransform>
-            value: ""
+        - !<transforms.ValueTransform> 
+          value: "Medicare"
       ol.notes: 
         type: "ol.notes"
         column: "NoMedicareReason"
@@ -90,9 +75,10 @@ entityDefinitions:
           ignoreCase: true
     conditions:
     - !<conditions.ConditionalOr> {} 
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "Medicare"
-      reverse: true
+      pattern: "1"
+      reverse: false
     - !<conditions.BooleanIsNullCondition>
       column: "NoMedicareReason"
       reverse: true        
@@ -108,16 +94,8 @@ entityDefinitions:
       ol.organizationname:
         type: "ol.organizationname"
         transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "SCHIP"
-          string: "1" 
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ValueTransform> 
-            value: "Healthy Kids (CHI) (State Children's HIP)"
-          transformsIfFalse:
-          - !<transforms.ValueTransform>
-            value: ""
+        - !<transforms.ValueTransform> 
+          value: "Healthy Kids (CHI) (State Children's HIP)"
       ol.notes: 
         type: "ol.notes"
         column: "NoSCHIPReason"
@@ -129,9 +107,10 @@ entityDefinitions:
           ignoreCase: true
     conditions:
     - !<conditions.ConditionalOr> {} 
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "SCHIP"
-      reverse: true
+      pattern: "1"
+      reverse: false
     - !<conditions.BooleanIsNullCondition>
       column: "NoSCHIPReason"
       reverse: true
@@ -147,21 +126,23 @@ entityDefinitions:
       ol.organizationname:
         type: "ol.organizationname"
         transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "VAMedicalServices"
-          string: "1" 
+        - !<transforms.ValueTransform> 
+          value: "VA Medical Services"
+      ol.notes: 
+        type: "ol.notes"
+        column: "NoVAMedReason"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["1", "2", "3", "4", "8", "9", "99"]
+          goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
           ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ValueTransform> 
-            value: "VA Medical Services"
-          transformsIfFalse:
-          - !<transforms.ValueTransform>
-            value: ""
     conditions: 
     - !<conditions.ConditionalOr> {}
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "VAMedicalServices"
-      reverse: true
+      pattern: "1"
+      reverse: false
     - !<conditions.BooleanIsNullCondition>
       column: "NoVAMedReason"
       reverse: true
@@ -177,17 +158,9 @@ entityDefinitions:
       ol.organizationname:
         type: "ol.organizationname"
         transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "EmployerProvided"
-          string: "1" 
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ValueTransform> 
-            value: "Employer Provided"
-          transformsIfFalse:
-          - !<transforms.ValueTransform>
-            value: ""
-      ol.notes: 
+        - !<transforms.ValueTransform> 
+          value: "Employer Provided"
+      ol.notes:
         type: "ol.notes"
         column: "NoEmployerProvidedReason"
         transforms:
@@ -198,9 +171,10 @@ entityDefinitions:
           ignoreCase: true
     conditions:
     - !<conditions.ConditionalOr> {} 
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "EmployerProvided"
-      reverse: true
+      pattern: "1"
+      reverse: false
     - !<conditions.BooleanIsNullCondition>
       column: "NoEmployerProvidedReason"
       reverse: true
@@ -216,16 +190,8 @@ entityDefinitions:
       ol.organizationname:
         type: "ol.organizationname"
         transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "COBRA"
-          string: "1" #the field is a double - make sure can do this. 
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ValueTransform> 
-            value: "COBRA"
-          transformsIfFalse:
-          - !<transforms.ValueTransform>
-            value: ""
+        - !<transforms.ValueTransform> 
+          value: "COBRA"
       ol.notes: 
         type: "ol.notes"
         column: "NoCOBRAReason"
@@ -237,9 +203,10 @@ entityDefinitions:
           ignoreCase: true
     conditions:
     - !<conditions.ConditionalOr> {} 
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "COBRA"
-      reverse: true
+      pattern: "1"
+      reverse: false
     - !<conditions.BooleanIsNullCondition>
       column: "NoCOBRAReason"
       reverse: true
@@ -255,16 +222,8 @@ entityDefinitions:
       ol.organizationname:
         type: "ol.organizationname"
         transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "PrivatePay"
-          string: "1" 
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ValueTransform> 
-            value: "Private Pay Insurance"
-          transformsIfFalse:
-          - !<transforms.ValueTransform>
-            value: ""
+        - !<transforms.ValueTransform> 
+          value: "Private Pay Insurance"
       ol.notes: 
         type: "ol.notes"
         column: "NoPrivatePayReason"
@@ -276,9 +235,10 @@ entityDefinitions:
           ignoreCase: true
     conditions:
     - !<conditions.ConditionalOr> {} 
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "PrivatePay"
-      reverse: true
+      pattern: "1"
+      reverse: false
     - !<conditions.BooleanIsNullCondition>
       column: "NoPrivatePayReason"
       reverse: true
@@ -294,16 +254,8 @@ entityDefinitions:
       ol.organizationname:
         type: "ol.organizationname"
         transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "StateHealthIns"
-          string: "1" 
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ValueTransform> 
-            value: "State Health Insurance"
-          transformsIfFalse:
-          - !<transforms.ValueTransform>
-            value: ""
+        - !<transforms.ValueTransform> 
+          value: "State Health Insurance"
       ol.notes: 
         type: "ol.notes"
         column: "NoStateHealthInsReason"
@@ -315,9 +267,10 @@ entityDefinitions:
           ignoreCase: true
     conditions:
     - !<conditions.ConditionalOr> {} 
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "StateHealthIns"
-      reverse: true
+      pattern: "1"
+      reverse: false
     - !<conditions.BooleanIsNullCondition>
       column: "NoStateHealthInsReason"
       reverse: true
@@ -333,16 +286,8 @@ entityDefinitions:
       ol.organizationname:
         type: "ol.organizationname"
         transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "IndianHealthServices"
-          string: "1" 
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ValueTransform> 
-            value: "Indian Health Services"
-          transformsIfFalse:
-          - !<transforms.ValueTransform>
-            value: ""
+        - !<transforms.ValueTransform> 
+          value: "Indian Health Services"
       ol.notes: 
         type: "ol.notes"
         column: "NoStateHealthInsReason"
@@ -354,9 +299,10 @@ entityDefinitions:
           ignoreCase: true
     conditions:
     - !<conditions.ConditionalOr> {} 
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "IndianHealthServices"
-      reverse: true
+      pattern: "1"
+      reverse: false
     - !<conditions.BooleanIsNullCondition>
       column: "NoStateHealthInsReason"
       reverse: true
@@ -371,19 +317,13 @@ entityDefinitions:
         column: "IncomeBenefitsID"
       ol.organizationname:
         type: "ol.organizationname"
-        transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "OtherInsurance"
-          string: "1" 
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ColumnTransform>
-            column: "OtherInsuranceIdentify"
+        column: "OtherInsuranceIdentify"
     conditions:
     - !<conditions.ConditionalOr> {}
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "OtherInsurance"
-      reverse: true
+      pattern: "1"
+      reverse: false
     - !<conditions.BooleanIsNullCondition>
       column: "OtherInsuranceIdentify"
       reverse: true
@@ -399,20 +339,13 @@ entityDefinitions:
       ol.organizationname:
         type: "ol.organizationname"
         transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "ConnectionWithSOAR"
-          string: "1" 
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ValueTransform> 
-            value: "Connection With SOAR"
-          transformsIfFalse:
-          - !<transforms.ValueTransform>
-            value: ""
+        - !<transforms.ValueTransform> 
+          value: "Connection With SOAR"
     conditions:
-    - !<conditions.BooleanIsNullCondition>
+    - !<conditions.BooleanRegexCondition>
       column: "ConnectionWithSOAR"
-      reverse: true
+      pattern: "1"
+      reverse: false
     name: "connectionwithsoarinsurance"
 
 associationDefinitions: 
