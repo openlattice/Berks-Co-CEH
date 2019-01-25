@@ -138,7 +138,7 @@ entityDefinitions:
           column: "RecordType"
           string: "144"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform>
+          - !<transforms.ParseIntTransform> {}
             column: "TypeProvided"
           - !<transforms.ReplaceTransform>
             target: ["1", "2", "3", "4", "5", "6"] 
@@ -150,7 +150,7 @@ entityDefinitions:
           column: "RecordType"
           string: "152"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform>
+          - !<transforms.ParseIntTransform> {}
             column: "TypeProvided"
           - !<transforms.ReplaceTransform>
             target: ["1", "2", "3", "4", "5", "8", "9", "10", "11", "12", "14"] 
