@@ -8,7 +8,7 @@ entityDefinitions:
       nc.SubjectIdentification:
         type: "nc.SubjectIdentification"
         column: "PersonalID"
-    ol.datasource:
+      ol.datasource:
         type: "ol.datasource"
         transforms:
         - !<transforms.ValueTransform>
