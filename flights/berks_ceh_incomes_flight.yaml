@@ -1,6 +1,6 @@
 #change limit for prod: 
-# psql: select i.*, s."FAAmount", e."PercentAMI", e."AnnualPercentAMI" from incomebenefits as i left join services as s on i."EnrollmentID"=s."EnrollmentID" AND i."PersonalID"=s."PersonalID" left join enrollment as e on e."EnrollmentID"=i."EnrollmentID" AND e."PersonalID"=i."PersonalID" ; 
-# intellij: "select i.*, s.\"FAAmount\", s.\"ServicesID\", s.\"DateProvided\", e.\"PercentAMI\", e.\"AnnualPercentAMI\" from incomebenefits as i left join services as s on i.\"EnrollmentID\"=s.\"EnrollmentID\" AND i.\"PersonalID\"=s.\"PersonalID\" left join enrollment as e on e.\"EnrollmentID\"=i.\"EnrollmentID\" AND e.\"PersonalID\"=i.\"PersonalID\" ;"
+# psql: select i.*, s."FAAmount", e."PercentAMI", e."AnnualPercentAMI" from incomebenefits as i left join services as s on i."EnrollmentID"=s."EnrollmentID" AND i."PersonalID"=s."PersonalID" left join enrollment as e on e."EnrollmentID"=i."EnrollmentID" AND e."PersonalID"=i."PersonalID" limit 5000; 
+# intellij: "select i.*, s.\"FAAmount\", s.\"ServicesID\", s.\"DateProvided\", e.\"PercentAMI\", e.\"AnnualPercentAMI\" from incomebenefits as i left join services as s on i.\"EnrollmentID\"=s.\"EnrollmentID\" AND i.\"PersonalID\"=s.\"PersonalID\" left join enrollment as e on e.\"EnrollmentID\"=i.\"EnrollmentID\" AND e.\"PersonalID\"=i.\"PersonalID\"  limit 5000;"
 
 entityDefinitions: 
   client:
@@ -18,7 +18,7 @@ entityDefinitions:
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "PersonalID"
-      reverse: false
+      reverse: true
     name: "client"
 
   # household:
@@ -156,7 +156,7 @@ entityDefinitions:
     - !<conditions.BooleanRegexCondition>
       column: "SSDI"
       pattern: "1"
-      reverse: true
+      reverse: false
     name: "ssdi_income"
   
   vadisabilityservice_income:
@@ -173,7 +173,7 @@ entityDefinitions:
     - !<conditions.BooleanRegexCondition>
       column: "VADisabilityService"
       pattern: "1"
-      reverse: true
+      reverse: false
     name: "vadisabilityservice_income"
 
   vadisabilitynonservice_income:
@@ -190,7 +190,7 @@ entityDefinitions:
     - !<conditions.BooleanRegexCondition>
       column: "VADisabilityNonService"
       pattern: "1"
-      reverse: true
+      reverse: false
     name: "vadisabilitynonservice_income"
 
   privatedisability_income:
@@ -207,7 +207,7 @@ entityDefinitions:
     - !<conditions.BooleanRegexCondition>
       column: "PrivateDisability"
       pattern: "1"
-      reverse: true
+      reverse: false
     name: "privatedisability_income"
 
   workerscomp_income:
@@ -224,7 +224,7 @@ entityDefinitions:
     - !<conditions.BooleanRegexCondition>
       column: "WorkersComp"
       pattern: "1"
-      reverse: true
+      reverse: false
     name: "workerscomp_income"
 
   tanf_income:
@@ -241,7 +241,7 @@ entityDefinitions:
     - !<conditions.BooleanRegexCondition>
       column: "TANF"
       pattern: "1"
-      reverse: true
+      reverse: false
     name: "tanf_income"
 
   ga_income:
@@ -258,7 +258,7 @@ entityDefinitions:
     - !<conditions.BooleanRegexCondition>
       column: "GA"
       pattern: "1"
-      reverse: true
+      reverse: false
     name: "ga_income"
 
   socsecretirement_income:
@@ -275,7 +275,7 @@ entityDefinitions:
     - !<conditions.BooleanRegexCondition>
       column: "SocSecRetirement"
       pattern: "1"
-      reverse: true
+      reverse: false
     name: "socsecretirement_income"
 
   pension_income:
@@ -292,7 +292,7 @@ entityDefinitions:
     - !<conditions.BooleanRegexCondition>
       column: "Pension"
       pattern: "1"
-      reverse: true
+      reverse: false
     name: "pension_income"
 
   childsupport_income:
@@ -309,7 +309,7 @@ entityDefinitions:
     - !<conditions.BooleanRegexCondition>
       column: "ChildSupport"
       pattern: "1"
-      reverse: true
+      reverse: false
     name: "childsupport_income"
 
   alimony_income:
@@ -326,7 +326,7 @@ entityDefinitions:
     - !<conditions.BooleanRegexCondition>
       column: "Alimony"
       pattern: "1"
-      reverse: true
+      reverse: false
     name: "alimony_income"
 
   other_income:
@@ -346,7 +346,7 @@ entityDefinitions:
     - !<conditions.BooleanRegexCondition>
       column: "OtherIncomeSource"
       pattern: "1"
-      reverse: true
+      reverse: false
     name: "other_income"
 
   noncashbenefits:
@@ -395,7 +395,7 @@ entityDefinitions:
     - !<conditions.BooleanRegexCondition>
       column: "SNAP"
       pattern: "1"
-      reverse: true
+      reverse: false
     name: "snap_benefits"
 
 
@@ -415,7 +415,7 @@ entityDefinitions:
     - !<conditions.BooleanRegexCondition>
       column: "WIC"
       pattern: "1"
-      reverse: true
+      reverse: false
     name: "wic_benefits"
 
   tanfchildcare_benefits:
@@ -434,7 +434,7 @@ entityDefinitions:
     - !<conditions.BooleanRegexCondition>
       column: "TANFChildCare"
       pattern: "1"
-      reverse: true
+      reverse: false
     name: "tanfchildcare_benefits"
 
   tanftransportation_benefits:
@@ -453,7 +453,7 @@ entityDefinitions:
     - !<conditions.BooleanRegexCondition>
       column: "TANFTransportation"
       pattern: "1"
-      reverse: true
+      reverse: false
     name: "tanftransportation_benefits"
 
   othertanf_benefits:
@@ -472,7 +472,7 @@ entityDefinitions:
     - !<conditions.BooleanRegexCondition>
       column: "OtherTANF"
       pattern: "1"
-      reverse: true
+      reverse: false
     name: "othertanf_benefits"
 
   other_benefits:
@@ -489,7 +489,7 @@ entityDefinitions:
     - !<conditions.BooleanRegexCondition>
       column: "OtherBenefitsSource"
       pattern: "1"
-      reverse: true
+      reverse: false
     name: "other_benefits"
 
   percentareamedianincome:
