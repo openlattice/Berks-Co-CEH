@@ -114,7 +114,7 @@ entityDefinitions:
           column: "DisabilityType"
           string: "5"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform>
+          - !<transforms.ParseIntTransform> {}
             column: "DisabilityResponse"
           - !<transforms.ReplaceTransform>
             target: ["0", "1", "8", "9", "99"]
@@ -126,7 +126,7 @@ entityDefinitions:
           column: "DisabilityType"
           string: "6"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform>
+          - !<transforms.ParseIntTransform> {}
             column: "DisabilityResponse"
           - !<transforms.ReplaceTransform>
             target: ["0", "1", "8", "9", "99"]
@@ -138,7 +138,7 @@ entityDefinitions:
           column: "DisabilityType"
           string: "7"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform>
+          - !<transforms.ParseIntTransform> {}
             column: "DisabilityResponse"
           - !<transforms.ReplaceTransform>
             target: ["0", "1", "8", "9", "99"]
@@ -150,7 +150,7 @@ entityDefinitions:
           column: "DisabilityType"
           string: "8"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform>
+          - !<transforms.ParseIntTransform> {}
             column: "DisabilityResponse"
           - !<transforms.ReplaceTransform>
             target: ["0", "1", "8", "9", "99"]
@@ -162,7 +162,7 @@ entityDefinitions:
           column: "DisabilityType"
           string: "9"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform>
+          - !<transforms.ParseIntTransform> {}
             column: "DisabilityResponse"
           - !<transforms.ReplaceTransform>
             target: ["0", "1", "8", "9", "99"]
