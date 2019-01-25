@@ -142,6 +142,23 @@ entityDefinitions:
           transformsIfFalse:
           - !<transforms.ValueTransform>
             value: ""
+      ol.notes: 
+        type: "ol.notes"
+        column: "NoVAMedReason"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["1", "2", "3", "4", "8", "9", "99"]
+          goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
+          ignoreCase: true
+    conditions: 
+    - !<conditions.ConditionalOr> {}
+    - !<conditions.BooleanIsNullCondition>
+      column: "VAMedicalServices"
+      reverse: true
+    - !<conditions.BooleanIsNullCondition>
+      column: "NoVAMedReason"
+      reverse: true
     name: "vamedicalservices"
 
   employerprovided: 
