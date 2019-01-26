@@ -1,5 +1,5 @@
-# change limit for prod: select e."EnrollmentID", e."EntryDate",  s."ServicesID", s."DateProvided", p."ProjectID", p."ProjectType", p."ProjectName", p."HousingType", p."OperatingStartDate", p."OperatingEndDate", o."OrganizationID", o."Organizationname", o."Organizationcommonname", g."GeographyID", g."GeographyType", g."Address1", g."Address2", g."City", g."State", g."ZIP" from enrollment as e left join project as p on e."ProjectID"=p."ProjectID" left join organization as o on p."OrganizationID"=o."OrganizationID" left join geography as g on e."ProjectID"=g."ProjectID" left join services as s on e."EnrollmentID"=s."EnrollmentID" AND e."PersonalID"= s."PersonalID" limit 5000; 
-#intellij: "select e.\"EnrollmentID\", e.\"EntryDate\", s.\"ServicesID\", s.\"DateProvided\", p.\"ProjectID\", p.\"ProjectType\", p.\"ProjectName\", p.\"HousingType\", p.\"OperatingStartDate\", p.\"OperatingEndDate\", o.\"OrganizationID\", o.\"Organizationname\", o.\"Organizationcommonname\", g.\"GeographyID\", g.\"GeographyType\", g.\"Address1\", g.\"Address2\", g.\"City\", g.\"State\", g.\"ZIP\" from enrollment as e left join project as p on e.\"ProjectID\"=p.\"ProjectID\" left join organization as o on p.\"OrganizationID\"=o.\"OrganizationID\" left join geography as g on e.\"ProjectID\"=g.\"ProjectID\" left join services as s on e.\"EnrollmentID\"=s.\"EnrollmentID\" AND e.\"PersonalID\"= s.\"PersonalID\" limit 5000;"
+# change limit for prod: select e."EnrollmentID", e."EntryDate",  s."ServicesID", s."DateProvided", p."ProjectID", p."ProjectType", p."ProjectName", p."HousingType", p."OperatingStartDate", p."OperatingEndDate", o."OrganizationID", o."Organizationname", o."Organizationcommonname", g."GeographyID", g."GeographyType", g."Address1", g."Address2", g."City", g."State", g."ZIP" from enrollment as e left join project as p on e."ProjectID"=p."ProjectID" left join organization as o on p."OrganizationID"=o."OrganizationID" left join geography as g on e."ProjectID"=g."ProjectID" left join services as s on e."EnrollmentID"=s."EnrollmentID" AND e."PersonalID"= s."PersonalID"; 
+#intellij: "select e.\"EnrollmentID\", e.\"EntryDate\", s.\"ServicesID\", s.\"DateProvided\", p.\"ProjectID\", p.\"ProjectType\", p.\"ProjectName\", p.\"HousingType\", p.\"OperatingStartDate\", p.\"OperatingEndDate\", o.\"OrganizationID\", o.\"Organizationname\", o.\"Organizationcommonname\", g.\"GeographyID\", g.\"GeographyType\", g.\"Address1\", g.\"Address2\", g.\"City\", g.\"State\", g.\"ZIP\" from enrollment as e left join project as p on e.\"ProjectID\"=p.\"ProjectID\" left join organization as o on p.\"OrganizationID\"=o.\"OrganizationID\" left join geography as g on e.\"ProjectID\"=g.\"ProjectID\" left join services as s on e.\"EnrollmentID\"=s.\"EnrollmentID\" AND e.\"PersonalID\"= s.\"PersonalID\" "
 
 entityDefinitions: 
   enrollment: 
@@ -119,21 +119,21 @@ entityDefinitions:
         transforms:
         - !<transforms.ParseIntTransform> {}
       ol.locationcoordinates:
-         type: "ol.locationcoordinates"
-         transforms:
-         - !<transforms.GeographyPointTransform>
-           latTransforms:
-           - !<transforms.ConcatTransform>
-             columns: ['Address1', 'Address2', 'City', 'State', 'ZIP']
-             separator: ", "
-           - !<transforms.GeocoderTransform>
-             addressObject: "lat"
-           lonTransforms:
-           - !<transforms.ConcatTransform>
-             columns: ['Address1', 'Address2', 'City', 'State', 'ZIP']
-             separator: ", "
-           - !<transforms.GeocoderTransform>
-             addressObject: "lon"
+        type: "ol.locationcoordinates"
+        transforms:
+        - !<transforms.GeographyPointTransform>
+          latTransforms:
+          - !<transforms.ConcatTransform>
+            columns: ['Address1', 'Address2', 'City', 'State', 'ZIP']
+            separator: ", "
+          - !<transforms.GeocoderTransform> 
+            addressObject: "lat"
+          lonTransforms:
+          - !<transforms.ConcatTransform>
+            columns: ['Address1', 'Address2', 'City', 'State', 'ZIP']
+            separator: ", "
+          - !<transforms.GeocoderTransform>
+            addressObject: "lon"
     conditions:
     - !<conditions.ConditionalOr> {}
     - !<conditions.BooleanIsNullCondition>

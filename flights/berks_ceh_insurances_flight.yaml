@@ -1,4 +1,4 @@
-#change limit for prod: select * from incomebenefits limit 5000;
+#change limit for prod: select * from incomebenefits;
 
 entityDefinitions:
   client:
@@ -8,7 +8,7 @@ entityDefinitions:
       nc.SubjectIdentification:
         type: "nc.SubjectIdentification"
         column: "PersonalID"
-    ol.datasource:
+      ol.datasource:
         type: "ol.datasource"
         transforms:
         - !<transforms.ValueTransform>
@@ -16,7 +16,7 @@ entityDefinitions:
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "PersonalID"
-      reverse: false
+      reverse: true
     name: "client"
 
 

@@ -1,6 +1,6 @@
 #change limit for prod: 
 # psql: select i.*, s."FAAmount", e."PercentAMI", e."AnnualPercentAMI" from incomebenefits as i left join services as s on i."EnrollmentID"=s."EnrollmentID" AND i."PersonalID"=s."PersonalID" left join enrollment as e on e."EnrollmentID"=i."EnrollmentID" AND e."PersonalID"=i."PersonalID" limit 5000; 
-# intellij: "select i.*, s.\"FAAmount\", s.\"ServicesID\", s.\"DateProvided\", e.\"PercentAMI\", e.\"AnnualPercentAMI\" from incomebenefits as i left join services as s on i.\"EnrollmentID\"=s.\"EnrollmentID\" AND i.\"PersonalID\"=s.\"PersonalID\" left join enrollment as e on e.\"EnrollmentID\"=i.\"EnrollmentID\" AND e.\"PersonalID\"=i.\"PersonalID\"  limit 5000;"
+# intellij: "select i.*, s.\"FAAmount\", s.\"ServicesID\", s.\"DateProvided\", e.\"PercentAMI\", e.\"AnnualPercentAMI\" from incomebenefits as i left join services as s on i.\"EnrollmentID\"=s.\"EnrollmentID\" AND i.\"PersonalID\"=s.\"PersonalID\" left join enrollment as e on e.\"EnrollmentID\"=i.\"EnrollmentID\" AND e.\"PersonalID\"=i.\"PersonalID\""
 
 entityDefinitions: 
   client:

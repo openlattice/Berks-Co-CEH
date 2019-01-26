@@ -1,5 +1,5 @@
 # select c.*, e."LastGradeCompleted", e."EmploymentType", e."SchoolStatus", e."Employed", e."EmploymentEducationID", en."EnrollmentID", en."FormerWardJuvenileJustice", en."SexualOrientation", h."DomesticViolenceVictim", h."WhenOccurred", h."CurrentlyFleeing" from client as c left join employmenteducation as e on c."PersonalID"=e."PersonalID" left join enrollment as en on e."EnrollmentID"=en."EnrollmentID" AND c."PersonalID"=en."PersonalID" left join health_and_dv as h on en."EnrollmentID"=h."EnrollmentID" AND c."PersonalID"=h."PersonalID" limit 5000;
-#intellij: "select c.*, e.\"InformationDate\" as \"InformationDate\", e.\"LastGradeCompleted\", e.\"EmploymentType\", e.\"SchoolStatus\", e.\"Employed\", e.\"EmploymentEducationID\", en.\"EnrollmentID\", en.\"FormerWardJuvenileJustice\", en.\"SexualOrientation\", h.\"InformationDate\" as \"InformationDate_HDV\", h.\"DomesticViolenceVictim\", h.\"WhenOccurred\", h.\"CurrentlyFleeing\" from client as c left join employmenteducation as e on c.\"PersonalID\"=e.\"PersonalID\" left join enrollment as en on e.\"EnrollmentID\"=en.\"EnrollmentID\" AND c.\"PersonalID\"=en.\"PersonalID\" left join health_and_dv as h on en.\"EnrollmentID\"=h.\"EnrollmentID\" AND c.\"PersonalID\"=h.\"PersonalID\" limit 5000;"
+#intellij: "select c.*, e.\"InformationDate\" as \"InformationDate\", e.\"LastGradeCompleted\", e.\"EmploymentType\", e.\"SchoolStatus\", e.\"Employed\", e.\"EmploymentEducationID\", en.\"EnrollmentID\", en.\"FormerWardJuvenileJustice\", en.\"SexualOrientation\", h.\"InformationDate\" as \"InformationDate_HDV\", h.\"DomesticViolenceVictim\", h.\"WhenOccurred\", h.\"CurrentlyFleeing\" from client as c left join employmenteducation as e on c.\"PersonalID\"=e.\"PersonalID\" left join enrollment as en on e.\"EnrollmentID\"=en.\"EnrollmentID\" AND c.\"PersonalID\"=en.\"PersonalID\" left join health_and_dv as h on en.\"EnrollmentID\"=h.\"EnrollmentID\" AND c.\"PersonalID\"=h.\"PersonalID\";"
 
 
 entityDefinitions:
@@ -44,7 +44,7 @@ entityDefinitions:
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
       nc.PersonRace1:
         type: "nc.PersonRace"
-        column: "AmIndianAKNative"
+        column: "AmIndAKNative"
         transforms: 
         - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
@@ -93,8 +93,8 @@ entityDefinitions:
         transforms:
         - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
-          target: ["0", "1"]
-          goal: ["", ""]
+          target: ["8", "99", "9"]
+          goal: ["", "", ""]
           partial: true 
       nc.PersonEthnicity:
         type: "nc.PersonEthnicity"
@@ -113,7 +113,7 @@ entityDefinitions:
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "PersonalID"
-      reverse: false
+      reverse: true
     name: "client"
 
     

@@ -1,6 +1,6 @@
 # change limit for prod: 
-# select e."*" from enrollment limit 5000; 
-# intellij : "select * from enrollment limit 5000;"
+# select e."*" from enrollment ; 
+# intellij : "select * from enrollment;"
 
 entityDefinitions: 
   client: 
@@ -18,7 +18,7 @@ entityDefinitions:
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "PersonalID"
-      reverse: false
+      reverse: true
     name: "client"
 
   location: #Last Permanent Address
@@ -39,22 +39,22 @@ entityDefinitions:
         column: "LastPermanentZIP"
         transforms: 
         - !<transforms.ParseIntTransform> {}
-       ol.locationcoordinates:
-         type: "ol.locationcoordinates"
-         transforms:
-         - !<transforms.GeographyPointTransform>
-           latTransforms:
-           - !<transforms.ConcatTransform>
-             columns: ['LastPermanentStreet', 'LastPermanentCity', 'LastPermanentZIP']
-             separator: ", "
-           - !<transforms.GeocoderTransform>
-             addressObject: "lat"
-           lonTransforms:
-           - !<transforms.ConcatTransform>
-             columns: ['LastPermanentStreet', 'LastPermanentCity', 'LastPermanentZIP']
-             separator: ", "
-           - !<transforms.GeocoderTransform>
-             addressObject: "lon"
+      ol.locationcoordinates:
+        type: "ol.locationcoordinates"
+        transforms:
+        - !<transforms.GeographyPointTransform>
+          latTransforms:
+          - !<transforms.ConcatTransform>
+            columns: ['LastPermanentStreet', 'LastPermanentCity', 'LastPermanentZIP']
+            separator: ", "
+          - !<transforms.GeocoderTransform>
+            addressObject: "lat"
+          lonTransforms:
+          - !<transforms.ConcatTransform>
+            columns: ['LastPermanentStreet', 'LastPermanentCity', 'LastPermanentZIP']
+            separator: ", "
+          - !<transforms.GeocoderTransform>
+            addressObject: "lon"
     conditions:
     - !<conditions.ConditionalOr> {}
     - !<conditions.BooleanIsNullCondition>
