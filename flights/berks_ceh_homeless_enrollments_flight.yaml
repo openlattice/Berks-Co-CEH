@@ -1,5 +1,5 @@
 # change limit for prod: select e.*, ex."ExitID", ex."ExitDate", ex."Destination", ex."OtherDestination", ex."AssessmentDisposition", ex."HousingAssessment", ex."OtherDisposition", s."ServicesID", s."DateProvided", p."ProjectType", o."Organizationname" from enrollment as e left join exit as ex on e."EnrollmentID"=ex."EnrollmentID" AND e."PersonalID"=ex."PersonalID" left join services as s on e."EnrollmentID"=s."EnrollmentID" AND e."PersonalID"=s."PersonalID" left join project as p on e."ProjectID"=p."ProjectID" left join organization as o on p."OrganizationID"=o."OrganizationID" limit 5000;
-# intellij: "select e.*, ex.\"ExitID\", ex.\"ExitDate\", ex.\"Destination\", ex.\"OtherDestination\", ex.\"AssessmentDisposition\", ex.\"HousingAssessment\", ex.\"OtherDisposition\", s.\"ServicesID\", s.\"DateProvided\", p.\"ProjectType\", o.\"Organizationname\" from enrollment as e left join exit as ex on e.\"EnrollmentID\"=ex.\"EnrollmentID\" AND e.\"PersonalID\"=ex.\"PersonalID\" left join services as s on e.\"EnrollmentID\"=s.\"EnrollmentID\" AND e.\"PersonalID\"=s.\"PersonalID\" left join project as p on e.\"ProjectID\"=p.\"ProjectID\" left join organization as o on p.\"OrganizationID\"=o.\"OrganizationID\" limit 5000;"
+# intellij: "select e.*, ex.\"ExitID\", ex.\"ExitDate\", ex.\"Destination\", ex.\"OtherDestination\", ex.\"AssessmentDisposition\", ex.\"HousingAssessment\", ex.\"OtherDisposition\", s.\"ServicesID\", s.\"DateProvided\", p.\"ProjectType\", o.\"Organizationname\" from enrollment as e left join exit as ex on e.\"EnrollmentID\"=ex.\"EnrollmentID\" AND e.\"PersonalID\"=ex.\"PersonalID\" left join services as s on e.\"EnrollmentID\"=s.\"EnrollmentID\" AND e.\"PersonalID\"=s.\"PersonalID\" left join project as p on e.\"ProjectID\"=p.\"ProjectID\" left join organization as o on p.\"OrganizationID\"=o.\"OrganizationID\""
 
 entityDefinitions: 
   client: 
@@ -17,7 +17,7 @@ entityDefinitions:
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "PersonalID"
-      reverse: false
+      reverse: true
     name: "client"
   
   enrollment: 
@@ -94,7 +94,7 @@ entityDefinitions:
           column: "Destination"
           pattern: "(?i)(\\b4\\b|\\b5\\b|\\b6\\b|\\b7\\b|\\b8\\b|\\b6\\b|\\b7\\b|\\b8\\b|\\b9\\b|\\b10\\b|\\b11\\b|\\b12\\b|\\b13\\b|\\b14\\b|\\b15\\b|\\b16\\b|\\b19\\b|\\b20\\b|\\b21\\b|\\b22\\b|\\b23\\b|\\b24\\b|\\b25\\b|\\b28\\b|\\b29\\b|\\b30\\b|\\b31\\b|\\b99\\b)"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform> {}
+          - !<transforms.ParseIntTransform> #brackets not needed here or shuttle thinks new block is starting 
             column: "Destination"
           - !<transforms.ReplaceTransform>
             target: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "99"]
@@ -110,7 +110,6 @@ entityDefinitions:
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "99"]
           goal: ["Able to maintain the housing they had at project entry", "Moved to new housing unit", "Moved in with family/friends on a temporary basis", "Moved in with family/friends on a permanent basis", "Moved to a transitional or temporary housing facility or program", "Client became homeless – moving to a shelter or other place unfit for human habitation", "Client went to jail/prison", "Client doesn’t know", "Client refused", "Client died", "Data not collected"]
-        # - !<transforms.ParseDoubleTransform> {}
     name: "housing_exit"
 
   referral:
@@ -130,7 +129,7 @@ entityDefinitions:
           column: "AssessmentDisposition"
           pattern: "(?i)(\\b1\\b|\\b2\\b|\\b3\\b|\\b4\\b|\\b5\\b|\\b6\\b|\\b7\\b|\\b8\\b|\\b9\\b|\\b10\\b|\\b11\\b|\\b12\\b|\\b13\\b)"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform> {}
+          - !<transforms.ParseIntTransform> #brackets not needed here or shuttle thinks new block is starting 
             column: "AssessmentDisposition"
           - !<transforms.ReplaceTransform>
             target: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"]

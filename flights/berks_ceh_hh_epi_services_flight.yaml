@@ -1,6 +1,6 @@
-# change limit for prod: select e."PersonalID", e."EnrollmentID", e."EntryDate", e."HouseholdID", e."DisabledHoH", e."RelationshipToHoH", s."ServicesID", s."DateProvided", s."RecordType", s."TypeProvided" from enrollment as e left join services as s on e."EnrollmentID"=s."EnrollmentID" AND e."PersonalID"= s."PersonalID" limit 5000; 
+# change limit for prod: select e."PersonalID", e."EnrollmentID", e."EntryDate", e."HouseholdID", e."DisabledHoH", e."RelationshipToHoH", s."ServicesID", s."DateProvided", s."RecordType", s."TypeProvided" from enrollment as e left join services as s on e."EnrollmentID"=s."EnrollmentID" AND e."PersonalID"= s."PersonalID" ; 
 
-#intellij: "select e.\"PersonalID\", e.\"EnrollmentID\", e.\"EntryDate\", e.\"HouseholdID\", e.\"DisabledHoH\", e.\"RelationshipToHoH\",  s.\"ServicesID\", s.\"DateProvided\", s.\"RecordType\", s.\"TypeProvided\" from enrollment as e left join services as s on e.\"EnrollmentID\"=s.\"EnrollmentID\" AND e.\"PersonalID\"= s.\"PersonalID\" limit 5000;"
+#intellij: "select e.\"PersonalID\", e.\"EnrollmentID\", e.\"EntryDate\", e.\"HouseholdID\", e.\"DisabledHoH\", e.\"RelationshipToHoH\",  s.\"ServicesID\", s.\"DateProvided\", s.\"RecordType\", s.\"TypeProvided\" from enrollment as e left join services as s on e.\"EnrollmentID\"=s.\"EnrollmentID\" AND e.\"PersonalID\"= s.\"PersonalID\";"
 
 entityDefinitions: 
   client: 
@@ -18,7 +18,7 @@ entityDefinitions:
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "PersonalID"
-      reverse: false
+      reverse: true
     name: "client"
 
   household: 
@@ -138,7 +138,7 @@ entityDefinitions:
           column: "RecordType"
           string: "144"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform> {}
+          - !<transforms.ParseIntTransform> #brackets not needed here or shuttle thinks new block is starting 
             column: "TypeProvided"
           - !<transforms.ReplaceTransform>
             target: ["1", "2", "3", "4", "5", "6"] 
@@ -150,7 +150,7 @@ entityDefinitions:
           column: "RecordType"
           string: "152"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform> {}
+          - !<transforms.ParseIntTransform> #brackets not needed here or shuttle thinks new block is starting 
             column: "TypeProvided"
           - !<transforms.ReplaceTransform>
             target: ["1", "2", "3", "4", "5", "8", "9", "10", "11", "12", "14"] 

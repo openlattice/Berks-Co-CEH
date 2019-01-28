@@ -1,6 +1,6 @@
-# change limit for prod: select d.*, h."InformationDate" as "InformationDate_HDV", h."PregnancyStatus", h."DueDate", e."EntryDate", ex."ExitDate", e."DisablingCondition" from enrollment as e left join exit as ex on e."EnrollmentID"=ex."EnrollmentID" AND e."PersonalID"=ex."PersonalID" left join disabilities as d on e."EnrollmentID"=d."EnrollmentID" AND e."PersonalID"=d."PersonalID" left join health_and_dv as h on d."EnrollmentID"=h."EnrollmentID" AND e."PersonalID"=h."PersonalID" limit 5000;
+# change limit for prod: select d.*, h."InformationDate" as "InformationDate_HDV", h."PregnancyStatus", h."DueDate", e."EntryDate", ex."ExitDate", e."DisablingCondition" from enrollment as e left join exit as ex on e."EnrollmentID"=ex."EnrollmentID" AND e."PersonalID"=ex."PersonalID" left join disabilities as d on e."EnrollmentID"=d."EnrollmentID" AND e."PersonalID"=d."PersonalID" left join health_and_dv as h on d."EnrollmentID"=h."EnrollmentID" AND e."PersonalID"=h."PersonalID" ;
 
-# intelliJ: "select d.*, h.\"HealthAndDVID\", h.\"InformationDate\" as \"InformationDate_HDV\", h.\"PregnancyStatus\", h.\"DueDate\", e.\"EntryDate\", ex.\"ExitDate\", e.\"DisablingCondition\" from enrollment as e left join exit as ex on e.\"EnrollmentID\"=ex.\"EnrollmentID\" AND e.\"PersonalID\"=ex.\"PersonalID\" left join disabilities as d on e.\"EnrollmentID\"=d.\"EnrollmentID\" AND e.\"PersonalID\"=d.\"PersonalID\" left join health_and_dv as h on d.\"EnrollmentID\"=h.\"EnrollmentID\" AND e.\"PersonalID\"=h.\"PersonalID\" limit 5000; "
+# intelliJ: "select d.*, h.\"HealthAndDVID\", h.\"InformationDate\" as \"InformationDate_HDV\", h.\"PregnancyStatus\", h.\"DueDate\", e.\"EntryDate\", ex.\"ExitDate\", e.\"DisablingCondition\" from enrollment as e left join exit as ex on e.\"EnrollmentID\"=ex.\"EnrollmentID\" AND e.\"PersonalID\"=ex.\"PersonalID\" left join disabilities as d on e.\"EnrollmentID\"=d.\"EnrollmentID\" AND e.\"PersonalID\"=d.\"PersonalID\" left join health_and_dv as h on d.\"EnrollmentID\"=h.\"EnrollmentID\" AND e.\"PersonalID\"=h.\"PersonalID\"; "
 
 entityDefinitions:
   client: 
@@ -18,7 +18,7 @@ entityDefinitions:
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "PersonalID"
-      reverse: false
+      reverse: true
     name: "client"
 
   enrollment:
@@ -55,14 +55,6 @@ entityDefinitions:
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
-      # ol.clinicalstatus: #taking out because this pertains to client in general
-      #   type: "ol.clinicalstatus"
-      #   column: "DisablingCondition" #from enrollment - does client have disabling condition
-      #   transforms:
-      #   - !<transforms.ParseIntTransform> {}
-      #   - !<transforms.ReplaceTransform>
-      #     target: ["0", "1", "8", "9", "99"]
-      #     goal: ["No", "Yes", "Client doesn't know", "Client refused", "Data not collected"]
       health.mentalissue: 
         type: "health.mentalissue"
         transforms:
@@ -70,23 +62,12 @@ entityDefinitions:
           column: "DisabilityType"
           string: "9"
           transformsIfTrue:
-          - !<transforms.ValueTransform>
-            value: "true"
-          transformsIfFalse:
-          - !<transforms.ValueTransform>
-            value: ""
-      # ol.substanceuse:
-      #   type: "ol.substanceuse"
-      #   transforms:
-      #   - !<transforms.BooleanContainsTransform>
-      #     column: "DisabilityType"
-      #     string: "10"
-      #     transformsIfTrue:
-      #     - !<transforms.ValueTransform>
-      #       value: "true"
-      #     transformsIfFalse:
-      #     - !<transforms.ValueTransform>
-      #       value: ""
+          - !<transforms.BooleanRegexTransform>
+            column: "DisabilityResponse"
+            pattern: "(?i)(\\b1\\b)"
+            transformsIfTrue:
+            - !<transforms.ValueTransform>
+              value: true
       ol.name: 
         type: "ol.name"
         column: "DisabilityType"
@@ -94,19 +75,7 @@ entityDefinitions:
         - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["5", "6", "7", "8", "9", "10"]
-          goal: ["Physical disability", "Developmental disability", "Chronic health condition", "HIV/AIDS", "Mental health problem", "Substance abuse"]
-      # ol.clinicalstatus: # put substance abuse in its own entity
-      #   type: "ol.clinicalstatus"
-      #   transforms: 
-      #   - !<transforms.BooleanContainsTransform>
-      #     column: "DisabilityType"
-      #     string: "10"
-      #     transformsIfTrue:
-      #     - !<transforms.ParseIntTransform>
-      #       column: "DisabilityResponse"
-      #     - !<transforms.ReplaceTransform>
-      #       target: ["0", "1", "2", "3", "8", "9", "99"]
-      #       goal: ["Substance Abuse: No", "Alcohol abuse", "Drug abuse", "Both alcohol and drug abuse", "Client doesn't know", "Client refused", "Data not collected"]
+          goal: ["Physical disability", "Developmental disability", "Chronic health condition", "HIV/AIDS", "Mental health problem", ""]
       ol.clinicalstatus1: 
         type: "ol.clinicalstatus"
         transforms:
@@ -114,7 +83,7 @@ entityDefinitions:
           column: "DisabilityType"
           string: "5"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform> {}
+          - !<transforms.ParseIntTransform> #brackets not needed here or shuttle thinks new block mapping is starting
             column: "DisabilityResponse"
           - !<transforms.ReplaceTransform>
             target: ["0", "1", "8", "9", "99"]
@@ -126,7 +95,7 @@ entityDefinitions:
           column: "DisabilityType"
           string: "6"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform> {}
+          - !<transforms.ParseIntTransform> #brackets not needed here or shuttle thinks new block mapping is starting
             column: "DisabilityResponse"
           - !<transforms.ReplaceTransform>
             target: ["0", "1", "8", "9", "99"]
@@ -138,7 +107,7 @@ entityDefinitions:
           column: "DisabilityType"
           string: "7"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform> {}
+          - !<transforms.ParseIntTransform> #brackets not needed here or shuttle thinks new block mapping is starting
             column: "DisabilityResponse"
           - !<transforms.ReplaceTransform>
             target: ["0", "1", "8", "9", "99"]
@@ -150,7 +119,7 @@ entityDefinitions:
           column: "DisabilityType"
           string: "8"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform> {}
+          - !<transforms.ParseIntTransform> #brackets not needed here or shuttle thinks new block mapping is starting
             column: "DisabilityResponse"
           - !<transforms.ReplaceTransform>
             target: ["0", "1", "8", "9", "99"]
@@ -162,7 +131,7 @@ entityDefinitions:
           column: "DisabilityType"
           string: "9"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform> {}
+          - !<transforms.ParseIntTransform> #brackets not needed here or shuttle thinks new block mapping is starting
             column: "DisabilityResponse"
           - !<transforms.ReplaceTransform>
             target: ["0", "1", "8", "9", "99"]
@@ -175,6 +144,11 @@ entityDefinitions:
         - !<transforms.ReplaceTransform> 
           target: ["0", "1", "8", "9", "99"]
           goal: ["No", "Yes", "Client doesn't know", "Client refused", "Data not collected"]
+    conditions:
+    - !<conditions.BooleanRegexCondition> 
+      column: "DisabilityType"
+      pattern: "10" # do not want substance use in this entity
+      reverse: true
     name: "disabilities"
 
   substanceabuse: 
@@ -188,14 +162,14 @@ entityDefinitions:
         type: "ol.datelastreported"
         column: "InformationDate"
         transforms:
-        - !<transforms.DateTimeTransform>
+        - !<transforms.DateTimeAsDateTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
       ol.substanceuseindicator:
         type: "ol.substanceuseindicator"
         transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "DisabilityType"
-          string: "10"
+        - !<transforms.BooleanRegexTransform>
+          column: "DisabilityResponse"
+          pattern: "(?i)(\\b1\\b|\\b2\\b|\\b3\\b)"
           transformsIfTrue:
           - !<transforms.ValueTransform>
             value: true
@@ -207,6 +181,19 @@ entityDefinitions:
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "2", "3", "8", "9", "99"]
           goal: ["No", "Alcohol abuse", "Drug abuse", "Both alcohol and drug abuse", "Client doesn't know", "Client refused", "Data not collected"]
+      general.notes: 
+        type: "general.notes"
+        column: "IndefiniteAndImpairs"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform> 
+          target: ["0", "1", "8", "9", "99"]
+          goal: ["Indefinite and impeding: No", "Indefinite and impeding: Yes", "Indefinite and impeding: Client doesn't know", "Indefinite and impeding: Client refused", "Indefinite and impeding: Data not collected"]
+    conditions:
+    - !<conditions.BooleanRegexCondition> 
+      column: "DisabilityType"
+      pattern: "10" 
+      reverse: false
     name: "substanceabuse"
 
 
@@ -242,7 +229,7 @@ entityDefinitions:
         transforms:
         # - !<transforms.DateTimeTransform>
         - !<transforms.DateTimeAsDateTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     conditions: 
     - !<conditions.BooleanIsNullCondition>
       column: "PregnancyStatus"
@@ -266,7 +253,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms: 
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "observedin1"
 
   observedin2:
@@ -285,7 +272,7 @@ associationDefinitions:
         column: "InformationDate_HDV"
         transforms: 
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]      
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]      
     name: "observedin2"
 
   observedin3:
@@ -304,7 +291,7 @@ associationDefinitions:
         column: "InformationDate"
         transforms: 
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss"]      
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]      
     name: "observedin3"
 
   addresses1:
