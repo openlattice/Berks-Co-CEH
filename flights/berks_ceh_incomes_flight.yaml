@@ -1,8 +1,8 @@
-#change limit for prod: 
-# psql: select i.*, s."FAAmount", e."PercentAMI", e."AnnualPercentAMI" from incomebenefits as i left join services as s on i."EnrollmentID"=s."EnrollmentID" AND i."PersonalID"=s."PersonalID" left join enrollment as e on e."EnrollmentID"=i."EnrollmentID" AND e."PersonalID"=i."PersonalID" limit 5000; 
-# intellij: "select i.*, s.\"FAAmount\", s.\"ServicesID\", s.\"DateProvided\", e.\"PercentAMI\", e.\"AnnualPercentAMI\" from incomebenefits as i left join services as s on i.\"EnrollmentID\"=s.\"EnrollmentID\" AND i.\"PersonalID\"=s.\"PersonalID\" left join enrollment as e on e.\"EnrollmentID\"=i.\"EnrollmentID\" AND e.\"PersonalID\"=i.\"PersonalID\""
+#change limit for prod:
+# psql: select i.*, s."FAAmount", e."PercentAMI", e."AnnualPercentAMI" from incomebenefits as i left join services as s on i."EnrollmentID"=s."EnrollmentID" AND i."PersonalID"=s."PersonalID" left join enrollment as e on e."EnrollmentID"=i."EnrollmentID" AND e."PersonalID"=i."PersonalID" limit 5000;
+# intellij: "select i.*, s.\"FAAmount\", s.\"ServicesID\", s.\"DateProvided\", e.\"PercentAMI\", e.\"AnnualPercentAMI\" from incomebenefits as i left join services as s on i.\"EnrollmentID\"=s.\"EnrollmentID\" AND i.\"PersonalID\"=s.\"PersonalID\" left join enrollment as e on e.\"EnrollmentID\"=i.\"EnrollmentID\" AND e.\"PersonalID\"=i.\"PersonalID\";"
 
-entityDefinitions: 
+entityDefinitions:
   client:
     fqn: "general.person"
     entitySetName: "BerksCEHClients"
@@ -14,70 +14,33 @@ entityDefinitions:
         type: "ol.datasource"
         transforms:
         - !<transforms.ValueTransform>
-          value: "Berks County CEH"
-    conditions:
-    - !<conditions.BooleanIsNullCondition>
-      column: "PersonalID"
-      reverse: true
+          value: "Berks CEH"
     name: "client"
-
-  # household:
-  #   fqn: "demographics.household"
-  #   entitySetName: "BerksCEHHouseholds"
-  #   propertyDefinitions:
-  #     household.id:
-  #       type: "household.id"
-  #       column: "HouseholdID" # enrollment table
-  #     # demographics.hhtype: 
-  #     #   type: "demographics.hhtype"
-  #     #   column: "HouseholdType" # inventory table
-  #     #   transforms: 
-  #     #   - !<transforms.ReplaceTransform>
-  #     #     target: ["1", "3", "4"]
-  #     #     goal: ["households without children", "households with at least one adult and one child", "households with only children"]
-  #     disabledHoH: #this will be created 
-  #       type: "disabledHoH"
-  #       column: "DisabledHoH"
-  #       transforms:
-  #       - !<transforms.ReplaceTransform>
-  #         target: ["0", "1"]
-  #         goal: ["no", "yes"]
-  #   name: "household"
-
 
   total_income:
     fqn: "ol.income"
     entitySetName: "BerksCEHTotalIncomes"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
-        column: "IncomeBenefitsID"
-      ol.value: 
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["TotalMonthlyIncome", "IncomeFromAnySource"]
+          separator: "_"
+      ol.value:
         type: "ol.value"
         column: "TotalMonthlyIncome"
-      # ol.maximumvalue: 
-      #   type: "ol.maximumvalue"
-      #   value: 
-      # ol.minimumvalue:
-      #   type: "ol.minimumvalue"
-      #   value:
-      ol.notes: 
+      ol.notes:
         type: "ol.notes"
-        # column: "IncomeFromAnySource"
-        transforms: 
-        - !<transforms.BooleanContainsTransform>
-          column: "IncomeFromAnySource"
-          string: "1"
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ValueTransform>
-            value: "Income from Any Source"
-          transformsIfFalse:
-          - !<transforms.ValueTransform>
-            value: "None reported"
-      ol.units: 
+        column: "IncomeFromAnySource"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["Income from Any Source", "None reported"]
+      ol.units:
         type: "ol.units"
-        transforms: 
+        transforms:
         - !<transforms.ValueTransform>
           value: "monthly"
     conditions:
@@ -93,286 +56,427 @@ entityDefinitions:
   earned_income:
     fqn: "ol.income"
     entitySetName: "BerksCEHEarnedIncomes"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
-        column: "IncomeBenefitsID"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["Earned", "EarnedAmount"]
+          separator: "_"
+      ol.notes:
+        type: "ol.notes"
+        column: "Earned"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["No", "Yes"]
       ol.value:
         type: "ol.value"
         column: "EarnedAmount"
     conditions:
-    - !<conditions.BooleanRegexCondition>
+    - !<conditions.BooleanIsNullCondition>
       column: "Earned"
-      pattern: "1"
-      reverse: false
+      reverse: true
     name: "earned_income"
-
 
   unemployment_income:
     fqn: "ol.income"
     entitySetName: "BerksCEHUnemploymentIncomes"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
-        column: "IncomeBenefitsID"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["Unemployment", "UnemploymentAmount"]
+          separator: "_"
+      ol.notes:
+        type: "ol.notes"
+        column: "Unemployment"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["No", "Yes"]
       ol.value:
         type: "ol.value"
         column: "UnemploymentAmount"
     conditions:
-    - !<conditions.BooleanRegexCondition>
+    - !<conditions.BooleanIsNullCondition>
       column: "Unemployment"
-      pattern: "1"
-      reverse: false
+      reverse: true
     name: "unemployment_income"
 
   ssi_income:
     fqn: "ol.income"
     entitySetName: "BerksCEHSSIIncomes"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
-        column: "IncomeBenefitsID"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["SSI", "SSIAmount"]
+          separator: "_"
+      ol.notes:
+        type: "ol.notes"
+        column: "SSI"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["No", "Yes"]
       ol.value:
         type: "ol.value"
         column: "SSIAmount"
-    conditions: 
-    - !<conditions.BooleanRegexCondition>
+    conditions:
+    - !<conditions.BooleanIsNullCondition>
       column: "SSI"
-      pattern: "1"
-      reverse: false
+      reverse: true
     name: "ssi_income"
 
   ssdi_income:
     fqn: "ol.income"
     entitySetName: "BerksCEHSSDIIncomes"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
-        column: "IncomeBenefitsID"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["SSDI", "SSDIAmount"]
+          separator: "_"
+      ol.notes:
+        type: "ol.notes"
+        column: "SSDI"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["No", "Yes"]
       ol.value:
         type: "ol.value"
         column: "SSDIAmount"
-    conditions: 
-    - !<conditions.BooleanRegexCondition>
+    conditions:
+    - !<conditions.BooleanIsNullCondition>
       column: "SSDI"
-      pattern: "1"
-      reverse: false
+      reverse: true
     name: "ssdi_income"
-  
+
   vadisabilityservice_income:
     fqn: "ol.income"
     entitySetName: "BerksCEHVADisabilityServiceIncomes"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
-        column: "IncomeBenefitsID"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["VADisabilityService", "VADisabilityServiceAmount"]
+          separator: "_"
+      ol.notes:
+        type: "ol.notes"
+        column: "VADisabilityService"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["No", "Yes"]
       ol.value:
         type: "ol.value"
         column: "VADisabilityServiceAmount"
-    conditions: 
-    - !<conditions.BooleanRegexCondition>
+    conditions:
+    - !<conditions.BooleanIsNullCondition>
       column: "VADisabilityService"
-      pattern: "1"
-      reverse: false
+      reverse: true
     name: "vadisabilityservice_income"
 
   vadisabilitynonservice_income:
     fqn: "ol.income"
     entitySetName: "BerksCEHVADisabilityNonServiceIncomes"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
-        column: "IncomeBenefitsID"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["VADisabilityNonService", "VADisabilityNonServiceAmount"]
+          separator: "_"
+      ol.notes:
+        type: "ol.notes"
+        column: "VADisabilityNonService"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["No", "Yes"]
       ol.value:
         type: "ol.value"
         column: "VADisabilityNonServiceAmount"
-    conditions: 
-    - !<conditions.BooleanRegexCondition>
+    conditions:
+    - !<conditions.BooleanIsNullCondition>
       column: "VADisabilityNonService"
-      pattern: "1"
-      reverse: false
+      reverse: true
     name: "vadisabilitynonservice_income"
 
   privatedisability_income:
     fqn: "ol.income"
     entitySetName: "BerksCEHPrivateDisabilityIncomes"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
-        column: "IncomeBenefitsID"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["PrivateDisability", "PrivateDisabilityAmount"]
+          separator: "_"
+      ol.notes:
+        type: "ol.notes"
+        column: "PrivateDisability"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["No", "Yes"]
       ol.value:
         type: "ol.value"
         column: "PrivateDisabilityAmount"
-    conditions: 
-    - !<conditions.BooleanRegexCondition>
+    conditions:
+    - !<conditions.BooleanIsNullCondition>
       column: "PrivateDisability"
-      pattern: "1"
-      reverse: false
+      reverse: true
     name: "privatedisability_income"
 
   workerscomp_income:
     fqn: "ol.income"
     entitySetName: "BerksCEHWorkersCompIncomes"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
-        column: "IncomeBenefitsID"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["WorkersComp", "WorkersCompAmount"]
+          separator: "_"
+      ol.notes:
+        type: "ol.notes"
+        column: "WorkersComp"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["No", "Yes"]
       ol.value:
         type: "ol.value"
         column: "WorkersCompAmount"
-    conditions: 
-    - !<conditions.BooleanRegexCondition>
+    conditions:
+    - !<conditions.BooleanIsNullCondition>
       column: "WorkersComp"
-      pattern: "1"
-      reverse: false
+      reverse: true
     name: "workerscomp_income"
 
   tanf_income:
     fqn: "ol.income"
     entitySetName: "BerksCEHTANFIncomes"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
-        column: "IncomeBenefitsID"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["TANF", "TANFAmount"]
+          separator: "_"
+      ol.notes:
+        type: "ol.notes"
+        column: "TANF"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["No", "Yes"]
       ol.value:
         type: "ol.value"
         column: "TANFAmount"
-    conditions: 
-    - !<conditions.BooleanRegexCondition>
+    conditions:
+    - !<conditions.BooleanIsNullCondition>
       column: "TANF"
-      pattern: "1"
-      reverse: false
+      reverse: true
     name: "tanf_income"
 
   ga_income:
     fqn: "ol.income"
     entitySetName: "BerksCEHGAIncomes"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
-        column: "IncomeBenefitsID"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["GA", "GAAmount"]
+          separator: "_"
+      ol.notes:
+        type: "ol.notes"
+        column: "GA"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["No", "Yes"]
       ol.value:
         type: "ol.value"
         column: "GAAmount"
-    conditions: 
-    - !<conditions.BooleanRegexCondition>
+    conditions:
+    - !<conditions.BooleanIsNullCondition>
       column: "GA"
-      pattern: "1"
-      reverse: false
+      reverse: true
     name: "ga_income"
 
   socsecretirement_income:
     fqn: "ol.income"
     entitySetName: "BerksCEHSocSecRetirementIncomes"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
-        column: "IncomeBenefitsID"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["SocSecRetirement", "SocSecRetirementAmount"]
+          separator: "_"
+      ol.notes:
+        type: "ol.notes"
+        column: "SocSecRetirement"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["No", "Yes"]
       ol.value:
         type: "ol.value"
         column: "SocSecRetirementAmount"
-    conditions: 
-    - !<conditions.BooleanRegexCondition>
+    conditions:
+    - !<conditions.BooleanIsNullCondition>
       column: "SocSecRetirement"
-      pattern: "1"
-      reverse: false
+      reverse: true
     name: "socsecretirement_income"
 
   pension_income:
     fqn: "ol.income"
     entitySetName: "BerksCEHPensionIncomes"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
-        column: "IncomeBenefitsID"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["Pension", "PensionAmount"]
+          separator: "_"
+      ol.notes:
+        type: "ol.notes"
+        column: "Pension"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["No", "Yes"]
       ol.value:
         type: "ol.value"
         column: "PensionAmount"
-    conditions: 
-    - !<conditions.BooleanRegexCondition>
+    conditions:
+    - !<conditions.BooleanIsNullCondition>
       column: "Pension"
-      pattern: "1"
-      reverse: false
+      reverse: true
     name: "pension_income"
 
   childsupport_income:
     fqn: "ol.income"
     entitySetName: "BerksCEHChildSupportIncomes"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
-        column: "IncomeBenefitsID"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["ChildSupport", "ChildSupportAmount"]
+          separator: "_"
+      ol.notes:
+        type: "ol.notes"
+        column: "ChildSupport"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["No", "Yes"]
       ol.value:
         type: "ol.value"
         column: "ChildSupportAmount"
-    conditions: 
-    - !<conditions.BooleanRegexCondition>
+    conditions:
+    - !<conditions.BooleanIsNullCondition>
       column: "ChildSupport"
-      pattern: "1"
-      reverse: false
+      reverse: true
     name: "childsupport_income"
 
   alimony_income:
     fqn: "ol.income"
     entitySetName: "BerksCEHAlimonyIncomes"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
-        column: "IncomeBenefitsID"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["Alimony", "AlimonyAmount"]
+          separator: "_"
+      ol.notes:
+        type: "ol.notes"
+        column: "Alimony"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["No", "Yes"]
       ol.value:
         type: "ol.value"
         column: "AlimonyAmount"
-    conditions: 
-    - !<conditions.BooleanRegexCondition>
+    conditions:
+    - !<conditions.BooleanIsNullCondition>
       column: "Alimony"
-      pattern: "1"
-      reverse: false
+      reverse: true
     name: "alimony_income"
 
   other_income:
     fqn: "ol.income"
     entitySetName: "BerksCEHOtherIncomes"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
-        column: "IncomeBenefitsID"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["OtherIncomeSource", "OtherIncomeAmount", "OtherIncomeSourceIdentify"]
+          separator: "_"
+      ol.notes:
+        type: "ol.notes"
+        column: "OtherIncomeSource"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["No", "Yes"]
       ol.type:
         type: "ol.type"
         column: "OtherIncomeSourceIdentify"
-      ol.value: 
+      ol.value:
         type: "ol.value"
         column: "OtherIncomeAmount"
-    conditions: 
-    - !<conditions.BooleanRegexCondition>
+    conditions:
+    - !<conditions.BooleanIsNullCondition>
       column: "OtherIncomeSource"
-      pattern: "1"
-      reverse: false
+      reverse: true
     name: "other_income"
 
   noncashbenefits:
     fqn: "ol.income"
     entitySetName: "BerksCEHNonCashBenefits"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
-        column: "IncomeBenefitsID"
-      ol.type: 
+        column: "BenefitsFromAnySource"
+      ol.type:
         type: "ol.type"
+        column: "BenefitsFromAnySource"
         transforms:
-        - !<transforms.BooleanContainsTransform>
-          column: "BenefitsFromAnySource"
-          string: "1"
-          ignoreCase: true
-          transformsIfTrue:
-          - !<transforms.ValueTransform>
-            value: "Non-Cash Benefits from Any Source"
-          transformsIfFalse: 
-          - !<transforms.ParseIntTransform> 
-            column: "BenefitsFromAnySource"
-          - !<transforms.ReplaceTransform>
-            target: ["0", "8", "9", "99"]
-            goal: ["No", "Client doesn't know", "Client refused", "Data not collected"]
-    conditions: 
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "8", "9", "99"]
+          goal: ["No", "Non-Cash Benefits from Any Source", "Client doesn't know", "Client refused", "Data not collected"]
+    conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "BenefitsFromAnySource"
       reverse: true
@@ -382,123 +486,172 @@ entityDefinitions:
   snap_benefits:
     fqn: "ol.income"
     entitySetName: "BerksCEHSNAPBenefits"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
-        column: "IncomeBenefitsID"
-      ol.type: 
+        column: "SNAP"
+      ol.notes:
+        type: "ol.notes"
+        column: "SNAP"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["No", "Yes"]
+      ol.type:
         type: "ol.type"
         transforms:
         - !<transforms.ValueTransform>
           value: "SNAP"
-    conditions: 
-    - !<conditions.BooleanRegexCondition>
+    conditions:
+    - !<conditions.BooleanIsNullCondition>
       column: "SNAP"
-      pattern: "1"
-      reverse: false
+      reverse: true
     name: "snap_benefits"
 
 
   wic_benefits:
     fqn: "ol.income"
     entitySetName: "BerksCEHWICBenefits"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
-        column: "IncomeBenefitsID"
-      ol.type: 
+        column: "WIC"
+      ol.notes:
+        type: "ol.notes"
+        column: "WIC"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["No", "Yes"]
+      ol.type:
         type: "ol.type"
         transforms:
         - !<transforms.ValueTransform>
           value: "WIC"
-    conditions: 
-    - !<conditions.BooleanRegexCondition>
+    conditions:
+    - !<conditions.BooleanIsNullCondition>
       column: "WIC"
-      pattern: "1"
-      reverse: false
+      reverse: true
     name: "wic_benefits"
 
   tanfchildcare_benefits:
     fqn: "ol.income"
     entitySetName: "BerksCEHTANFChildCareBenefits"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
-        column: "IncomeBenefitsID"
-      ol.type: 
+        column: "TANFChildCare"
+      ol.notes:
+        type: "ol.notes"
+        column: "TANFChildCare"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["No", "Yes"]
+      ol.type:
         type: "ol.type"
         transforms:
         - !<transforms.ValueTransform>
           value: "TANF Childcare"
-    conditions: 
-    - !<conditions.BooleanRegexCondition>
+    conditions:
+    - !<conditions.BooleanIsNullCondition>
       column: "TANFChildCare"
-      pattern: "1"
-      reverse: false
+      reverse: true
     name: "tanfchildcare_benefits"
 
   tanftransportation_benefits:
     fqn: "ol.income"
     entitySetName: "BerksCEHTANFTransportationBenefits"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
-        column: "IncomeBenefitsID"
-      ol.type: 
+        column: "TANFTransportation"
+      ol.notes:
+        type: "ol.notes"
+        column: "TANFTransportation"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["No", "Yes"]
+      ol.type:
         type: "ol.type"
         transforms:
         - !<transforms.ValueTransform>
           value: "TANF Transportation"
-    conditions: 
-    - !<conditions.BooleanRegexCondition>
+    conditions:
+    - !<conditions.BooleanIsNullCondition>
       column: "TANFTransportation"
-      pattern: "1"
-      reverse: false
+      reverse: true
     name: "tanftransportation_benefits"
 
   othertanf_benefits:
     fqn: "ol.income"
     entitySetName: "BerksCEHOtherTANFBenefits"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
-        column: "IncomeBenefitsID"
-      ol.type: 
+        column: "OtherTANF"
+      ol.notes:
+        type: "ol.notes"
+        column: "OtherTANF"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["No", "Yes"]
+      ol.type:
         type: "ol.type"
         transforms:
         - !<transforms.ValueTransform>
           value: "Other TANF"
-    conditions: 
-    - !<conditions.BooleanRegexCondition>
+    conditions:
+    - !<conditions.BooleanIsNullCondition>
       column: "OtherTANF"
-      pattern: "1"
-      reverse: false
+      reverse: true
     name: "othertanf_benefits"
 
   other_benefits:
     fqn: "ol.income"
     entitySetName: "BerksCEHOtherNonCashBenefits"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
-        column: "IncomeBenefitsID"
-      ol.type: 
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["OtherBenefitsSource", "OtherBenefitsSourceIdentify"]
+          separator: "_"
+      ol.notes:
+        type: "ol.notes"
+        column: "OtherBenefitsSource"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1"]
+          goal: ["No", "Yes"]
+      ol.type:
         type: "ol.type"
         column: "OtherBenefitsSourceIdentify"
-    conditions: 
-    - !<conditions.BooleanRegexCondition>
+    conditions:
+    - !<conditions.ConditionalOr> {}
+    - !<conditions.BooleanIsNullCondition>
       column: "OtherBenefitsSource"
-      pattern: "1"
-      reverse: false
+      reverse: true
+    - !<conditions.BooleanIsNullCondition>
+      column: "OtherBenefitsSourceIdentify"
+      reverse: true
     name: "other_benefits"
 
   percentareamedianincome:
     fqn: "ol.areamedianincome"
     entitySetName: "BerksCEHPercentAMI"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
-        column: "EnrollmentID"
+        column: "PercentAMI"
       ol.maximumvalue:
         type: "ol.maximumvalue"
         column: "PercentAMI"
@@ -507,7 +660,7 @@ entityDefinitions:
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "99" ]
           goal: ["", 50, "", ""]
-      ol.minimumvalue: 
+      ol.minimumvalue:
         type: "ol.minimumvalue"
         column: "PercentAMI"
         transforms:
@@ -523,7 +676,7 @@ entityDefinitions:
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "99" ]
           goal: [30, "", 50, ""]
-      ol.qualifier: 
+      ol.qualifier:
         type: "ol.qualifier"
         column: "PercentAMI"
         transforms:
@@ -531,7 +684,7 @@ entityDefinitions:
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "99" ]
           goal: ["<", "", ">", ""]
-      ol.category: 
+      ol.category:
         type: "ol.category"
         column: "PercentAMI"
         transforms:
@@ -548,10 +701,10 @@ entityDefinitions:
   annualareamedianincome:
     fqn: "ol.areamedianincome"
     entitySetName: "BerksCEHAnnualAMI"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
-        column: "EnrollmentID"
+        column: "AnnualPercentAMI"
       ol.maximumvalue:
         type: "ol.maximumvalue"
         column: "AnnualPercentAMI"
@@ -560,7 +713,7 @@ entityDefinitions:
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "2", "99"]
           goal: [14, 30, "", ""]
-      ol.minimumvalue: 
+      ol.minimumvalue:
         type: "ol.minimumvalue"
         column: "AnnualPercentAMI"
         transforms:
@@ -576,7 +729,7 @@ entityDefinitions:
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "2", "99"]
           goal: ["", "", ">", ""]
-      ol.value: 
+      ol.value:
         type: "ol.value"
         column: "AnnualPercentAMI"
         transforms:
@@ -584,7 +737,7 @@ entityDefinitions:
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "2", "99"]
           goal: ["", "", 30, ""]
-      ol.category: 
+      ol.category:
         type: "ol.category"
         column: "AnnualPercentAMI"
         transforms:
@@ -598,29 +751,29 @@ entityDefinitions:
       reverse: true
     name: "annualareamedianincome"
 
-  financialassistance_income: 
+  financialassistance_income:
     fqn: "ol.income"
     entitySetName: "BerksCEHFinancialAssistanceIncomes"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
-        column: "ServicesID"
-      ol.type: 
+        column: "FAAmount"
+      ol.type:
         type: "ol.type"
         transforms:
         - !<transforms.ValueTransform>
           value: "SSVF Financial Assistance"
-      ol.value: 
+      ol.value:
         type: "ol.value"
         column: "FAAmount"
-    conditions: 
+    conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "FAAmount"
       reverse: true
     name: "financialassistance_income"
 
 
-associationDefinitions: 
+associationDefinitions:
   reported1:
     fqn: "ol.reported"
     entitySetName: "BerksReported"
@@ -631,7 +784,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID"]
+          columns: ["PersonalID", "IncomeBenefitsID", "TotalMonthlyIncome", "IncomeFromAnySource"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -651,7 +804,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID"]
+          columns: ["PersonalID", "IncomeBenefitsID", "Earned", "EarnedAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -671,7 +824,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID"]
+          columns: ["PersonalID", "IncomeBenefitsID", "Unemployment", "UnemploymentAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -691,7 +844,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID"]
+          columns: ["PersonalID", "IncomeBenefitsID", "SSI", "SSIAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -711,7 +864,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID"]
+          columns: ["PersonalID", "IncomeBenefitsID", "SSDI", "SSDIAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -731,7 +884,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID"]
+          columns: ["PersonalID", "IncomeBenefitsID", "VADisabilityService", "VADisabilityServiceAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -751,7 +904,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID"]
+          columns: ["PersonalID", "IncomeBenefitsID", "VADisabilityNonService", "VADisabilityNonServiceAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -771,7 +924,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID"]
+          columns: ["PersonalID", "IncomeBenefitsID", "PrivateDisability", "PrivateDisabilityAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -791,7 +944,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID"]
+          columns: ["PersonalID", "IncomeBenefitsID", "WorkersComp", "WorkersCompAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -811,7 +964,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID"]
+          columns: ["PersonalID", "IncomeBenefitsID", "TANF", "TANFAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -832,7 +985,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID"]
+          columns: ["PersonalID", "IncomeBenefitsID", "GA", "GAAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -852,7 +1005,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID"]
+          columns: ["PersonalID", "IncomeBenefitsID", "SocSecRetirement", "SocSecRetirementAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -872,7 +1025,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID"]
+          columns: ["PersonalID", "IncomeBenefitsID", "Pension", "PensionAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -892,7 +1045,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID"]
+          columns: ["PersonalID", "IncomeBenefitsID", "ChildSupport", "ChildSupportAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -912,7 +1065,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID"]
+          columns: ["PersonalID", "IncomeBenefitsID", "Alimony", "AlimonyAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -932,7 +1085,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID"]
+          columns: ["PersonalID", "IncomeBenefitsID", "OtherIncomeSource", "OtherIncomeAmount", "OtherIncomeSourceIdentify"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -952,7 +1105,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID"]
+          columns: ["PersonalID", "IncomeBenefitsID", "BenefitsFromAnySource"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -972,7 +1125,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID"]
+          columns: ["PersonalID", "IncomeBenefitsID", "SNAP"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -992,7 +1145,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID"]
+          columns: ["PersonalID", "IncomeBenefitsID", "WIC"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -1012,7 +1165,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID"]
+          columns: ["PersonalID", "IncomeBenefitsID", "TANFChildCare"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -1032,7 +1185,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID"]
+          columns: ["PersonalID", "IncomeBenefitsID", "TANFTransportation"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -1052,7 +1205,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID"]
+          columns: ["PersonalID", "IncomeBenefitsID", "OtherTANF"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -1072,7 +1225,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID"]
+          columns: ["PersonalID", "IncomeBenefitsID", "OtherBenefitsSource", "OtherBenefitsSourceIdentify"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -1092,7 +1245,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID"]
+          columns: ["PersonalID", "IncomeBenefitsID", "PercentAMI"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -1112,7 +1265,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID"]
+          columns: ["PersonalID", "IncomeBenefitsID", "AnnualPercentAMI"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -1132,7 +1285,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "ServicesID"]
+          columns: ["PersonalID", "ServicesID", "FAAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -1141,24 +1294,3 @@ associationDefinitions:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported26"
-
-  # partof:
-  #   fqn: "ol.partof"
-  #   entitySetName: "BerksPartOf"
-  #   src: "client"
-  #   dst: "household"
-  #   propertyDefinitions: 
-  #     ol.id:
-  #       type: "ol.id"
-  #       transforms: 
-  #       - !<transforms.ConcatTransform>
-  #         columns: ["PersonalID", "HouseholdID"]
-  #         separator: "_"
-  #     ol.role: 
-  #       type: "ol.role"
-  #       column: "RelationshiptoHoH"
-  #       transforms: 
-  #       - !<transforms.ReplaceTransform>
-  #         target: ["1", "2", "3", "4", "5", "99"]
-  #         goal: ["Self (head of household", "Child", "Spouse or partner", "Other relative", "Unrealted household member", "Data not collected"]
-  #   name: "partof"

@@ -3,18 +3,18 @@
 # intelliJ: "select d.*, h.\"HealthAndDVID\", h.\"InformationDate\" as \"InformationDate_HDV\", h.\"PregnancyStatus\", h.\"DueDate\", e.\"EntryDate\", ex.\"ExitDate\", e.\"DisablingCondition\" from enrollment as e left join exit as ex on e.\"EnrollmentID\"=ex.\"EnrollmentID\" AND e.\"PersonalID\"=ex.\"PersonalID\" left join disabilities as d on e.\"EnrollmentID\"=d.\"EnrollmentID\" AND e.\"PersonalID\"=d.\"PersonalID\" left join health_and_dv as h on d.\"EnrollmentID\"=h.\"EnrollmentID\" AND e.\"PersonalID\"=h.\"PersonalID\"; "
 
 entityDefinitions:
-  client: 
+  client:
     fqn: "general.person"
     entitySetName: "BerksCEHClients"
     propertyDefinitions:
       nc.SubjectIdentification:
         type: "nc.SubjectIdentification"
         column: "PersonalID"
-      ol.datasource: 
+      ol.datasource:
         type: "ol.datasource"
-        transforms: 
+        transforms:
         - !<transforms.ValueTransform>
-          value: "Berks County CEH"
+          value: "Berks CEH"
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "PersonalID"
@@ -28,13 +28,13 @@ entityDefinitions:
       ol.id:
         type: "ol.id"
         column: "EnrollmentID"
-      ol.effectivedate: 
+      ol.effectivedate:
         type: "ol.effectivedate"
         column: "EntryDate"
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
-      ol.datetimeend: 
+      ol.datetimeend:
         type: "ol.datetimeend"
         column: "ExitDate"
         transforms:
@@ -42,122 +42,121 @@ entityDefinitions:
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "enrollment"
 
-  disabilities: 
-    fqn: "ol.healthcondition" 
+  disabilities:
+    fqn: "ol.healthcondition"
     entitySetName: "BerksCEHDisabilities"
     propertyDefinitions:
       ol.id:
         type: "ol.id"
-        column: "DisabilitiesID"
-      ol.recordeddate: 
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["DisabilitiesID", "InformationDate", "DisabilityType", "DisabilityResponse", "IndefiniteAndImpairs"]
+          separator: "_"
+      ol.recordeddate:
         type: "ol.recordeddate"
         column: "InformationDate"
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
-      health.mentalissue: 
+      health.mentalissue:
         type: "health.mentalissue"
         transforms:
-        - !<transforms.BooleanContainsTransform>
+        - !<transforms.BooleanRegexTransform>
           column: "DisabilityType"
-          string: "9"
+          pattern: "(\\b9\\b)"
           transformsIfTrue:
           - !<transforms.BooleanRegexTransform>
             column: "DisabilityResponse"
-            pattern: "(?i)(\\b1\\b)"
+            pattern: "(\\b1\\b)"
             transformsIfTrue:
             - !<transforms.ValueTransform>
               value: true
-      ol.name: 
+      ol.name:
         type: "ol.name"
         column: "DisabilityType"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["5", "6", "7", "8", "9", "10"]
           goal: ["Physical disability", "Developmental disability", "Chronic health condition", "HIV/AIDS", "Mental health problem", ""]
-      ol.clinicalstatus1: 
+      ol.clinicalstatus1:
         type: "ol.clinicalstatus"
         transforms:
-        - !<transforms.BooleanContainsTransform>
+        - !<transforms.BooleanRegexTransform>
           column: "DisabilityType"
-          string: "5"
+          pattern: "(\\b5\\b)"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform> #brackets not needed here or shuttle thinks new block mapping is starting
-            column: "DisabilityResponse"
           - !<transforms.ReplaceTransform>
+            column: "DisabilityResponse"
             target: ["0", "1", "8", "9", "99"]
             goal: ["No", "Yes", "Client doesn't know", "Client refused", "Data not collected"]
-      ol.clinicalstatus2: 
+      ol.clinicalstatus2:
         type: "ol.clinicalstatus"
         transforms:
-        - !<transforms.BooleanContainsTransform>
+        - !<transforms.BooleanRegexTransform>
           column: "DisabilityType"
-          string: "6"
+          pattern: "(\\b6\\b)"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform> #brackets not needed here or shuttle thinks new block mapping is starting
-            column: "DisabilityResponse"
           - !<transforms.ReplaceTransform>
+            column: "DisabilityResponse"
             target: ["0", "1", "8", "9", "99"]
             goal: ["No", "Yes", "Client doesn't know", "Client refused", "Data not collected"]
-      ol.clinicalstatus3: 
+      ol.clinicalstatus3:
         type: "ol.clinicalstatus"
         transforms:
-        - !<transforms.BooleanContainsTransform>
+        - !<transforms.BooleanRegexTransform>
           column: "DisabilityType"
-          string: "7"
+          pattern: "(\\b7\\b)"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform> #brackets not needed here or shuttle thinks new block mapping is starting
-            column: "DisabilityResponse"
           - !<transforms.ReplaceTransform>
+            column: "DisabilityResponse"
             target: ["0", "1", "8", "9", "99"]
             goal: ["No", "Yes", "Client doesn't know", "Client refused", "Data not collected"]
-      ol.clinicalstatus4: 
+      ol.clinicalstatus4:
         type: "ol.clinicalstatus"
         transforms:
-        - !<transforms.BooleanContainsTransform>
+        - !<transforms.BooleanRegexTransform>
           column: "DisabilityType"
-          string: "8"
+          pattern: "(\\b8\\b)"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform> #brackets not needed here or shuttle thinks new block mapping is starting
-            column: "DisabilityResponse"
           - !<transforms.ReplaceTransform>
+            column: "DisabilityResponse"
             target: ["0", "1", "8", "9", "99"]
             goal: ["No", "Yes", "Client doesn't know", "Client refused", "Data not collected"]
-      ol.clinicalstatus5: 
+      ol.clinicalstatus5:
         type: "ol.clinicalstatus"
         transforms:
-        - !<transforms.BooleanContainsTransform>
+        - !<transforms.BooleanRegexTransform>
           column: "DisabilityType"
-          string: "9"
+          pattern: "(\\b9\\b)"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform> #brackets not needed here or shuttle thinks new block mapping is starting
-            column: "DisabilityResponse"
           - !<transforms.ReplaceTransform>
+            column: "DisabilityResponse"
             target: ["0", "1", "8", "9", "99"]
             goal: ["No", "Yes", "Client doesn't know", "Client refused", "Data not collected"]
-      ol.severity: 
+      ol.severity:
         type: "ol.severity"
         column: "IndefiniteAndImpairs"
         transforms:
-        - !<transforms.ParseIntTransform> {}
-        - !<transforms.ReplaceTransform> 
+        - !<transforms.ReplaceTransform>
           target: ["0", "1", "8", "9", "99"]
           goal: ["No", "Yes", "Client doesn't know", "Client refused", "Data not collected"]
     conditions:
-    - !<conditions.BooleanRegexCondition> 
+    - !<conditions.BooleanRegexCondition>
       column: "DisabilityType"
-      pattern: "10" # do not want substance use in this entity
+      pattern: "10"
       reverse: true
     name: "disabilities"
 
-  substanceabuse: 
+  substanceabuse:
     fqn: "ol.substance"
     entitySetName: "BerksCEHSubstanceAbuse"
-    propertyDefinitions: 
-      general.id: 
+    propertyDefinitions:
+      general.id:
         type: "general.id"
-        column: "DisabilitiesID"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["DisabilitiesID", "InformationDate", "DisabilityType", "DisabilityResponse", "IndefiniteAndImpairs"]
+          separator: "_"
       ol.datelastreported:
         type: "ol.datelastreported"
         column: "InformationDate"
@@ -177,22 +176,20 @@ entityDefinitions:
         type: "ol.type"
         column: "DisabilityResponse"
         transforms:
-        - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "2", "3", "8", "9", "99"]
           goal: ["No", "Alcohol abuse", "Drug abuse", "Both alcohol and drug abuse", "Client doesn't know", "Client refused", "Data not collected"]
-      general.notes: 
+      general.notes:
         type: "general.notes"
         column: "IndefiniteAndImpairs"
         transforms:
-        - !<transforms.ParseIntTransform> {}
-        - !<transforms.ReplaceTransform> 
+        - !<transforms.ReplaceTransform>
           target: ["0", "1", "8", "9", "99"]
           goal: ["Indefinite and impeding: No", "Indefinite and impeding: Yes", "Indefinite and impeding: Client doesn't know", "Indefinite and impeding: Client refused", "Indefinite and impeding: Data not collected"]
     conditions:
-    - !<conditions.BooleanRegexCondition> 
+    - !<conditions.BooleanRegexCondition>
       column: "DisabilityType"
-      pattern: "10" 
+      pattern: "10"
       reverse: false
     name: "substanceabuse"
 
@@ -201,15 +198,18 @@ entityDefinitions:
     fqn: "ol.healthcondition"
     entitySetName: "BerksCEHPregnancy"
     propertyDefinitions:
-      ol.id: 
+      ol.id:
         type: "ol.id"
-        column: "HealthAndDVID"
-      ol.name: 
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["HealthAndDVID", "InformationDate_HDV", "PregnancyStatus"]
+          separator: "_"
+      ol.name:
         type: "ol.name"
         transforms:
         - !<transforms.ValueTransform>
           value: "Pregnancy Status"
-      ol.recordeddate:  
+      ol.recordeddate:
         type: "ol.recordeddate"
         column: "InformationDate_HDV"
         transforms:
@@ -218,25 +218,24 @@ entityDefinitions:
       ol.clinicalstatus:
         type: "ol.clinicalstatus"
         column: "PregnancyStatus"
-        transforms: 
+        transforms:
         - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
-          target: ["0", "1", "8", "9", "99"] 
+          target: ["0", "1", "8", "9", "99"]
           goal: ["No", "Yes", "Client doesn't know", "Client refused", "Data not collected"]
       ol.enddate:
         type: "ol.enddate"
         column: "DueDate"
         transforms:
-        # - !<transforms.DateTimeTransform>
         - !<transforms.DateTimeAsDateTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
-    conditions: 
+    conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "PregnancyStatus"
       reverse: true
     name: "pregnancy"
 
-associationDefinitions: 
+associationDefinitions:
   observedin1:
     fqn: "ol.observedin"
     entitySetName: "BerksObservedIn"
@@ -245,13 +244,13 @@ associationDefinitions:
     propertyDefinitions:
       ol.id:
         type: "ol.id"
-        transforms: 
+        transforms:
         - !<transforms.ConcatTransform>
-          columns: ["DisabilitiesID", "PersonalID"]
-      date.completeddatetime: 
+          columns: ["DisabilitiesID", "DisabilityType", "DisabilityResponse", "IndefiniteAndImpairs", "PersonalID"]
+      date.completeddatetime:
         type: "date.completeddatetime"
         column: "InformationDate"
-        transforms: 
+        transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "observedin1"
@@ -264,15 +263,15 @@ associationDefinitions:
     propertyDefinitions:
       ol.id:
         type: "ol.id"
-        transforms: 
+        transforms:
         - !<transforms.ConcatTransform>
-          columns: ["HealthAndDVID", "PersonalID"]
-      date.completeddatetime: 
+          columns: ["HealthAndDVID", "PregnancyStatus", "PersonalID"]
+      date.completeddatetime:
         type: "date.completeddatetime"
         column: "InformationDate_HDV"
-        transforms: 
+        transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]      
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "observedin2"
 
   observedin3:
@@ -283,15 +282,15 @@ associationDefinitions:
     propertyDefinitions:
       ol.id:
         type: "ol.id"
-        transforms: 
+        transforms:
         - !<transforms.ConcatTransform>
-          columns: ["DisabilitiesID", "PersonalID"]
-      date.completeddatetime: 
+          columns: ["DisabilitiesID", "DisabilityType", "DisabilityResponse", "IndefiniteAndImpairs", "PersonalID"]
+      date.completeddatetime:
         type: "date.completeddatetime"
         column: "InformationDate"
-        transforms: 
+        transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]      
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "observedin3"
 
   addresses1:
@@ -302,15 +301,15 @@ associationDefinitions:
     propertyDefinitions:
       ol.id:
         type: "ol.id"
-        transforms: 
+        transforms:
         - !<transforms.ConcatTransform>
-          columns: ["EnrollmentID", "DisabilitiesID"]
-      date.completeddatetime: 
+          columns: ["EnrollmentID", "DisabilitiesID", "DisabilityType", "DisabilityResponse", "IndefiniteAndImpairs"]
+      date.completeddatetime:
         type: "date.completeddatetime"
         column: "InformationDate"
-        transforms: 
+        transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]      
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "addresses1"
 
   addresses2:
@@ -321,15 +320,15 @@ associationDefinitions:
     propertyDefinitions:
       ol.id:
         type: "ol.id"
-        transforms: 
+        transforms:
         - !<transforms.ConcatTransform>
-          columns: ["EnrollmentID", "HealthAndDVID"]
-      date.completeddatetime: 
+          columns: ["EnrollmentID", "HealthAndDVID", "PregnancyStatus"]
+      date.completeddatetime:
         type: "date.completeddatetime"
         column: "InformationDate_HDV"
-        transforms: 
+        transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]      
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "addresses2"
 
   addresses3:
@@ -340,57 +339,33 @@ associationDefinitions:
     propertyDefinitions:
       ol.id:
         type: "ol.id"
-        transforms: 
+        transforms:
         - !<transforms.ConcatTransform>
-          columns: ["EnrollmentID", "DisabilitiesID"]
-      date.completeddatetime: 
+          columns: ["EnrollmentID", "DisabilitiesID", "DisabilityType", "DisabilityResponse", "IndefiniteAndImpairs"]
+      date.completeddatetime:
         type: "date.completeddatetime"
         column: "InformationDate"
-        transforms: 
+        transforms:
         - !<transforms.DateTimeTransform>
-          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]      
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "addresses3"
-
-  # partof1:
-  #   fqn: "ol.exhibits"
-  #   entitySetName: "BerksPartOf"
-  #   src: "disabilities"
-  #   dst: "enrollment"
-  #   propertyDefinitions:
-  #     ol.id:
-  #       type: "ol.id"
-  #       column: "EnrollmentID"
-  #   name: "partof1"
-
-
-  # partof2:
-  #   fqn: "ol.exhibits"
-  #   entitySetName: "BerksPartOf"
-  #   src: "pregnancy"
-  #   dst: "enrollment"
-  #   propertyDefinitions:
-  #     ol.id:
-  #       type: "ol.id"
-  #       column: "EnrollmentID"
-  #   name: "partof2"
 
   presentsfor:
     fqn: "ol.presentsfor"
     entitySetName: "BerksPresentsFor"
     src: "client"
     dst: "enrollment"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
         transforms:
         - !<transforms.ConcatTransform>
           columns: ["PersonalID", "EnrollmentID"]
           separator: "_"
       date.completeddatetime:
-        type: "date.completeddatetime" 
+        type: "date.completeddatetime"
         column: "EntryDate"
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "presentsfor"
-
