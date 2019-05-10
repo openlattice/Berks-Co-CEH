@@ -30,8 +30,8 @@ entityDefinitions:
         - !<transforms.ConcatTransform>
           columns: ["Medicaid", "NoMedicaidReason"]
           separator: "_"
-      general.status:
-        type: "general.status"
+      ol.statusdetails:
+        type: "ol.statusdetails"
         column: "Medicaid"
         transforms:
         - !<transforms.ParseIntTransform> {}
@@ -72,8 +72,8 @@ entityDefinitions:
         - !<transforms.ConcatTransform>
           columns: ["Medicare", "NoMedicareReason"]
           separator: "_"
-      general.status:
-        type: "general.status"
+      ol.statusdetails:
+        type: "ol.statusdetails"
         column: "Medicare"
         transforms:
         - !<transforms.ParseIntTransform> {}
@@ -114,8 +114,8 @@ entityDefinitions:
         - !<transforms.ConcatTransform>
           columns: ["SCHIP", "NoSCHIPReason"]
           separator: "_"
-      general.status:
-        type: "general.status"
+      ol.statusdetails:
+        type: "ol.statusdetails"
         column: "SCHIP"
         transforms:
         - !<transforms.ParseIntTransform> {}
@@ -156,8 +156,8 @@ entityDefinitions:
         - !<transforms.ConcatTransform>
           columns: ["NoVAMedReason", "VAMedicalServices"]
           separator: "_"
-      general.status:
-        type: "general.status"
+      ol.statusdetails:
+        type: "ol.statusdetails"
         column: "VAMedicalServices"
         transforms:
         - !<transforms.ParseIntTransform> {}
@@ -203,8 +203,8 @@ entityDefinitions:
         transforms:
         - !<transforms.ValueTransform>
           value: "Employer Provided"
-      general.status:
-        type: "general.status"
+      ol.statusdetails:
+        type: "ol.statusdetails"
         column: "EmployerProvided"
         transforms:
         - !<transforms.ParseIntTransform> {}
@@ -245,8 +245,8 @@ entityDefinitions:
         transforms:
         - !<transforms.ValueTransform>
           value: "COBRA"
-      general.status:
-        type: "general.status"
+      ol.statusdetails:
+        type: "ol.statusdetails"
         column: "COBRA"
         transforms:
         - !<transforms.ParseIntTransform> {}
@@ -287,8 +287,8 @@ entityDefinitions:
         transforms:
         - !<transforms.ValueTransform>
           value: "Private Pay Insurance"
-      general.status:
-        type: "general.status"
+      ol.statusdetails:
+        type: "ol.statusdetails"
         column: "PrivatePay"
         transforms:
         - !<transforms.ParseIntTransform> {}
@@ -329,8 +329,8 @@ entityDefinitions:
         transforms:
         - !<transforms.ValueTransform>
           value: "State Health Insurance"
-      general.status:
-        type: "general.status"
+      ol.statusdetails:
+        type: "ol.statusdetails"
         column: "StateHealthIns"
         transforms:
         - !<transforms.ParseIntTransform> {}
@@ -371,8 +371,8 @@ entityDefinitions:
         transforms:
         - !<transforms.ValueTransform>
           value: "Indian Health Services"
-      general.status:
-        type: "general.status"
+      ol.statusdetails:
+        type: "ol.statusdetails"
         column: "IndianHealthServices"
         transforms:
         - !<transforms.ParseIntTransform> {}
@@ -408,8 +408,8 @@ entityDefinitions:
         - !<transforms.ConcatTransform>
           columns: ["OtherInsurance", "OtherInsuranceIdentify"]
           separator: "_"
-      general.status:
-        type: "general.status"
+      ol.statusdetails:
+        type: "ol.statusdetails"
         column: "OtherInsurance"
         transforms:
         - !<transforms.ParseIntTransform> {}
@@ -441,8 +441,8 @@ entityDefinitions:
         transforms:
         - !<transforms.ValueTransform>
           value: "Connection With SOAR"
-      general.status:
-        type: "general.status"
+      ol.statusdetails:
+        type: "ol.statusdetails"
         column: "ConnectionWithSOAR"
         transforms:
         - !<transforms.ParseIntTransform> {}

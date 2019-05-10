@@ -30,6 +30,8 @@ entityDefinitions:
       ol.value:
         type: "ol.value"
         column: "TotalMonthlyIncome"
+        transforms:
+        - !<transforms.ParseDoubleTransform> {}
       ol.notes:
         type: "ol.notes"
         column: "IncomeFromAnySource"
@@ -74,6 +76,8 @@ entityDefinitions:
       ol.value:
         type: "ol.value"
         column: "EarnedAmount"
+        transforms:
+        - !<transforms.ParseDoubleTransform> {}
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "Earned"
@@ -101,6 +105,8 @@ entityDefinitions:
       ol.value:
         type: "ol.value"
         column: "UnemploymentAmount"
+        transforms:
+        - !<transforms.ParseDoubleTransform> {}
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "Unemployment"
@@ -128,6 +134,8 @@ entityDefinitions:
       ol.value:
         type: "ol.value"
         column: "SSIAmount"
+        transforms:
+        - !<transforms.ParseDoubleTransform> {}
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "SSI"
@@ -155,6 +163,8 @@ entityDefinitions:
       ol.value:
         type: "ol.value"
         column: "SSDIAmount"
+        transforms:
+        - !<transforms.ParseDoubleTransform> {}
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "SSDI"
@@ -182,6 +192,8 @@ entityDefinitions:
       ol.value:
         type: "ol.value"
         column: "VADisabilityServiceAmount"
+        transforms:
+        - !<transforms.ParseDoubleTransform> {}
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "VADisabilityService"
@@ -209,6 +221,8 @@ entityDefinitions:
       ol.value:
         type: "ol.value"
         column: "VADisabilityNonServiceAmount"
+        transforms:
+        - !<transforms.ParseDoubleTransform> {}
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "VADisabilityNonService"
@@ -236,6 +250,8 @@ entityDefinitions:
       ol.value:
         type: "ol.value"
         column: "PrivateDisabilityAmount"
+        transforms:
+        - !<transforms.ParseDoubleTransform> {}
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "PrivateDisability"
@@ -263,6 +279,8 @@ entityDefinitions:
       ol.value:
         type: "ol.value"
         column: "WorkersCompAmount"
+        transforms:
+        - !<transforms.ParseDoubleTransform> {}
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "WorkersComp"
@@ -290,6 +308,8 @@ entityDefinitions:
       ol.value:
         type: "ol.value"
         column: "TANFAmount"
+        transforms:
+        - !<transforms.ParseDoubleTransform> {}
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "TANF"
@@ -317,6 +337,8 @@ entityDefinitions:
       ol.value:
         type: "ol.value"
         column: "GAAmount"
+        transforms:
+        - !<transforms.ParseDoubleTransform> {}
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "GA"
@@ -344,6 +366,8 @@ entityDefinitions:
       ol.value:
         type: "ol.value"
         column: "SocSecRetirementAmount"
+        transforms:
+        - !<transforms.ParseDoubleTransform> {}
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "SocSecRetirement"
@@ -371,6 +395,8 @@ entityDefinitions:
       ol.value:
         type: "ol.value"
         column: "PensionAmount"
+        transforms:
+        - !<transforms.ParseDoubleTransform> {}
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "Pension"
@@ -398,6 +424,8 @@ entityDefinitions:
       ol.value:
         type: "ol.value"
         column: "ChildSupportAmount"
+        transforms:
+        - !<transforms.ParseDoubleTransform> {}
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "ChildSupport"
@@ -425,6 +453,8 @@ entityDefinitions:
       ol.value:
         type: "ol.value"
         column: "AlimonyAmount"
+        transforms:
+        - !<transforms.ParseDoubleTransform> {}
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "Alimony"
@@ -455,6 +485,8 @@ entityDefinitions:
       ol.value:
         type: "ol.value"
         column: "OtherIncomeAmount"
+        transforms:
+        - !<transforms.ParseDoubleTransform> {}
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "OtherIncomeSource"
@@ -676,6 +708,7 @@ entityDefinitions:
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "99" ]
           goal: [30, "", 50, ""]
+        - !<transforms.ParseDoubleTransform> {}
       ol.qualifier:
         type: "ol.qualifier"
         column: "PercentAMI"
@@ -737,6 +770,7 @@ entityDefinitions:
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "2", "99"]
           goal: ["", "", 30, ""]
+        - !<transforms.ParseDoubleTransform> {}
       ol.category:
         type: "ol.category"
         column: "AnnualPercentAMI"
@@ -766,6 +800,8 @@ entityDefinitions:
       ol.value:
         type: "ol.value"
         column: "FAAmount"
+        transforms:
+        - !<transforms.ParseDoubleTransform> {}
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "FAAmount"
@@ -784,7 +820,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID", "TotalMonthlyIncome", "IncomeFromAnySource"]
+          columns: ["PersonalID", "TotalMonthlyIncome", "IncomeFromAnySource"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -804,7 +840,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID", "Earned", "EarnedAmount"]
+          columns: ["PersonalID", "Earned", "EarnedAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -824,7 +860,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID", "Unemployment", "UnemploymentAmount"]
+          columns: ["PersonalID", "Unemployment", "UnemploymentAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -844,7 +880,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID", "SSI", "SSIAmount"]
+          columns: ["PersonalID", "SSI", "SSIAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -864,7 +900,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID", "SSDI", "SSDIAmount"]
+          columns: ["PersonalID", "SSDI", "SSDIAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -884,7 +920,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID", "VADisabilityService", "VADisabilityServiceAmount"]
+          columns: ["PersonalID", "VADisabilityService", "VADisabilityServiceAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -904,7 +940,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID", "VADisabilityNonService", "VADisabilityNonServiceAmount"]
+          columns: ["PersonalID", "VADisabilityNonService", "VADisabilityNonServiceAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -924,7 +960,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID", "PrivateDisability", "PrivateDisabilityAmount"]
+          columns: ["PersonalID", "PrivateDisability", "PrivateDisabilityAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -944,7 +980,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID", "WorkersComp", "WorkersCompAmount"]
+          columns: ["PersonalID", "WorkersComp", "WorkersCompAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -964,7 +1000,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID", "TANF", "TANFAmount"]
+          columns: ["PersonalID", "TANF", "TANFAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -985,7 +1021,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID", "GA", "GAAmount"]
+          columns: ["PersonalID", "GA", "GAAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -1005,7 +1041,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID", "SocSecRetirement", "SocSecRetirementAmount"]
+          columns: ["PersonalID", "SocSecRetirement", "SocSecRetirementAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -1025,7 +1061,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID", "Pension", "PensionAmount"]
+          columns: ["PersonalID", "Pension", "PensionAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -1045,7 +1081,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID", "ChildSupport", "ChildSupportAmount"]
+          columns: ["PersonalID", "ChildSupport", "ChildSupportAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -1065,7 +1101,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID", "Alimony", "AlimonyAmount"]
+          columns: ["PersonalID", "Alimony", "AlimonyAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -1085,7 +1121,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID", "OtherIncomeSource", "OtherIncomeAmount", "OtherIncomeSourceIdentify"]
+          columns: ["PersonalID", "OtherIncomeSource", "OtherIncomeAmount", "OtherIncomeSourceIdentify"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -1105,7 +1141,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID", "BenefitsFromAnySource"]
+          columns: ["PersonalID", "BenefitsFromAnySource"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -1125,7 +1161,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID", "SNAP"]
+          columns: ["PersonalID", "SNAP"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -1145,7 +1181,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID", "WIC"]
+          columns: ["PersonalID", "WIC"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -1165,7 +1201,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID", "TANFChildCare"]
+          columns: ["PersonalID", "TANFChildCare"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -1185,7 +1221,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID", "TANFTransportation"]
+          columns: ["PersonalID", "TANFTransportation"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -1205,7 +1241,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID", "OtherTANF"]
+          columns: ["PersonalID", "OtherTANF"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -1225,7 +1261,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID", "OtherBenefitsSource", "OtherBenefitsSourceIdentify"]
+          columns: ["PersonalID", "OtherBenefitsSource", "OtherBenefitsSourceIdentify"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -1245,7 +1281,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID", "PercentAMI"]
+          columns: ["PersonalID", "PercentAMI"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -1265,7 +1301,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "IncomeBenefitsID", "AnnualPercentAMI"]
+          columns: ["PersonalID", "AnnualPercentAMI"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -1285,7 +1321,7 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "ServicesID", "FAAmount"]
+          columns: ["PersonalID", "FAAmount"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
