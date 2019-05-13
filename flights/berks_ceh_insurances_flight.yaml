@@ -30,8 +30,8 @@ entityDefinitions:
         - !<transforms.ConcatTransform>
           columns: ["Medicaid", "NoMedicaidReason"]
           separator: "_"
-      ol.statusdetails:
-        type: "ol.statusdetails"
+      general.status:
+        type: "general.status"
         column: "Medicaid"
         transforms:
         - !<transforms.ParseIntTransform> {}
@@ -43,8 +43,8 @@ entityDefinitions:
         transforms:
         - !<transforms.ValueTransform>
           value: "Medicaid"
-      ol.notes:
-        type: "ol.notes"
+      ol.statusdetails:
+        type: "ol.statusdetails"
         column: "NoMedicaidReason"
         transforms:
         - !<transforms.ParseIntTransform> {}
@@ -72,8 +72,8 @@ entityDefinitions:
         - !<transforms.ConcatTransform>
           columns: ["Medicare", "NoMedicareReason"]
           separator: "_"
-      ol.statusdetails:
-        type: "ol.statusdetails"
+      general.status:
+        type: "general.status"
         column: "Medicare"
         transforms:
         - !<transforms.ParseIntTransform> {}
@@ -85,8 +85,8 @@ entityDefinitions:
         transforms:
         - !<transforms.ValueTransform>
           value: "Medicare"
-      ol.notes:
-        type: "ol.notes"
+      ol.statusdetails:
+        type: "ol.statusdetails"
         column: "NoMedicareReason"
         transforms:
         - !<transforms.ParseIntTransform> {}
@@ -114,8 +114,8 @@ entityDefinitions:
         - !<transforms.ConcatTransform>
           columns: ["SCHIP", "NoSCHIPReason"]
           separator: "_"
-      ol.statusdetails:
-        type: "ol.statusdetails"
+      general.status:
+        type: "general.status"
         column: "SCHIP"
         transforms:
         - !<transforms.ParseIntTransform> {}
@@ -127,8 +127,8 @@ entityDefinitions:
         transforms:
         - !<transforms.ValueTransform>
           value: "Healthy Kids (CHI) (State Children's HIP)"
-      ol.notes:
-        type: "ol.notes"
+      ol.statusdetails:
+        type: "ol.statusdetails"
         column: "NoSCHIPReason"
         transforms:
         - !<transforms.ParseIntTransform> {}
@@ -156,8 +156,8 @@ entityDefinitions:
         - !<transforms.ConcatTransform>
           columns: ["NoVAMedReason", "VAMedicalServices"]
           separator: "_"
-      ol.statusdetails:
-        type: "ol.statusdetails"
+      general.status:
+        type: "general.status"
         column: "VAMedicalServices"
         transforms:
         - !<transforms.ParseIntTransform> {}
@@ -169,8 +169,8 @@ entityDefinitions:
         transforms:
         - !<transforms.ValueTransform>
           value: "VA Medical Services"
-      ol.notes:
-        type: "ol.notes"
+      ol.statusdetails:
+        type: "ol.statusdetails"
         column: "NoVAMedReason"
         transforms:
         - !<transforms.ParseIntTransform> {}
@@ -203,16 +203,16 @@ entityDefinitions:
         transforms:
         - !<transforms.ValueTransform>
           value: "Employer Provided"
-      ol.statusdetails:
-        type: "ol.statusdetails"
+      general.status:
+        type: "general.status"
         column: "EmployerProvided"
         transforms:
         - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1"]
           goal: ["No", "Yes"]
-      ol.notes:
-        type: "ol.notes"
+      ol.statusdetails:
+        type: "ol.statusdetails"
         column: "NoEmployerProvidedReason"
         transforms:
         - !<transforms.ParseIntTransform> {}
@@ -245,16 +245,16 @@ entityDefinitions:
         transforms:
         - !<transforms.ValueTransform>
           value: "COBRA"
-      ol.statusdetails:
-        type: "ol.statusdetails"
+      general.status:
+        type: "general.status"
         column: "COBRA"
         transforms:
         - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1"]
           goal: ["No", "Yes"]
-      ol.notes:
-        type: "ol.notes"
+      ol.statusdetails:
+        type: "ol.statusdetails"
         column: "NoCOBRAReason"
         transforms:
         - !<transforms.ParseIntTransform> {}
@@ -287,16 +287,16 @@ entityDefinitions:
         transforms:
         - !<transforms.ValueTransform>
           value: "Private Pay Insurance"
-      ol.statusdetails:
-        type: "ol.statusdetails"
+      general.status:
+        type: "general.status"
         column: "PrivatePay"
         transforms:
         - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1"]
           goal: ["No", "Yes"]
-      ol.notes:
-        type: "ol.notes"
+      ol.statusdetails:
+        type: "ol.statusdetails"
         column: "NoPrivatePayReason"
         transforms:
         - !<transforms.ParseIntTransform> {}
@@ -329,16 +329,16 @@ entityDefinitions:
         transforms:
         - !<transforms.ValueTransform>
           value: "State Health Insurance"
-      ol.statusdetails:
-        type: "ol.statusdetails"
+      general.status:
+        type: "general.status"
         column: "StateHealthIns"
         transforms:
         - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1"]
           goal: ["No", "Yes"]
-      ol.notes:
-        type: "ol.notes"
+      ol.statusdetails:
+        type: "ol.statusdetails"
         column: "NoStateHealthInsReason"
         transforms:
         - !<transforms.ParseIntTransform> {}
@@ -371,16 +371,16 @@ entityDefinitions:
         transforms:
         - !<transforms.ValueTransform>
           value: "Indian Health Services"
-      ol.statusdetails:
-        type: "ol.statusdetails"
+      general.status:
+        type: "general.status"
         column: "IndianHealthServices"
         transforms:
         - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1"]
           goal: ["No", "Yes"]
-      ol.notes:
-        type: "ol.notes"
+      ol.statusdetails:
+        type: "ol.statusdetails"
         column: "NoIndianHealthServicesReason"
         transforms:
         - !<transforms.ParseIntTransform> {}
@@ -408,8 +408,8 @@ entityDefinitions:
         - !<transforms.ConcatTransform>
           columns: ["OtherInsurance", "OtherInsuranceIdentify"]
           separator: "_"
-      ol.statusdetails:
-        type: "ol.statusdetails"
+      general.status:
+        type: "general.status"
         column: "OtherInsurance"
         transforms:
         - !<transforms.ParseIntTransform> {}
@@ -441,8 +441,8 @@ entityDefinitions:
         transforms:
         - !<transforms.ValueTransform>
           value: "Connection With SOAR"
-      ol.statusdetails:
-        type: "ol.statusdetails"
+      general.status:
+        type: "general.status"
         column: "ConnectionWithSOAR"
         transforms:
         - !<transforms.ParseIntTransform> {}
