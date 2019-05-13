@@ -1,9 +1,9 @@
-# change limit for prod: 
-# select e."*" from enrollment ; 
+# change limit for prod:
+# select e."*" from enrollment ;
 # intellij : "select * from enrollment;"
 
-entityDefinitions: 
-  client: 
+entityDefinitions:
+  client:
     fqn: "general.person"
     entitySetName: "BerksCEHClients"
     propertyDefinitions:
@@ -14,30 +14,33 @@ entityDefinitions:
         type: "ol.datasource"
         transforms:
         - !<transforms.ValueTransform>
-          value: "Berks County CEH"
+          value: "Berks CEH"
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "PersonalID"
       reverse: true
     name: "client"
 
-  location: #Last Permanent Address
+  location:
     fqn: "ol.location"
     entitySetName: "BerksCEHLocations"
     propertyDefinitions:
       general.id:
         type: "general.id"
-        column: "EnrollmentID"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["LastPermanentStreet", "LastPermanentCity", "LastPermanentZIP"]
+          separator: "_"
       location.street:
         type: "location.street"
         column: "LastPermanentStreet"
       location.city:
         type: "location.city"
         column: "LastPermanentCity"
-      location.zip: 
+      location.zip:
         type: "location.zip"
         column: "LastPermanentZIP"
-        transforms: 
+        transforms:
         - !<transforms.ParseIntTransform> {}
       ol.locationcoordinates:
         type: "ol.locationcoordinates"
@@ -68,14 +71,17 @@ entityDefinitions:
       reverse: true
     name: "location"
 
-  housing_history: 
+  housing_history:
     fqn: "ol.housinghistory"
     entitySetName: "BerksCEHHousingHistories"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
-        column: "EnrollmentID"
-      ol.type: 
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["LivingSituation", "MoveInDate", "PreviousStreetESSH"]
+          separator: "_"
+      ol.type:
         type: "ol.type"
         column: "LivingSituation"
         transforms:
@@ -83,67 +89,12 @@ entityDefinitions:
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "12", "13", "14", "15", "16", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "99" ]
           goal: ["Emergency shelter, including hotel or motel paid for with emergency shelter voucher", "Transitional housing for homeless persons", "Permanent housing (other than RRH) for formerly homeless persons", "Psychiatric hospital or other psychiatric facility", "Substance abuse treatment facility or detox center", "Hospital or other residential non-psychiatric medical facility", "Jail, prison or juvenile detention facility", "Client doesn't know", "Client refused", "Staying or living in a family member’s room, apartment or house", "Staying or living in a friend’s room, apartment or house", "Hotel or motel paid for without emergency shelter voucher", "Foster care home or foster care group home", "Place not meant for habitation", "Safe Haven", "Rental by client, with VASH subsidy", "Rental by client, with other housing subsidy (including RRH)", "Owned by client, with ongoing housing subsidy", "Rental by client, no ongoing housing subsidy", "Owned by client, no ongoing housing subsidy", "Long-term care facility or nursing home", "Rental by client, with GPD TIP subsidy", "Residential project or halfway house with no homeless criteria", "Interim housing", "Data not collected"]
-      # ol.type: 
-      #   type: "ol.type"
-      #   column: "LivingSituation"
-      #   transforms:
-      #   - !<transforms.ReplaceTransform>
-      #     target: ["16", "1", "18", "27"]
-      #     goal: ["Homeless Situation"]
-      #   - !<transforms.ReplaceTransform>
-      #     target: ["15", "6", "7", "24", "4", "5"]
-      #     goal: ["Institional Situation"]
-      #   - !<transforms.ReplaceTransform>
-      #     target: ["14", "23", "21", "3", "22", "19", "25", "20", "26", "12", "13", "2", "8", "9", "99"]
-      #     goal: ["Transitional and Permanent Housing Situation"]
-      ol.previousmoveindate:  
+      ol.previousmoveindate:
         type: "ol.previousmoveindate"
         column: "MoveInDate"
         transforms:
-        # - !<transforms.DateTransform>
         - !<transforms.DateTimeAsDateTransform>
-          # pattern: ["MM/dd/yy","M/dd/yy","MM/d/yy","M/d/yy"]
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
-      # housing.timeintransitionalorpermanentlessthan7nights:
-      #   type: "housing.timeintransitionalorpermanentlessthan7nights"
-      #   transforms:
-      #   - !<transforms.BooleanRegexTransform>
-      #     column: "LivingSituation"
-      #     pattern: "(?i)(\\b14\\b|\\b23\\b|\\b21\\b|\\b3\\b|\\b22\\b|\\b19\\b|\\b25\\b|\\b20\\b|\\b26\\b|\\b12\\b|\\b13\\b|\\b2\\b|\\b8\\|\\b9\\|\\b99\\b)"
-      #     transformsifTrue:
-      #     - !<transforms.ColumnTransform>
-      #       column: "LengthofStay"
-      #       transforms:
-      #       - !<transforms.BooleanRegexTransform>
-      #         column: "LengthofStay"
-      #         pattern: "(?i)(\\b10\\b|\\b11\\b|\\b2\\b|\\b3\\b|)"
-      #         transformsifTrue:
-      #         - !<transforms.ColumnTransform>
-      #           column: "LOSUnderThreshold"
-      #           transforms:
-      #           - !<transforms.ReplaceTransform>
-      #             target: ["0", "1"]
-      #             goal: ["no", "yes"]
-      # housing.timelessthan90days:
-      #   type: "housing.timelessthan90days"
-      #   transforms:
-      #   - !<transforms.BooleanRegexTransform>
-      #     column: "LivingSituation"
-      #     pattern: "(?i)(\\b15\\b|\\b6\\b|\\b7\\b|\\b24\\b|\\b4\\b|\\b5\\b)"
-      #     transformsifTrue:
-      #     - !<transforms.ColumnTransform>
-      #       column: "LengthofStay"
-      #       transforms:
-      #       - !<transforms.BooleanRegexTransform>
-      #         column: "LengthofStay"
-      #         pattern: "(?i)(\\b10\\b|\\b11\\b|\\b2\\b|\\b3\\b|)"
-      #         transformsifTrue:
-      #         - !<transforms.ColumnTransform>
-      #           column: "LOSUnderThreshold" # this signifies that client is below threshold.
-      #           transforms:
-      #           - !<transforms.ReplaceTransform>
-      #             target: ["0", "1"]
-      #             goal: ["no", "yes"]
       housing.nightbeforeinstreetorshelter:
         type: "housing.nightbeforeinstreetorshelter"
         column: "PreviousStreetESSH"
@@ -152,12 +103,6 @@ entityDefinitions:
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "99"]
           goal: ["No", "Yes", "Data not collected"]
-    # conditions:
-    # # - !<conditions.ConditionalOr> {}
-    # - !<conditions.BooleanRegexCondition>
-    #   column: "ProjectType"
-    #   pattern: "(?i)(\\b2\\b|\\b3\\b|\\b6\\b|\\b7\\b|\\b9\\b|\\b10\\b|\\b12\\b|\\b13\\b|\\b14\\b)" # transitional, all PH, services, day, prevention, CE, other, services
-    #   reverse: true
     conditions:
     - !<conditions.ConditionalOr> {}
     - !<conditions.BooleanIsNullCondition>
@@ -177,7 +122,7 @@ entityDefinitions:
     propertyDefinitions:
       ol.id:
         type: "ol.id"
-        column: "EnrollmentID"
+        column: "LengthOfStay"
       ol.minimumvalue:
         type: "ol.minimumvalue"
         column: "LengthOfStay"
@@ -185,23 +130,23 @@ entityDefinitions:
         - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["2", "3", "4", "5", "8", "9", "10", "11", "99"]
-          goal: ["7", "30", "90", "", "", "", "", "2", ""]
+          goal: [7, 30, 90, "", "", "", "", 2, ""]
       ol.maximumvalue:
         type: "ol.maximumvalue"
         column: "LengthOfStay"
         transforms:
         - !<transforms.ParseIntTransform> {}
-        - !<transforms.ReplaceTransform> 
+        - !<transforms.ReplaceTransform>
           target: ["2", "3", "4", "5", "8", "9", "10", "11", "99"]
-          goal: ["29", "89", "364", "", "", "", "", "6", ""]
-      ol.value: 
+          goal: [29, 89, 364, "", "", "", "", 6, ""]
+      ol.value:
         type: "ol.value"
         column: "LengthOfStay"
         transforms:
         - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["2", "3", "4", "5", "8", "9", "10", "11", "99"]
-          goal: ["", "", "", "365", "", "", "1", "", ""]
+          goal: ["", "", "", 365, "", "", "1", "", ""]
       ol.qualifier:
         type: "ol.qualifier"
         column: "LengthOfStay"
@@ -216,9 +161,9 @@ entityDefinitions:
         transforms:
         - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
-          target: ["2", "3", "4", "5", "8", "9", "10", "11", "99"] 
+          target: ["2", "3", "4", "5", "8", "9", "10", "11", "99"]
           goal: ["One week or more, but less than one month", "One month or more, but less than 90 days", "90 days or more but less than one year", "One year or longer", "Client doesn't know", "Client refused", "One night or less", "Two to six nights", "Data not collected"]
-    conditions: 
+    conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "LengthOfStay"
       reverse: true
@@ -228,10 +173,10 @@ entityDefinitions:
     fqn: "ol.evictionhistory"
     entitySetName: "BerksCEHEvictionHistory"
     propertyDefinitions:
-      ol.id: 
+      ol.id:
         type: "ol.id"
-        column: "EnrollmentID"
-      ol.minimumvalue: 
+        column: "EvictionHistory"
+      ol.minimumvalue:
         type: "ol.minimumvalue"
         column: "EvictionHistory"
         transforms:
@@ -240,7 +185,7 @@ entityDefinitions:
           target: ["0", "1", "2", "3", "99" ]
           goal: ["", 2, "", "", ""]
           ignoreCase: true
-      ol.maximumvalue: 
+      ol.maximumvalue:
         type: "ol.maximumvalue"
         column: "EvictionHistory"
         transforms:
@@ -258,7 +203,7 @@ entityDefinitions:
           target: ["0", "1", "2", "3", "99" ]
           goal: [4, "", 1, 0, ""]
           ignoreCase: true
-      ol.qualifier: 
+      ol.qualifier:
         type: "ol.qualifier"
         column: "EvictionHistory"
         transforms:
@@ -267,29 +212,29 @@ entityDefinitions:
           target: ["0", "1", "2", "3", "99" ]
           goal: [">", "", "", "", ""]
           ignoreCase: true
-      ol.category: 
+      ol.category:
         type: "ol.category"
         column: "EvictionHistory"
         transforms:
         - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
-          target: [0, 1, 2, 3, 99]
+          target: ["0", "1", "2", "3", "99"]
           goal: ["4 or more prior rental evictions", "2-3 prior rental evictions", "1 prior rental eviction", "No prior rental evictions", "Data not collected"]
           ignoreCase: true
-    conditions: 
+    conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "EvictionHistory"
       reverse: true
     name: "evictionhistory"
 
-  timetohousingloss: 
+  timetohousingloss:
     fqn: "ol.timetohousingloss"
     entitySetName: "BerksCEHTimeToHousingLoss"
     propertyDefinitions:
-      ol.id: 
+      ol.id:
         type: "ol.id"
-        column: "EnrollmentID"
-      ol.minimumvalue: 
+        column: "TimeToHousingLoss"
+      ol.minimumvalue:
         type: "ol.minimumvalue"
         column: "TimeToHousingLoss"
         transforms:
@@ -298,7 +243,7 @@ entityDefinitions:
           target: ["0", "1", "2", "3", "99" ]
           goal: [0, 7, 14, "", ""]
           ignoreCase: true
-      ol.maximumvalue: 
+      ol.maximumvalue:
         type: "ol.maximumvalue"
         column: "TimeToHousingLoss"
         transforms:
@@ -325,7 +270,7 @@ entityDefinitions:
           target: ["0", "1", "2", "3", "99" ]
           goal: ["", "", "", ">", ""]
           ignoreCase: true
-      ol.category: 
+      ol.category:
         type: "ol.category"
         column: "TimeToHousingLoss"
         transforms:
@@ -341,7 +286,7 @@ entityDefinitions:
     name: "timetohousingloss"
 
 associationDefinitions:
-  locatedat: 
+  locatedat:
     fqn: "ol.locatedat"
     entitySetName: "BerksLocatedAt"
     src: "client"
@@ -351,9 +296,9 @@ associationDefinitions:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "EnrollmentID"]
+          columns: ["PersonalID", "LastPermanentStreet", "LastPermanentCity", "LastPermanentZIP"]
           separator: "_"
-      date.completeddatetime: 
+      date.completeddatetime:
         type: "date.completeddatetime"
         column: "EntryDate"
         transforms:
@@ -369,11 +314,11 @@ associationDefinitions:
     propertyDefinitions:
       general.id:
         type: "general.id"
-        transforms: 
+        transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "EnrollmentID"]
+          columns: ["PersonalID", "LivingSituation", "MoveInDate", "PreviousStreetESSH"]
           separator: "_"
-      general.datetime: 
+      general.datetime:
         type: "general.datetime"
         column: "EntryDate"
         transforms:
@@ -381,19 +326,19 @@ associationDefinitions:
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported1"
 
-  reported2: 
+  reported2:
     fqn: "ol.reported"
     entitySetName: "BerksReported"
     src: "client"
     dst: "evictionhistory"
-    propertyDefinitions: 
-      general.id: 
+    propertyDefinitions:
+      general.id:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "EnrollmentID"]
+          columns: ["PersonalID", "EvictionHistory"]
           separator: "_"
-      general.datetime: 
+      general.datetime:
         type: "general.datetime"
         column: "EntryDate"
         transforms:
@@ -401,19 +346,19 @@ associationDefinitions:
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported2"
 
-  reported3: 
+  reported3:
     fqn: "ol.reported"
     entitySetName: "BerksReported"
     src: "client"
     dst: "timetohousingloss"
-    propertyDefinitions: 
-      general.id: 
+    propertyDefinitions:
+      general.id:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "EnrollmentID"]
+          columns: ["PersonalID", "TimeToHousingLoss"]
           separator: "_"
-      general.datetime: 
+      general.datetime:
         type: "general.datetime"
         column: "EntryDate"
         transforms:
@@ -421,23 +366,22 @@ associationDefinitions:
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported3"
 
-  reported4: 
+  reported4:
     fqn: "ol.reported"
     entitySetName: "BerksReported"
     src: "client"
     dst: "residencelengthofstay"
-    propertyDefinitions: 
-      general.id: 
+    propertyDefinitions:
+      general.id:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "EnrollmentID"]
+          columns: ["PersonalID", "LengthOfStay"]
           separator: "_"
-      general.datetime: 
+      general.datetime:
         type: "general.datetime"
         column: "EntryDate"
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported4"
-

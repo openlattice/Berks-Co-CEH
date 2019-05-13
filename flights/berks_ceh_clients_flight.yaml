@@ -6,7 +6,7 @@ entityDefinitions:
   client:
     fqn: "general.person"
     entitySetName: "BerksCEHClients"
-    propertyDefinitions: 
+    propertyDefinitions:
       nc.SubjectIdentification:
         type: "nc.SubjectIdentification"
         column: "PersonalID"
@@ -25,12 +25,9 @@ entityDefinitions:
       nc.PersonSuffix:
         type: "nc.PersonSuffix"
         column: "NameSuffix"
-      # nc.SSN:
-      #   type: "nc.SSN"
-      #   column: "SSN"
       nc.PersonSex:
         type: "nc.PersonSex"
-        column: "Gender" 
+        column: "Gender"
         transforms:
         - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
@@ -45,7 +42,7 @@ entityDefinitions:
       nc.PersonRace1:
         type: "nc.PersonRace"
         column: "AmIndAKNative"
-        transforms: 
+        transforms:
         - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1"]
@@ -72,7 +69,7 @@ entityDefinitions:
       nc.PersonRace4:
         type: "nc.PersonRace"
         column: "NativeHIOtherPacific"
-        transforms: 
+        transforms:
         - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1"]
@@ -95,7 +92,7 @@ entityDefinitions:
         - !<transforms.ReplaceTransform>
           target: ["8", "99", "9"]
           goal: ["", "", ""]
-          partial: true 
+          partial: true
       nc.PersonEthnicity:
         type: "nc.PersonEthnicity"
         column: "Ethnicity"
@@ -116,7 +113,7 @@ entityDefinitions:
       reverse: true
     name: "client"
 
-    
+
   clientdetails:
     fqn: "ol.persondetails"
     entitySetName: "BerksCEHClientDetails"
@@ -142,24 +139,24 @@ entityDefinitions:
           goal: ["No", "Yes", "Data not collected"]
     name: "clientdetails"
 
-  education: 
-    fqn: "ol.education" 
+  education:
+    fqn: "ol.education"
     entitySetName: "BerksCEHEducation"
     propertyDefinitions:
       ol.id:
         type: "ol.id"
         column: "EmploymentEducationID"
-      person.highesteducation: 
+      person.highesteducation:
         type: "person.highesteducation"
         column: "LastGradeCompleted" # from employmenteducation
         transforms:
         - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "99"]
-          goal: ["Less than grade 5", "Grades 5-6", "Grades 7-8", "Grades 9-11", "Grade 12", "School program does not have grade levels", "GED", "Client doesn't know", "Client refused", "Some college", "Associate's degree", "Bachelor's degree", "Graduate degree", "Vocational certification", "Data not collected"]      
-      ol.status:  
-          type: "ol.status" 
-          column: "SchoolStatus" # from employmenteducation 
+          goal: ["Less than grade 5", "Grades 5-6", "Grades 7-8", "Grades 9-11", "Grade 12", "School program does not have grade levels", "GED", "Client doesn't know", "Client refused", "Some college", "Associate's degree", "Bachelor's degree", "Graduate degree", "Vocational certification", "Data not collected"]
+      ol.status:
+          type: "ol.status"
+          column: "SchoolStatus" # from employmenteducation
           transforms:
           - !<transforms.ParseIntTransform> {}
           - !<transforms.ReplaceTransform>
@@ -168,12 +165,15 @@ entityDefinitions:
     name: "education"
 
   employment:
-    fqn: "ol.employment"
+    fqn: "ol.occupation"
     entitySetName: "BerksCEHEmployment"
     propertyDefinitions:
-      ol.id: 
+      ol.id:
         type: "ol.id"
-        column: "EmploymentEducationID"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["LastGradeCompleted", "SchoolStatus"]
+          separator: "_"
       ol.status:
         type: "ol.status"
         column: "Employed"
@@ -196,18 +196,18 @@ entityDefinitions:
     fqn: "ol.domesticviolence"
     entitySetName: "BerksCEHDomesticViolenceInfo"
     propertyDefinitions:
-      ol.id:  
+      ol.id:
         type: "ol.id"
         column: "EnrollmentID"
-      ol.domesticviolenceflag: 
+      ol.domesticviolenceflag:
         type: "ol.domesticviolenceflag"
         column: "DomesticViolenceVictim"
         transforms:
         - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
-          target: ["0", "1", "8", "9", "99"] 
+          target: ["0", "1", "8", "9", "99"]
           goal: ["No", "Yes", "Client doesn't know", "Client refused", "Data not collected"]
-      health.domesticviolenceoccurrence: 
+      health.domesticviolenceoccurrence:
         type: "health.domesticviolenceoccurrence"
         column: "WhenOccurred"
         transforms:
@@ -230,8 +230,8 @@ entityDefinitions:
           transformsIfFalse:
           - !<transforms.ParseIntTransform>
             column: "CurrentlyFleeing"
-          - !<transforms.ReplaceTransform> 
-            target: ["0", "1", "8", "9", "99"] 
+          - !<transforms.ReplaceTransform>
+            target: ["0", "1", "8", "9", "99"]
             goal: ["No", "", "Client doesn't know", "Client refused", "Data not collected"]
     conditions:
     - !<conditions.BooleanIsNullCondition>
@@ -244,7 +244,7 @@ associationDefinitions:
     fqn: "ol.has"
     entitySetName: "BerksHas"
     src: "client"
-    dst: "clientdetails" #or should it be called disability? 
+    dst: "clientdetails" #or should it be called disability?
     propertyDefinitions:
       ol.id:
         type: "ol.id"
@@ -263,7 +263,7 @@ associationDefinitions:
         - !<transforms.ConcatTransform>
           columns: ["PersonalID", "EmploymentEducationID"]
           separator: "_"
-      general.datetime: 
+      general.datetime:
         type: "general.datetime"
         column: "InformationDate"
         transforms:
@@ -271,19 +271,19 @@ associationDefinitions:
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "has2"
 
-  has3: 
+  has3:
     fqn: "ol.has"
     entitySetName: "BerksHas"
     src: "client"
     dst: "education"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
         transforms:
         - !<transforms.ConcatTransform>
           columns: ["PersonalID", "EmploymentEducationID"]
           separator: "_"
-      general.datetime: 
+      general.datetime:
         type: "general.datetime"
         column: "InformationDate"
         transforms:
@@ -299,7 +299,7 @@ associationDefinitions:
     propertyDefinitions:
       general.id:
         type: "general.id"
-        transforms: 
+        transforms:
         - !<transforms.ConcatTransform>
           columns: ["PersonalID", "EnrollmentID"]
           separator: "_"

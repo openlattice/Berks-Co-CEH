@@ -1,8 +1,8 @@
 # change limit for prod: select e.*, ex."ExitID", ex."ExitDate", ex."Destination", ex."OtherDestination", ex."AssessmentDisposition", ex."HousingAssessment", ex."OtherDisposition", s."ServicesID", s."DateProvided", p."ProjectType", o."Organizationname" from enrollment as e left join exit as ex on e."EnrollmentID"=ex."EnrollmentID" AND e."PersonalID"=ex."PersonalID" left join services as s on e."EnrollmentID"=s."EnrollmentID" AND e."PersonalID"=s."PersonalID" left join project as p on e."ProjectID"=p."ProjectID" left join organization as o on p."OrganizationID"=o."OrganizationID" limit 5000;
-# intellij: "select e.*, ex.\"ExitID\", ex.\"ExitDate\", ex.\"Destination\", ex.\"OtherDestination\", ex.\"AssessmentDisposition\", ex.\"HousingAssessment\", ex.\"OtherDisposition\", s.\"ServicesID\", s.\"DateProvided\", p.\"ProjectType\", o.\"Organizationname\" from enrollment as e left join exit as ex on e.\"EnrollmentID\"=ex.\"EnrollmentID\" AND e.\"PersonalID\"=ex.\"PersonalID\" left join services as s on e.\"EnrollmentID\"=s.\"EnrollmentID\" AND e.\"PersonalID\"=s.\"PersonalID\" left join project as p on e.\"ProjectID\"=p.\"ProjectID\" left join organization as o on p.\"OrganizationID\"=o.\"OrganizationID\""
+# intellij: "select e.*, ex.\"ExitID\", ex.\"ExitDate\", ex.\"Destination\", ex.\"OtherDestination\", ex.\"AssessmentDisposition\", ex.\"HousingAssessment\", ex.\"OtherDisposition\", s.\"ServicesID\", s.\"DateProvided\", p.\"ProjectType\", o.\"Organizationname\" from enrollment as e left join exit as ex on e.\"EnrollmentID\"=ex.\"EnrollmentID\" AND e.\"PersonalID\"=ex.\"PersonalID\" left join services as s on e.\"EnrollmentID\"=s.\"EnrollmentID\" AND e.\"PersonalID\"=s.\"PersonalID\" left join project as p on e.\"ProjectID\"=p.\"ProjectID\" left join organization as o on p.\"OrganizationID\"=o.\"OrganizationID\" limit 2000;"
 
-entityDefinitions: 
-  client: 
+entityDefinitions:
+  client:
     fqn: "general.person"
     entitySetName: "BerksCEHClients"
     propertyDefinitions:
@@ -13,70 +13,75 @@ entityDefinitions:
         type: "ol.datasource"
         transforms:
         - !<transforms.ValueTransform>
-          value: "Berks County CEH"
+          value: "Berks CEH"
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "PersonalID"
       reverse: true
     name: "client"
-  
-  enrollment: 
-    fqn: "ol.episode" 
+
+  enrollment:
+    fqn: "ol.episode"
     entitySetName: "BerksCEHEnrollments"
-    propertyDefinitions: 
-      ol.id: 
+    propertyDefinitions:
+      ol.id:
         type: "ol.id"
         column: "EnrollmentID"
-      ol.effectivedate: 
+      ol.effectivedate:
         type: "ol.effectivedate"
         column: "EntryDate"
-        transforms: 
+        transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
-      ol.datetimeend: 
+      ol.datetimeend:
         type: "ol.datetimeend"
         column: "ExitDate"
         transforms:
-        - !<transforms.DateTimeTransform> 
+        - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S" ]
-      ol.type: 
+      ol.type:
         type: "ol.type"
-        column: "ProjectType" #from project 
+        column: "ProjectType"
         transforms:
         - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "4", "6", "7", "8", "9", "10", "11", "12", "13", "14"]
           goal: ["Emergency Shelter", "Transitional Housing", "PH - Permanent Supportive Housing", "Street Outreach", "Services Only", "Other", "Safe Haven", "PH – Housing Only", "PH – Housing with Services (no disability required for entry)", "Day Shelter", "Homelessness Prevention", "PH - Rapid Re-Housing", "Coordinated Assessment"]
-        # - !<transforms.ParseDoubleTransform> {}
     name: "enrollment"
 
   service:
-    fqn: "ol.encounter" 
+    fqn: "ol.encounter"
     entitySetName: "BerksCEHServices"
     propertyDefinitions:
       ol.id:
-        type: "ol.id" 
+        type: "ol.id"
         column: "ServicesID"
       ol.datetimestart:
         type: "ol.datetimestart"
         column: "DateProvided"
         transforms:
-        - !<transforms.DateTimeTransform> 
+        - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S" ]
+    conditions:
+    - !<conditions.BooleanIsNullCondition>
+      column: "ServicesID"
+      reverse: true
     name: "service"
-  
-  housing_exit: 
+
+  housing_exit:
     fqn: "ol.housing"
     entitySetName: "BerksCEHHousingExits"
     propertyDefinitions:
       ol.id:
         type: "ol.id"
-        column: "ExitID"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["Destination", "HousingAssessment", "OtherDestination", "ExitDate"]
+          separator: "_"
       ol.startdate:
         type: "ol.startdate"
         column: "ExitDate"
         transforms:
-        # - !<transforms.DateTransform>
         - !<transforms.DateTimeAsDateTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
       housing.projecttype:
@@ -87,20 +92,20 @@ entityDefinitions:
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "99"]
           goal: ["Emergency shelter, including hotel or motel paid for with emergency shelter voucher", "Transitional housing for homeless persons (including homeless youth)", "Permanent housing (other than RRH) for formerly homeless persons", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "Safe Haven", "", "", "", "", "", "", "", "Moved from one HOPWA funded project to HOPWA PH", "Moved from one HOPWA funded project to HOPWA TH", "", "Residential project or halfway house with no homeless criteria", "", "", ""]
-      ol.type:  #could use ol.name to have one property type for ol.type and reduce multiplicity that looks confusing?
+      ol.type:
         type: "ol.type"
         transforms:
         - !<transforms.BooleanRegexTransform>
           column: "Destination"
           pattern: "(?i)(\\b4\\b|\\b5\\b|\\b6\\b|\\b7\\b|\\b8\\b|\\b6\\b|\\b7\\b|\\b8\\b|\\b9\\b|\\b10\\b|\\b11\\b|\\b12\\b|\\b13\\b|\\b14\\b|\\b15\\b|\\b16\\b|\\b19\\b|\\b20\\b|\\b21\\b|\\b22\\b|\\b23\\b|\\b24\\b|\\b25\\b|\\b28\\b|\\b29\\b|\\b30\\b|\\b31\\b|\\b99\\b)"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform> #brackets not needed here or shuttle thinks new block is starting 
+          - !<transforms.ParseIntTransform>
             column: "Destination"
           - !<transforms.ReplaceTransform>
             target: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "99"]
             goal: ["Emergency shelter, including hotel or motel paid for with emergency shelter voucher", "Transitional housing for homeless persons (including homeless youth)", "Permanent housing (other than RRH) for formerly homeless persons", "Psychiatric hospital or other psychiatric facility", "Substance abuse treatment facility or detox center", "Hospital or other residential non-psychiatric medical facility", "Jail, prison or juvenile detention facility", "Client doesn't know", "Client refused", "Rental by client, no ongoing housing subsidy", "Owned by client, no ongoing housing subsidy", "Staying or living with family, temporary tenure (e.g., room, apartment or house)", "Staying or living with friends, temporary tenure (e.g., room apartment or house)", "Hotel or motel paid for without emergency shelter voucher", "Foster care home or foster care group home", "Place not meant for habitation (e.g., a vehicle, an abandoned building, bus/train/subway station/airport or anywhere outside)", "Other", "Safe Haven", "Rental by client, with VASH housing subsidy", "Rental by client, with other ongoing housing subsidy", "Owned by client, with ongoing housing subsidy", "Staying or living with family, permanent tenure", "Staying or living with friends, permanent tenure", "Deceased", "Long-term care facility or nursing home", "Moved from one HOPWA funded project to HOPWA PH", "Moved from one HOPWA funded project to HOPWA TH", "Rental by client, with GPD TIP housing subsidy", "Residential project or halfway house with no homeless criteria", "No exit interview completed", "Rental by client, with RRH or equivalent subsidy", "Data not collected"]
           transformsIfFalse:
-          - !<transforms.ColumnTransform> 
+          - !<transforms.ColumnTransform>
             column: "OtherDestination"
       ol.description:
         type: "ol.description"
@@ -110,33 +115,49 @@ entityDefinitions:
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "99"]
           goal: ["Able to maintain the housing they had at project entry", "Moved to new housing unit", "Moved in with family/friends on a temporary basis", "Moved in with family/friends on a permanent basis", "Moved to a transitional or temporary housing facility or program", "Client became homeless – moving to a shelter or other place unfit for human habitation", "Client went to jail/prison", "Client doesn’t know", "Client refused", "Client died", "Data not collected"]
+    conditions:
+    - !<conditions.ConditionalOr> {}
+    - !<conditions.BooleanIsNullCondition>
+      column: "ExitDate"
+      reverse: true
+    - !<conditions.BooleanIsNullCondition>
+      column: "Destination"
+      reverse: true
+    - !<conditions.BooleanIsNullCondition>
+      column: "OtherDestination"
+      reverse: true
+    - !<conditions.BooleanIsNullCondition>
+      column: "HousingAssessment"
+      reverse: true
     name: "housing_exit"
 
   referral:
     fqn: "ol.referral"
     entitySetName: "BerksCEHReferrals"
-    propertyDefinitions: 
+    propertyDefinitions:
       general.id:
         type: "general.id"
-        column: "ExitID"
-      housing.referralorganization: 
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["Organizationname", "AssessmentDisposition", "OtherDisposition"]
+          separator: "_"
+      housing.referralorganization:
         type: "housing.referralorganization"
         column: "Organizationname"
-      ol.type: 
+      ol.type:
         type: "ol.type"
         transforms:
         - !<transforms.BooleanRegexTransform>
           column: "AssessmentDisposition"
           pattern: "(?i)(\\b1\\b|\\b2\\b|\\b3\\b|\\b4\\b|\\b5\\b|\\b6\\b|\\b7\\b|\\b8\\b|\\b9\\b|\\b10\\b|\\b11\\b|\\b12\\b|\\b13\\b)"
           transformsIfTrue:
-          - !<transforms.ParseIntTransform> #brackets not needed here or shuttle thinks new block is starting 
+          - !<transforms.ParseIntTransform>
             column: "AssessmentDisposition"
           - !<transforms.ReplaceTransform>
             target: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"]
             goal: ["Referred to emergency shelter/safe haven", "Referred to transitional housing", "Referred to rapid re-housing", "Referred to permanent supportive housing", "Referred to homelessness prevention", "Referred to street outreach", "Referred to other continuum project type", "Referred to a homelessness diversion program", "Unable to refer/accept within continuum; ineligible for continuum projects", "Unable to refer/accept within continuum; continuum services unavailable", "Referred to other community project (non-continuum)", "Applicant declined referral/acceptance", "Applicant terminated assessment prior to completion"]
-          # - !<transforms.ParseDoubleTransform> {}
           transformsIfFalse:
-          - !<transforms.ColumnTransform> 
+          - !<transforms.ColumnTransform>
             column: "OtherDisposition"
       ol.type2:
         type: "ol.type"
@@ -156,50 +177,94 @@ entityDefinitions:
       column: "OtherDisposition"
       reverse: true
     name: "referral"
-      
-      
-  homeless:
+
+
+  timeshomeless:
     fqn: "ol.homeless"
-    entitySetName: "BerksCEHHomeless"
-    propertyDefinitions: 
+    entitySetName: "BerksCEHTimesHomeless"
+    propertyDefinitions:
       general.id:
         type: "general.id"
-        column: "EnrollmentID"
-      ol.startdate: 
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["TimesHomelessPastThreeYears", "LiteralHomelessHistory", "DateToStreetESSH"]
+          separator: "_"
+      ol.startdate:
         type: "ol.startdate"
         column: "DateToStreetESSH"
         transforms:
-        # - !<transforms.DateTransform>
         - !<transforms.DateTimeAsDateTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
-      housing.monthshomelessorinshelterinpast3yrs:
-        type: "housing.monthshomelessorinshelterinpast3yrs"
-        column: "MonthsHomelessPastThreeYears"
-        transforms:
-        - !<transforms.ParseIntTransform> {}
-        - !<transforms.ReplaceTransform>
-          target: ["8", "9", "99", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "112", "113"]
-          goal: ["Client doesn't know", "Client refused", "Data not collected", "1 month", "2 months", "3 months", "4 months", "5 months", "6 months", "7 months", "8 months", "9 months", "10 months", "11 months", "12 months", "More than 12 months"]
-      ol.timeshomelesspast3yrstext: 
-        type: "ol.timeshomelesspast3yrstext"
+      ol.negated:
+        type: "ol.negated"
         column: "TimesHomelessPastThreeYears"
         transforms:
         - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "4", "8", "9", "99"]
-          goal: ["One time", "Two times", "Three times", "Four or more times", "Client doesn’t know", "Client refused", "Data not collected"]
-      ol.timeshomelesspast3yrs: 
-        type: "ol.timeshomelesspast3yrs"
+          goal: ["", "", "", "", "Client doesn’t know", "Client refused", "Data not collected"]
+      ol.relevantperiod:
+        type: "ol.relevantperiod"
+        transforms:
+        - !<transforms.ValueTransform>
+          value: "past 3 years"
+      ol.minimumvalue:
+        type: "ol.minimumvalue"
+        column: "LiteralHomelessHistory"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "2", "3", "99"]
+          goal: ["", 2, "", "", ""]
+      ol.maximumvalue:
+        type: "ol.maximumvalue"
+        column: "LiteralHomelessHistory"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "2", "3", "99"]
+          goal: ["", 3, "", "", ""]
+      ol.units:
+        type: "ol.units"
+        transforms:
+        - !<transforms.ValueTransform>
+          value: "times"
+      ol.value:
+        type: "ol.value"
         column: "TimesHomelessPastThreeYears"
         transforms:
         - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["1", "2", "3", "4", "8", "9", "99"]
-          goal: ["1", "2", "3", "4", "", "", ""]
+          goal: [1, 2, 3, 4, "", "", ""]
+      ol.value2:
+        type: "ol.value"
+        column: "LiteralHomelessHistory"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "2", "3", "99"]
+          goal: [4, "", 1, 4, ""]
+      ol.qualifier:
+        type: "ol.qualifier"
+        column: "TimesHomelessPastThreeYears"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["1", "2", "3", "4", "8", "9", "99"]
+          goal: ["", "", "", ">", "", "", ""]
+      ol.qualifier2:
+        type: "ol.qualifier"
+        column: "LiteralHomelessHistory"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "2", "3", "99"]
+          goal: [">=", "", "", ">=", ""]
       general.notes:
         type: "general.notes"
         column: "LiteralHomelessHistory"
-        transforms: 
+        transforms:
         - !<transforms.ParseIntTransform> {}
         - !<transforms.ReplaceTransform>
           target: ["0", "1", "2", "3", "99"]
@@ -207,81 +272,153 @@ entityDefinitions:
     conditions:
     - !<conditions.ConditionalOr> {}
     - !<conditions.BooleanIsNullCondition>
-      column: "DateToStreetESSH"
-      reverse: true
-    - !<conditions.BooleanIsNullCondition>
-      column: "MonthsHomelessPastThreeYears"
-      reverse: true
-    - !<conditions.BooleanIsNullCondition>
       column: "TimesHomelessPastThreeYears"
       reverse: true
     - !<conditions.BooleanIsNullCondition>
       column: "LiteralHomelessHistory"
       reverse: true
-    # - !<conditions.ConditionalOr> {}
-    # - !<conditions.BooleanRegexCondition>
-    #   column: "ProjectType"
-    #   pattern: "(?i)(\\b1\\b|\\b4\\b|\\b8\\b)" #safe haven, ES, Street
-    #   reverse: true
-    name: "homeless"
+    name: "timeshomeless"
 
+  monthshomeless:
+    fqn: "ol.homeless"
+    entitySetName: "BerksCEHMonthsHomeless"
+    propertyDefinitions:
+      general.id:
+        type: "general.id"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["MonthsHomelessPastThreeYears", "LiteralHomelessHistory", "DateToStreetESSH"]
+          separator: "_"
+      ol.startdate:
+        type: "ol.startdate"
+        column: "DateToStreetESSH"
+        transforms:
+        - !<transforms.DateTimeAsDateTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+      ol.relevantperiod:
+        type: "ol.relevantperiod"
+        transforms:
+        - !<transforms.ValueTransform>
+          value: "past 3 years"
+      ol.negated:
+        type: "ol.negated"
+        column: "MonthsHomelessPastThreeYears"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["8", "9", "99", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "112", "113"]
+          goal: ["Client doesn't know", "Client refused", "Data not collected", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+      ol.units:
+        type: "ol.units"
+        transforms:
+        - !<transforms.ValueTransform>
+          value: "months"
+      ol.value:
+        type: "ol.value"
+        column: "MonthsHomelessPastThreeYears"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["8", "9", "99", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "112", "113"]
+          goal: ["", "", "", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 12]
+      ol.value2:
+        type: "ol.value"
+        column: "LiteralHomelessHistory"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "2", "3", "99"]
+          goal: [12, "", "", 12, ""]
+      ol.qualifier:
+        type: "ol.qualifier"
+        column: "MonthsHomelessPastThreeYears"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["8", "9", "99", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "112", "113"]
+          goal: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ">"]
+      ol.qualifier2:
+        type: "ol.qualifier"
+        column: "LiteralHomelessHistory"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "2", "3", "99"]
+          goal: [">=", "", "", ">=", ""]
+      general.notes:
+        type: "general.notes"
+        column: "LiteralHomelessHistory"
+        transforms:
+        - !<transforms.ParseIntTransform> {}
+        - !<transforms.ReplaceTransform>
+          target: ["0", "1", "2", "3", "99"]
+          goal: ["4 or more times or total of at least 12 months in past three years", "2-3 times in past three years", "1 time in past three years", "4 or more times or total of at least 12 months in past three years", "Data not collected"]
+    conditions:
+    - !<conditions.ConditionalOr> {}
+    - !<conditions.BooleanIsNullCondition>
+      column: "MonthsHomelessPastThreeYears"
+      reverse: true
+    - !<conditions.BooleanIsNullCondition>
+      column: "LiteralHomelessHistory"
+      reverse: true
+    name: "monthshomeless"
 
 associationDefinitions:
-  presentsfor1: 
+  presentsfor1:
     fqn: "ol.presentsfor"
     entitySetName: "BerksPresentsFor"
     src: "client"
     dst: "service"
     propertyDefinitions:
-      ol.id: 
+      ol.id:
         type: "ol.id"
         transforms:
         - !<transforms.ConcatTransform>
           columns: ["PersonalID", "ServicesID"]
           separator: "_"
       date.completeddatetime:
-        type: "date.completeddatetime" 
+        type: "date.completeddatetime"
         column: "DateProvided"
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "presentsfor1"
 
-  presentsfor2: 
+  presentsfor2:
     fqn: "ol.presentsfor"
     entitySetName: "BerksPresentsFor"
     src: "client"
     dst: "enrollment"
     propertyDefinitions:
-      ol.id: 
+      ol.id:
         type: "ol.id"
         transforms:
         - !<transforms.ConcatTransform>
           columns: ["PersonalID", "EnrollmentID"]
           separator: "_"
       date.completeddatetime:
-        type: "date.completeddatetime" 
+        type: "date.completeddatetime"
         column: "EntryDate"
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "presentsfor2"
 
-  partof: 
+  partof:
     fqn: "ol.partof"
     entitySetName: "BerksPartOf"
     src: "service"
     dst: "enrollment"
     propertyDefinitions:
-      ol.id: 
+      ol.id:
         type: "ol.id"
-        transforms: 
+        transforms:
         - !<transforms.ConcatTransform>
           columns: ["ServicesID", "EnrollmentID"]
           separator: "_"
     name: "partof"
 
-  releasedto: 
+  releasedto:
     fqn: "ol.releasedto"
     entitySetName: "BerksReleasedTo"
     src: "enrollment"
@@ -291,41 +428,37 @@ associationDefinitions:
         type: "ol.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["EnrollmentID", "ExitID"]
-          separator: "_" 
+          columns: ["EnrollmentID", "Destination", "HousingAssessment", "OtherDestination", "ExitDate"]
+          separator: "_"
     name: "releasedto"
 
-  reported1: 
+  reported1:
     fqn: "ol.reported"
     entitySetName: "BerksReported"
     src: "client"
     dst: "housing_exit"
-    propertyDefinitions: 
-      general.id: 
+    propertyDefinitions:
+      general.id:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID","ExitID"]
+          columns: ["PersonalID", "Destination", "HousingAssessment", "OtherDestination"]
           separator: "_"
-      date.completeddatetime: 
+      date.completeddatetime:
         type: "date.completeddatetime"
         column: ExitDate
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
-    conditions:
-    - !<conditions.BooleanIsNullCondition>
-      column: "ExitDate"
-      reverse: true
     name: "reported1"
 
   referredby:
     fqn: "health.referredby"
-    entitySetName: "BerksReferredBy"
+    entitySetName: "BerksReferredTo"
     src: "client"
     dst: "referral"
     propertyDefinitions:
-      date.completeddatetime: 
+      date.completeddatetime:
         type: "date.completeddatetime"
         column: "ExitDate"
         transforms:
@@ -339,16 +472,16 @@ associationDefinitions:
 
 
   reported2:
-    fqn: "o.is"
+    fqn: "ol.reported"
     entitySetName: "BerksReported"
     src: "client"
-    dst: "homeless"
+    dst: "timeshomeless"
     propertyDefinitions:
-      general.id: 
+      general.id:
         type: "general.id"
         transforms:
         - !<transforms.ConcatTransform>
-          columns: ["PersonalID", "EnrollmentID"]
+          columns: ["PersonalID", "TimesHomelessPastThreeYears", "LiteralHomelessHistory"]
           separator: "_"
       general.datetime:
         type: "general.datetime"
@@ -357,4 +490,23 @@ associationDefinitions:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
     name: "reported2"
-  
+
+  reported3:
+    fqn: "ol.reported"
+    entitySetName: "BerksReported"
+    src: "client"
+    dst: "monthshomeless"
+    propertyDefinitions:
+      general.id:
+        type: "general.id"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["PersonalID", "MonthsHomelessPastThreeYears", "LiteralHomelessHistory"]
+          separator: "_"
+      general.datetime:
+        type: "general.datetime"
+        column: "DateToStreetESSH"
+        transforms:
+        - !<transforms.DateTimeTransform>
+          pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+    name: "reported3"
