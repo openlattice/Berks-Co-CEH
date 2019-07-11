@@ -269,6 +269,7 @@ associationDefinitions:
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
     name: "has2"
 
   has3:
@@ -289,6 +290,7 @@ associationDefinitions:
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
     name: "has3"
 
   reported:
@@ -309,4 +311,5 @@ associationDefinitions:
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
     name: "reported"

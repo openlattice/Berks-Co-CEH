@@ -34,12 +34,14 @@ entityDefinitions:
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
       ol.datetimeend:
         type: "ol.datetimeend"
         column: "ExitDate"
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
     name: "enrollment"
 
   disabilities:
@@ -58,6 +60,7 @@ entityDefinitions:
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
       health.mentalissue:
         type: "health.mentalissue"
         transforms:
@@ -163,6 +166,7 @@ entityDefinitions:
         transforms:
         - !<transforms.DateTimeAsDateTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
       ol.substanceuseindicator:
         type: "ol.substanceuseindicator"
         transforms:
@@ -215,6 +219,7 @@ entityDefinitions:
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
       ol.clinicalstatus:
         type: "ol.clinicalstatus"
         column: "PregnancyStatus"
@@ -229,6 +234,7 @@ entityDefinitions:
         transforms:
         - !<transforms.DateTimeAsDateTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "PregnancyStatus"
@@ -253,6 +259,7 @@ associationDefinitions:
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
     name: "observedin1"
 
   observedin2:
@@ -272,6 +279,7 @@ associationDefinitions:
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
     name: "observedin2"
 
   observedin3:
@@ -291,6 +299,7 @@ associationDefinitions:
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
     name: "observedin3"
 
   addresses1:
@@ -310,6 +319,7 @@ associationDefinitions:
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
     name: "addresses1"
 
   addresses2:
@@ -329,6 +339,7 @@ associationDefinitions:
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
     name: "addresses2"
 
   addresses3:
@@ -348,6 +359,7 @@ associationDefinitions:
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
     name: "addresses3"
 
   presentsfor:
@@ -368,4 +380,5 @@ associationDefinitions:
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
     name: "presentsfor"

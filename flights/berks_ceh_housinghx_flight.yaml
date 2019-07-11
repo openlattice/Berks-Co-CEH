@@ -45,19 +45,17 @@ entityDefinitions:
       ol.locationcoordinates:
         type: "ol.locationcoordinates"
         transforms:
-        - !<transforms.GeographyPointTransform>
-          latTransforms:
-          - !<transforms.ConcatTransform>
-            columns: ['LastPermanentStreet', 'LastPermanentCity', 'LastPermanentZIP']
-            separator: ", "
+        - !<transforms.ConcatCombineTransform>
+          separator: " "
+          transforms:
+          - !<transforms.ColumnTransform>
+            column: "LastPermanentStreet"
+            - !<transforms.ColumnTransform>
+            column: "LastPermanentCity"
+            - !<transforms.ColumnTransform>
+            column: "LastPermanentZIP"
           - !<transforms.GeocoderTransform>
-            addressObject: "lat"
-          lonTransforms:
-          - !<transforms.ConcatTransform>
-            columns: ['LastPermanentStreet', 'LastPermanentCity', 'LastPermanentZIP']
-            separator: ", "
-          - !<transforms.GeocoderTransform>
-            addressObject: "lon"
+            addressObject: "geographypoint"
     conditions:
     - !<conditions.ConditionalOr> {}
     - !<conditions.BooleanIsNullCondition>
@@ -95,6 +93,7 @@ entityDefinitions:
         transforms:
         - !<transforms.DateTimeAsDateTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
       housing.nightbeforeinstreetorshelter:
         type: "housing.nightbeforeinstreetorshelter"
         column: "PreviousStreetESSH"
@@ -304,6 +303,7 @@ associationDefinitions:
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
     name: "locatedat"
 
   reported1:
@@ -324,6 +324,7 @@ associationDefinitions:
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
     name: "reported1"
 
   reported2:
@@ -344,6 +345,7 @@ associationDefinitions:
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
     name: "reported2"
 
   reported3:
@@ -364,6 +366,7 @@ associationDefinitions:
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
     name: "reported3"
 
   reported4:
@@ -384,4 +387,5 @@ associationDefinitions:
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
     name: "reported4"

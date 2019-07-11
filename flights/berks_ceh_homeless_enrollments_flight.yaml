@@ -33,12 +33,14 @@ entityDefinitions:
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
       ol.datetimeend:
         type: "ol.datetimeend"
         column: "ExitDate"
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S" ]
+          timezone: "America/New York"
       ol.type:
         type: "ol.type"
         column: "ProjectType"
@@ -62,6 +64,7 @@ entityDefinitions:
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S" ]
+          timezone: "America/New York"
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "ServicesID"
@@ -84,6 +87,7 @@ entityDefinitions:
         transforms:
         - !<transforms.DateTimeAsDateTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
       housing.projecttype:
         type: "housing.projecttype"
         column: "Destination"
@@ -195,6 +199,7 @@ entityDefinitions:
         transforms:
         - !<transforms.DateTimeAsDateTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
       ol.negated:
         type: "ol.negated"
         column: "TimesHomelessPastThreeYears"
@@ -295,6 +300,7 @@ entityDefinitions:
         transforms:
         - !<transforms.DateTimeAsDateTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
       ol.relevantperiod:
         type: "ol.relevantperiod"
         transforms:
@@ -382,6 +388,7 @@ associationDefinitions:
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
     name: "presentsfor1"
 
   presentsfor2:
@@ -402,6 +409,7 @@ associationDefinitions:
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
     name: "presentsfor2"
 
   partof:
@@ -450,6 +458,7 @@ associationDefinitions:
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
     name: "reported1"
 
   referredby:
@@ -464,6 +473,7 @@ associationDefinitions:
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
     conditions:
     - !<conditions.BooleanIsNullCondition>
       column: "ExitDate"
@@ -489,6 +499,7 @@ associationDefinitions:
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
     name: "reported2"
 
   reported3:
@@ -509,4 +520,5 @@ associationDefinitions:
         transforms:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
+          timezone: "America/New York"
     name: "reported3"
