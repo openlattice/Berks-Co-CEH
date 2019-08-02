@@ -19,7 +19,6 @@ entityDefinitions:
       reverse: true
     name: "client"
 
-
   medicaid:
     fqn: "ol.insurance"
     entitySetName: "BerksCEHMedicaid"
@@ -42,6 +41,11 @@ entityDefinitions:
         type: "ol.organizationname"
         transforms:
         - !<transforms.ValueTransform>
+          value: "The Center for Medicaid and CHIP Services (CMCS)"
+      ol.coveragetype:
+        type: "ol.coveragetype"
+        transforms:
+        - !<transforms.ValueTransform>
           value: "Medicaid"
       ol.statusdetails:
         type: "ol.statusdetails"
@@ -52,6 +56,11 @@ entityDefinitions:
           target: ["1", "2", "3", "4", "8", "9", "99"]
           goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
           ignoreCase: true
+      ol.notes:
+        type: "ol.notes"
+        transforms:
+        - !<transforms.ValueTransform>
+          value: "Note: state plans often have different names"
     conditions:
     - !<conditions.ConditionalOr> {}
     - !<conditions.BooleanIsNullCondition>
@@ -84,6 +93,11 @@ entityDefinitions:
         type: "ol.organizationname"
         transforms:
         - !<transforms.ValueTransform>
+          value: "The Center for Medicares and CHIP Services (CMCS)"
+      ol.coveragetype:
+        type: "ol.coveragetype"
+        transforms:
+        - !<transforms.ValueTransform>
           value: "Medicare"
       ol.statusdetails:
         type: "ol.statusdetails"
@@ -94,6 +108,11 @@ entityDefinitions:
           target: ["1", "2", "3", "4", "8", "9", "99"]
           goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
           ignoreCase: true
+      ol.notes:
+        type: "ol.notes"
+        transforms:
+        - !<transforms.ValueTransform>
+          value: "Note: could be Part A, Part B, etc; person could also have multiple types of public or private insurance."
     conditions:
     - !<conditions.ConditionalOr> {}
     - !<conditions.BooleanIsNullCondition>
@@ -126,7 +145,12 @@ entityDefinitions:
         type: "ol.organizationname"
         transforms:
         - !<transforms.ValueTransform>
-          value: "Healthy Kids (CHI) (State Children's HIP)"
+          value: "The Center for Medicares and CHIP Services (CMCS)"
+      ol.coveragetype:
+        type: "ol.coveragetype"
+        transforms:
+        - !<transforms.ValueTransform>
+          value: "State Children's Health Insurance Program (SCHIP)"
       ol.statusdetails:
         type: "ol.statusdetails"
         column: "NoSCHIPReason"
@@ -168,6 +192,11 @@ entityDefinitions:
         type: "ol.organizationname"
         transforms:
         - !<transforms.ValueTransform>
+          value: "Veterans Health Administration"
+      ol.coveragetype:
+        type: "ol.coveragetype"
+        transforms:
+        - !<transforms.ValueTransform>
           value: "VA Medical Services"
       ol.statusdetails:
         type: "ol.statusdetails"
@@ -200,6 +229,11 @@ entityDefinitions:
           separator: "_"
       ol.organizationname:
         type: "ol.organizationname"
+        transforms:
+        - !<transforms.ValueTransform>
+          value: "Unknown"
+      ol.coveragetype:
+        type: "ol.coveragetype"
         transforms:
         - !<transforms.ValueTransform>
           value: "Employer Provided"
@@ -244,7 +278,12 @@ entityDefinitions:
         type: "ol.organizationname"
         transforms:
         - !<transforms.ValueTransform>
-          value: "COBRA"
+          value: "Unknown"
+      ol.coveragetype:
+        type: "ol.coveragetype"
+        transforms:
+        - !<transforms.ValueTransform>
+          value: "Consolidated Omnibus Budget Reconciliation Act (COBRA)"
       general.status:
         type: "general.status"
         column: "COBRA"
@@ -262,6 +301,11 @@ entityDefinitions:
           target: ["1", "2", "3", "4", "8", "9", "99"]
           goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
           ignoreCase: true
+      ol.notes:
+        type: "ol.notes"
+        transforms:
+        - !<transforms.ValueTransform>
+          value: "COBRA is a health insurance program, but isn't coverage by itself. Insurance can be provided by a variety of companies."
     conditions:
     - !<conditions.ConditionalOr> {}
     - !<conditions.BooleanIsNullCondition>
@@ -284,6 +328,11 @@ entityDefinitions:
           separator: "_"
       ol.organizationname:
         type: "ol.organizationname"
+        transforms:
+        - !<transforms.ValueTransform>
+          value: "Unknown"
+      ol.coveragetype:
+        type: "ol.coveragetype"
         transforms:
         - !<transforms.ValueTransform>
           value: "Private Pay Insurance"
@@ -324,8 +373,8 @@ entityDefinitions:
         - !<transforms.ConcatTransform>
           columns: ["StateHealthIns", "NoStateHealthInsReason"]
           separator: "_"
-      ol.organizationname:
-        type: "ol.organizationname"
+      ol.coveragetype:
+        type: "ol.coveragetype"
         transforms:
         - !<transforms.ValueTransform>
           value: "State Health Insurance"
@@ -370,7 +419,12 @@ entityDefinitions:
         type: "ol.organizationname"
         transforms:
         - !<transforms.ValueTransform>
-          value: "Indian Health Services"
+          value: "Indian Health Service"
+      ol.coveragetype:
+        type: "ol.coveragetype"
+        transforms:
+        - !<transforms.ValueTransform>
+          value: "Indian Health Services (IHS)"
       general.status:
         type: "general.status"
         column: "IndianHealthServices"
@@ -388,6 +442,11 @@ entityDefinitions:
           target: ["1", "2", "3", "4", "8", "9", "99"]
           goal: ["Applied; decision pending", "Applied; client not eligible", "Client did not apply", "Insurance type n/a for this client", "Client doesn't know", "Client refused", "Data not collected"]
           ignoreCase: true
+      ol.notes:
+        type: "ol.notes"
+        transforms:
+        - !<transforms.ValueTransform>
+          value: "Note: there are different types of IHS eligibility - people might be denied access to different programs and services based on tribal affiliation, location (reservation/urban area) and federal tribal recognition or lack thereof."
     conditions:
     - !<conditions.ConditionalOr> {}
     - !<conditions.BooleanIsNullCondition>
@@ -419,6 +478,9 @@ entityDefinitions:
       ol.organizationname:
         type: "ol.organizationname"
         column: "OtherInsuranceIdentify"
+      ol.coveragetype:
+        type: "ol.coveragetype"
+        column: "OtherInsuranceIdentify"
     conditions:
     - !<conditions.ConditionalOr> {}
     - !<conditions.BooleanIsNullCondition>
@@ -440,7 +502,12 @@ entityDefinitions:
         type: "ol.organizationname"
         transforms:
         - !<transforms.ValueTransform>
-          value: "Connection With SOAR"
+          value: "Supportive Services for Veteran Families’ (SSVF)"
+      ol.coveragetype:
+        type: "ol.coveragetype"
+        transforms:
+        - !<transforms.ValueTransform>
+          value: "SSI (Supplemental Security Income)/SSDI (Social Security Disability Insurance) Outreach, Access, and Recovery (SOAR)"
       general.status:
         type: "general.status"
         column: "ConnectionWithSOAR"
@@ -456,12 +523,17 @@ entityDefinitions:
     name: "connectionwithsoarinsurance"
 
 associationDefinitions:
-  insuredby1:
-    fqn: "health.insuredby"
-    entitySetName: "BerksInsuredby"
+  reported1:
+    fqn: "ol.reported"
+    entitySetName: "BerksReported"
     src: "client"
     dst: "medicare"
     propertyDefinitions:
+      general.id:
+        type: "general.id"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["PersonalID", "Medicare"]
       date.completeddatetime:
         type: "date.completeddatetime"
         column: "InformationDate"
@@ -469,14 +541,19 @@ associationDefinitions:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
           timezone: "America/New York"
-    name: "insuredby1"
+    name: "reported1"
 
-  insuredby2:
-    fqn: "health.insuredby"
-    entitySetName: "BerksInsuredby"
+  reported2:
+    fqn: "ol.reported"
+    entitySetName: "BerksReported"
     src: "client"
     dst: "medicaid"
     propertyDefinitions:
+      general.id:
+        type: "general.id"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["PersonalID", "Medicaid"]
       date.completeddatetime:
         type: "date.completeddatetime"
         column: "InformationDate"
@@ -484,14 +561,19 @@ associationDefinitions:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
           timezone: "America/New York"
-    name: "insuredby2"
+    name: "reported2"
 
-  insuredby3:
-    fqn: "health.insuredby"
-    entitySetName: "BerksInsuredby"
+  reported3:
+    fqn: "ol.reported"
+    entitySetName: "BerksReported"
     src: "client"
     dst: "schip"
     propertyDefinitions:
+      general.id:
+        type: "general.id"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["PersonalID", "SCHIP"]
       date.completeddatetime:
         type: "date.completeddatetime"
         column: "InformationDate"
@@ -499,14 +581,19 @@ associationDefinitions:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
           timezone: "America/New York"
-    name: "insuredby3"
+    name: "reported3"
 
-  insuredby4:
-    fqn: "health.insuredby"
-    entitySetName: "BerksInsuredby"
+  reported4:
+    fqn: "ol.reported"
+    entitySetName: "BerksReported"
     src: "client"
     dst: "vamedicalservices"
     propertyDefinitions:
+      general.id:
+        type: "general.id"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["PersonalID", "VAMedicalServices"]
       date.completeddatetime:
         type: "date.completeddatetime"
         column: "InformationDate"
@@ -514,14 +601,19 @@ associationDefinitions:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
           timezone: "America/New York"
-    name: "insuredby4"
+    name: "reported4"
 
-  insuredby5:
-    fqn: "health.insuredby"
-    entitySetName: "BerksInsuredby"
+  reported5:
+    fqn: "ol.reported"
+    entitySetName: "BerksReported"
     src: "client"
     dst: "employerprovidedinsurance"
     propertyDefinitions:
+      general.id:
+        type: "general.id"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["PersonalID", "EmployerProvided"]
       date.completeddatetime:
         type: "date.completeddatetime"
         column: "InformationDate"
@@ -529,14 +621,19 @@ associationDefinitions:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
           timezone: "America/New York"
-    name: "insuredby5"
+    name: "reported5"
 
-  insuredby6:
-    fqn: "health.insuredby"
-    entitySetName: "BerksInsuredby"
+  reported6:
+    fqn: "ol.reported"
+    entitySetName: "BerksReported"
     src: "client"
     dst: "cobrainsurance"
     propertyDefinitions:
+      general.id:
+        type: "general.id"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["PersonalID", "COBRA"]
       date.completeddatetime:
         type: "date.completeddatetime"
         column: "InformationDate"
@@ -544,14 +641,19 @@ associationDefinitions:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
           timezone: "America/New York"
-    name: "insuredby6"
+    name: "reported6"
 
-  insuredby7:
-    fqn: "health.insuredby"
-    entitySetName: "BerksInsuredby"
+  reported7:
+    fqn: "ol.reported"
+    entitySetName: "BerksReported"
     src: "client"
     dst: "privatepay"
     propertyDefinitions:
+      general.id:
+        type: "general.id"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["PersonalID", "PrivatePay"]
       date.completeddatetime:
         type: "date.completeddatetime"
         column: "InformationDate"
@@ -559,14 +661,19 @@ associationDefinitions:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
           timezone: "America/New York"
-    name: "insuredby7"
+    name: "reported7"
 
-  insuredby8:
-    fqn: "health.insuredby"
-    entitySetName: "BerksInsuredby"
+  reported8:
+    fqn: "ol.reported"
+    entitySetName: "BerksReported"
     src: "client"
     dst: "statehealthinsurance"
     propertyDefinitions:
+      general.id:
+        type: "general.id"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["PersonalID", "StateHealthIns"]
       date.completeddatetime:
         type: "date.completeddatetime"
         column: "InformationDate"
@@ -574,14 +681,19 @@ associationDefinitions:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
           timezone: "America/New York"
-    name: "insuredby8"
+    name: "reported8"
 
-  insuredby9:
-    fqn: "health.insuredby"
-    entitySetName: "BerksInsuredby"
+  reported9:
+    fqn: "ol.reported"
+    entitySetName: "BerksReported"
     src: "client"
     dst: "indianhealthservices"
     propertyDefinitions:
+      general.id:
+        type: "general.id"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["PersonalID", "IndianHealthServices"]
       date.completeddatetime:
         type: "date.completeddatetime"
         column: "InformationDate"
@@ -589,14 +701,19 @@ associationDefinitions:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
           timezone: "America/New York"
-    name: "insuredby9"
+    name: "reported9"
 
-  insuredby10:
-    fqn: "health.insuredby"
-    entitySetName: "BerksInsuredby"
+  reported10:
+    fqn: "ol.reported"
+    entitySetName: "BerksReported"
     src: "client"
     dst: "otherinsurance"
     propertyDefinitions:
+      general.id:
+        type: "general.id"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["PersonalID", "OtherInsurance"]
       date.completeddatetime:
         type: "date.completeddatetime"
         column: "InformationDate"
@@ -604,14 +721,19 @@ associationDefinitions:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
           timezone: "America/New York"
-    name: "insuredby10"
+    name: "reported10"
 
-  insuredby11:
-    fqn: "health.insuredby"
-    entitySetName: "BerksInsuredby"
+  reported11:
+    fqn: "ol.reported"
+    entitySetName: "BerksReported"
     src: "client"
     dst: "connectionwithsoarinsurance"
     propertyDefinitions:
+      general.id:
+        type: "general.id"
+        transforms:
+        - !<transforms.ConcatTransform>
+          columns: ["PersonalID", "ConnectionWithSOAR"]
       date.completeddatetime:
         type: "date.completeddatetime"
         column: "InformationDate"
@@ -619,4 +741,4 @@ associationDefinitions:
         - !<transforms.DateTimeTransform>
           pattern: ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.S"]
           timezone: "America/New York"
-    name: "insuredby11"
+    name: "reported11"
