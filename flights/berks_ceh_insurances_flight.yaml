@@ -502,7 +502,7 @@ entityDefinitions:
         type: "ol.organizationname"
         transforms:
         - !<transforms.ValueTransform>
-          value: "Supportive Services for Veteran Families’ (SSVF)"
+          value: "Supportive Services for Veteran Families (SSVF)"
       ol.coveragetype:
         type: "ol.coveragetype"
         transforms:
