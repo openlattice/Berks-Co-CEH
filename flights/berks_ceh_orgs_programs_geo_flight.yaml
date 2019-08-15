@@ -204,19 +204,19 @@ associationDefinitions:
           timezone: "America/New York"
     name: "provided2"
 
-  includes:
-    fqn: "ol.includes"
-    entitySetName: "BerksIncludes"
+  partof3:
+    fqn: "ol.partof"
+    entitySetName: "BerksPartOf"
     src: "organization"
     dst: "program"
     propertyDefinitions:
-      general.id:
-        type: "general.id"
+      ol.id:
+        type: "ol.id"
         transforms:
         - !<transforms.ConcatTransform>
           columns: ["OrganizationID", "ProjectID"]
           separator: "_"
-    name: "includes"
+    name: "partof3"
 
   locatedat1:
     fqn: "ol.locatedat"
