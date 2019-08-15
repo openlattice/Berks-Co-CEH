@@ -45,17 +45,11 @@ entityDefinitions:
       ol.locationcoordinates:
         type: "ol.locationcoordinates"
         transforms:
-        - !<transforms.ConcatCombineTransform>
+        - !<transforms.ConcatTransform>
+          columns: [LastPermanentStreet, LastPermanentCity, LastPermanentZIP]
           separator: " "
-          transforms:
-          - !<transforms.ColumnTransform>
-            column: "LastPermanentStreet"
-            - !<transforms.ColumnTransform>
-            column: "LastPermanentCity"
-            - !<transforms.ColumnTransform>
-            column: "LastPermanentZIP"
-          - !<transforms.GeocoderTransform>
-            addressObject: "geographypoint"
+        - !<transforms.GeocoderTransform>
+          addressObject: geographypoint
     conditions:
     - !<conditions.ConditionalOr> {}
     - !<conditions.BooleanIsNullCondition>
