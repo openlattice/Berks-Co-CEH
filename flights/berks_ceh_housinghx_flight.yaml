@@ -50,18 +50,6 @@ entityDefinitions:
           separator: " "
         - !<transforms.GeocoderTransform>
           addressObject: geographypoint
-        # transforms:
-        # - !<transforms.ConcatCombineTransform>
-        #   separator: " "
-        #   transforms:
-        #   - !<transforms.ColumnTransform>
-        #     column: "LastPermanentStreet"
-        #   - !<transforms.ColumnTransform>
-        #     column: "LastPermanentCity"
-        #   - !<transforms.ColumnTransform>
-        #     column: "LastPermanentZIP"
-        # - !<transforms.GeocoderTransform>
-        #   addressObject: "geographypoint"
     conditions:
     - !<conditions.ConditionalOr> {}
     - !<conditions.BooleanIsNullCondition>

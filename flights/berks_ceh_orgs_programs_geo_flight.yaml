@@ -207,8 +207,8 @@ associationDefinitions:
   partof3:
     fqn: "ol.partof"
     entitySetName: "BerksPartOf"
-    src: "organization"
-    dst: "program"
+    src: "program"
+    dst: "organization"
     propertyDefinitions:
       ol.id:
         type: "ol.id"
